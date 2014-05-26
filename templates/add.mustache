@@ -1,0 +1,33 @@
+<!doctype html>
+<html>
+  <head>
+    <title>Seedgarden - Login</title>
+    <link href="assets/bootstrap/css/bootstrap.css" rel="stylesheet">
+    <link href="assets/global.css" rel="stylesheet">
+  </head>
+  <body>
+    <div class="container" style="width: 500px">
+      <center>
+        <h3 class="h3">Add a Torrent</h3>
+      </center>
+      <form method="post" class="form-horizontal">
+        <fieldset>
+          <div class="control-group">
+            <label class="control-label" for="magnet-url">Magnet URL</label>
+            <div class="controls">
+              <input name="magnet-url" id="magnet-url" type="text" />
+            </div>
+          </div>
+          <div class="control-group">
+            <div class="controls">
+              <button type="submit" class="btn">Add</button>
+            </div>
+          </div>
+        </fieldset>
+      </form>
+      {{#error}}
+      <center>{{error}}</center>
+      {{/error}}
+    </div>
+  </body>
+</html>

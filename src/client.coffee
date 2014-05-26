@@ -30,6 +30,9 @@ class Client
     call = new Call action, [hash]
     @call call, cb
   
+  addTorrent: (url, cb) ->
+    @call new Call('load', [url]), cb
+  
   stop: (hash, cb) -> @doAction 'd.stop', hash
   start: (hash, cb) -> @doAction 'd.start', hash
   erase: (hash, cb) -> @doAction 'd.erase', hash
