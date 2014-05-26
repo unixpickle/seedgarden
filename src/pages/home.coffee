@@ -8,9 +8,9 @@ class Home extends Page
   path: -> '/'
   
   get: (req, res) ->
-    res.header "Cache-Control", "no-cache, no-store, must-revalidate"
-    res.header "Pragma", "no-cache"
-    res.header "Expires", 0
+    res.header 'Cache-Control', 'no-cache, no-store, must-revalidate'
+    res.header 'Pragma', 'no-cache'
+    res.header 'Expires', '0'
     
     if not req.session.userInfo?
       return res.redirect 'login'

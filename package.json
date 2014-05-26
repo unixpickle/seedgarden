@@ -10,7 +10,8 @@
     "cookie-parser": "1.1.x",
     "express-session": "1.2.x",
     "busboy": "0.2.x",
-    "xmlrpc": "1.2.0"
+    "xmlrpc": "1.2.0",
+    "ftp": "0.3.7"
   },
   "version": "0.0.1",
   "licenses": [{
