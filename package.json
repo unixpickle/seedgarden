@@ -1,0 +1,23 @@
+{
+  "name": "seedgarden",
+  "description": "a lightweight web app for managing a seedbox",
+  "author": "Alex Nichol <unixpickle@gmail.com>",
+  "repository": "https://github.com/unixpickle/seedgarden.git",
+  "dependencies": {
+    "express": "4.3.x",
+    "coffee-script": "1.7.x",
+    "mustache": "0.8.x",
+    "cookie-parser": "1.1.x",
+    "express-session": "1.2.x",
+    "busboy": "0.2.x",
+    "xmlrpc": "1.2.0"
+  },
+  "version": "0.0.1",
+  "licenses": [{
+    "type": "GPL",
+    "url": "http://www.gnu.org/licenses/gpl.html"
+  }],
+  "engines": {
+    "node": "0.10.x"
+  }
+}
