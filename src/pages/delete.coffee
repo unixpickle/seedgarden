@@ -49,9 +49,12 @@ class Delete extends Page
   deleteFiles: (res, client) ->
     client.rmdir = require '../rmdir'
     client.rmdir res.dl.basePath, (err) =>
-      return res.redirect './' if not err?
+      if not err?
+        client.end()
+        return res.redirect './'
       aPath = res.dl.basePath.replace /^\/home\/[a-z]*\//, '/'
       client.rmdir aPath, (err) =>
+        client.end()
         return @redError res, err.toString() if err?
         res.redirect './'
           
