@@ -38,5 +38,9 @@ class Page
           return cb new Error 'missing field: ' + key
       cb null, fields
     req.pipe bb
+  
+  error: (res, msg) ->
+    res.redirect './?error=' + encodeURIComponent msg
+
 
 module.exports = Page

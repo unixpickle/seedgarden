@@ -11,7 +11,8 @@
     "express-session": "1.2.x",
     "busboy": "0.2.x",
     "xmlrpc": "1.2.0",
-    "ftp": "0.3.7"
+    "ftp": "0.3.7",
+    "tar-stream": "0.4.2"
   },
   "version": "0.0.1",
   "licenses": [{

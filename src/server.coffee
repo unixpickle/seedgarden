@@ -2,11 +2,11 @@ express = require 'express'
 cookieParser = require 'cookie-parser'
 session = require 'express-session'
 
-pageRoot = '/seedgarden'
-
-if process.argv.length isnt 3
-  console.log 'Usage: coffee src/server.coffee <port>'
+if not (process.argv.length in [3, 4])
+  console.log 'Usage: coffee src/server.coffee <port> [/rootpath]'
   process.exit()
+
+pageRoot = process.argv[3] ? ''
 
 port = parseInt process.argv[2]
 if not port
