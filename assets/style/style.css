@@ -41,6 +41,23 @@ body {
     transform: rotate(360deg);
   }
 }
+.list {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+}
+.list-item {
+  position: relative;
+  box-sizing: border-box;
+  width: 100%;
+}
+.list-item:hover {
+  background-color: #f0f0f0;
+  cursor: pointer;
+}
+.list-item * {
+  pointer-events: none;
+}
 #downloads {
   background-color: white;
   position: absolute;
