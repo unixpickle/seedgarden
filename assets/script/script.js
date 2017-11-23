@@ -29,11 +29,7 @@ function DownloadList(props) {
     return React.createElement(
       "div",
       { id: "no-downloads" },
-      React.createElement(
-        "h1",
-        null,
-        "No downloads"
-      )
+      React.createElement(Loader, null)
     );
   }
   let list = [];

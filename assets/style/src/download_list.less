@@ -77,18 +77,13 @@
 }
 
 #no-downloads {
-  @height: 100px;
-
   .content-pane();
-  height: @height;
 
-  h1 {
-    margin: 0;
-    padding: 0;
-    width: 100%;
-    line-height: @height;
-    text-align: center;
-    font-size: 30px;
-    font-weight: 300;
+  height: @loader-size * 3;
+
+  .loader {
+    position: absolute;
+    top: @loader-size;
+    left: calc(~"50% - "(@loader-size / 2));
   }
 }

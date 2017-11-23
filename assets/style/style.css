@@ -133,7 +133,7 @@ body {
   position: absolute;
   top: 54px;
   margin-bottom: 10px;
-  height: 100px;
+  height: 60px;
 }
 @media (max-width: 610px) {
   #no-downloads {
@@ -147,14 +147,10 @@ body {
     left: calc(50% -  300px);
   }
 }
-#no-downloads h1 {
-  margin: 0;
-  padding: 0;
-  width: 100%;
-  line-height: 100px;
-  text-align: center;
-  font-size: 30px;
-  font-weight: 300;
+#no-downloads .loader {
+  position: absolute;
+  top: 20px;
+  left: calc(50% -  10px);
 }
 .top-bar {
   position: absolute;
