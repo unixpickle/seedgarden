@@ -12,7 +12,8 @@ class TopBar extends React.Component {
                onFocus={() => this.setState({searchFocused: true})}
                onBlur={() => this.setState({searchFocused: false})}
                onChange={(e) => this.props.onSearchChange(e.target.value)}
-               value={this.props.search || ''} />
+               value={this.props.search || ''}
+               placeholder="Search" />
       </div>
     );
   }

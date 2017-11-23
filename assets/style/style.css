@@ -171,7 +171,8 @@ body {
   width: 200px;
   height: 24px;
   box-sizing: border-box;
-  padding: 2px 5px;
+  padding: 1px 5px;
+  font-size: 16px;
 }
 .top-bar .search-box:focus {
   outline: 0;
