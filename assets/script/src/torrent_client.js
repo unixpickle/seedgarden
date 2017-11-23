@@ -35,14 +35,28 @@ class TorrentClient {
     this._doCall('delete', hash);
   }
 
+  startTorrent(hash) {
+    this._doCall('start', hash);
+  }
+
+  stopTorrent(hash) {
+    this._doCall('stop', hash);
+  }
+
   _doCall(call, hash) {
     for (let i = 0; i < this._downloads.length; ++i) {
       let dl = this._downloads[i];
       if (dl.hash == hash && !dl.actionPending) {
         dl.actionPending = true;
-        if (call == 'delete') {
+        if (call === 'delete') {
           setTimeout(() => {
             this._downloads = this._downloads.filter((x) => x.hash != hash);
+            this.onChange();
+          }, 1000);
+        } else if (call === 'start' || call === 'stop') {
+          setTimeout(() => {
+            dl.actionPending = false;
+            dl.active = (call === 'start');
             this.onChange();
           }, 1000);
         }

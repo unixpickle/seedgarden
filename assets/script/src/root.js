@@ -18,7 +18,10 @@ class Root extends React.Component {
                 onSearchChange={(s) => this.setState({currentSearch: s})} />
         {(this.state.currentSearch &&
           <Search downloads={this.state.downloads} query={this.state.currentSearch} />)}
-        <DownloadList downloads={this.state.downloads} />
+        <DownloadList downloads={this.state.downloads}
+                      onClick={(hash) => console.log('click hash', hash)}
+                      onStart={(hash) => this.client.startTorrent(hash)}
+                      onStop={(hash) => this.client.stopTorrent(hash)} />
       </div>
     );
     if (this.state.currentSearch) {

@@ -16,7 +16,7 @@ class BayInfo extends React.Component {
 
   render() {
     // TODO: show loading/error/info.
-    // TODO: callback for adding magnet link.``
+    // TODO: callback for adding magnet link.
   }
 }
 function DownloadInfo() {
@@ -24,14 +24,91 @@ function DownloadInfo() {
   // TODO: callbacks for start, stop, delete.
   // TODO: sub-component for file browser.
 }
-function DownloadList() {
-  return React.createElement("div", { id: "downloads" });
+function DownloadList(props) {
+  if (!props.downloads) {
+    return React.createElement("div", { id: "no-downloads" });
+  }
+  let list = [];
+  props.downloads.forEach(dl => {
+    list.push(React.createElement(DownloadEntry, { download: dl,
+      key: dl.hash,
+      onClick: () => props.onClick(dl.hash),
+      onStop: () => props.onStop(dl.hash),
+      onStart: () => props.onStart(dl.hash) }));
+  });
+  return React.createElement(
+    "ol",
+    { id: "downloads" },
+    list
+  );
   // TODO: list of downloads.
 
   // TODO: flag on download indicating that an action is
   // currently pending for it.
 
   // TODO: callbacks for pause/resume/delete.
+}
+
+function DownloadEntry(props) {
+  return React.createElement(
+    "li",
+    { "class": 'download' + (props.actionPending ? ' download-frozen' : ''),
+      onClick: props.onClick },
+    React.createElement(
+      "label",
+      { "class": "download-name" },
+      props.download.name
+    ),
+    React.createElement(
+      "div",
+      { "class": "download-stats" },
+      React.createElement(
+        "label",
+        { "class": "download-size" },
+        humanSize(props.download.sizeBytes)
+      ),
+      props.download.active && React.createElement(
+        "label",
+        { "class": "download-rate" },
+        humanSize(props.download.sizeBytes) + '/sec'
+      ),
+      React.createElement(
+        "label",
+        { "class": "download-upload" },
+        humanSize(props.download.uploadTotal)
+      )
+    ),
+    props.download.active ? React.createElement(
+      "button",
+      { "class": "download-stop-button",
+        onClick: e => {
+          e.stopPropagation();props.onStop();
+        } },
+      "Stop"
+    ) : React.createElement(
+      "button",
+      { "class": "download-start-button",
+        onClick: e => {
+          e.stopPropagation();props.onStart();
+        } },
+      "Start"
+    )
+  );
+}
+
+function humanSize(bytes) {
+  const suffixes = [' KB', ' MB', ' GB', ' TB'];
+  suffixes.forEach((suffix, idx) => {
+    const size = bytes / Math.pow(10, 3 * idx + 3);
+    if (size < 10) {
+      return size.toFixed(2) + suffix;
+    } else if (size < 100) {
+      return size.toFixed(1) + suffix;
+    } else {
+      return Math.round(size) + suffix;
+    }
+  });
+  return bytes + ' bytes';
 }
 function Loader(props) {
   return React.createElement(
@@ -60,7 +137,10 @@ class Root extends React.Component {
       React.createElement(TopBar, { search: this.state.currentSearch,
         onSearchChange: s => this.setState({ currentSearch: s }) }),
       this.state.currentSearch && React.createElement(Search, { downloads: this.state.downloads, query: this.state.currentSearch }),
-      React.createElement(DownloadList, { downloads: this.state.downloads })
+      React.createElement(DownloadList, { downloads: this.state.downloads,
+        onClick: hash => console.log('click hash', hash),
+        onStart: hash => this.client.startTorrent(hash),
+        onStop: hash => this.client.stopTorrent(hash) })
     );
     if (this.state.currentSearch) {
       // TODO: search UI here.
@@ -247,14 +327,28 @@ class TorrentClient {
     this._doCall('delete', hash);
   }
 
+  startTorrent(hash) {
+    this._doCall('start', hash);
+  }
+
+  stopTorrent(hash) {
+    this._doCall('stop', hash);
+  }
+
   _doCall(call, hash) {
     for (let i = 0; i < this._downloads.length; ++i) {
       let dl = this._downloads[i];
       if (dl.hash == hash && !dl.actionPending) {
         dl.actionPending = true;
-        if (call == 'delete') {
+        if (call === 'delete') {
           setTimeout(() => {
             this._downloads = this._downloads.filter(x => x.hash != hash);
+            this.onChange();
+          }, 1000);
+        } else if (call === 'start' || call === 'stop') {
+          setTimeout(() => {
+            dl.actionPending = false;
+            dl.active = call === 'start';
             this.onChange();
           }, 1000);
         }
