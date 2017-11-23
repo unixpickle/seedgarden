@@ -1,9 +1,9 @@
 body {
   font-family: sans-serif;
-  background-color: white;
+  background-color: #d5d5d5;
 }
 .content-pane {
-  background-color: #f0f0f0;
+  background-color: white;
   position: absolute;
   top: 60px;
 }
@@ -41,7 +41,7 @@ body {
   }
 }
 #downloads {
-  background-color: #f0f0f0;
+  background-color: white;
   position: absolute;
   top: 60px;
   list-style-type: none;
@@ -61,12 +61,48 @@ body {
   }
 }
 #downloads .download {
+  position: relative;
   box-sizing: border-box;
-  padding: 10px;
+  padding: 10px 10px 10px 30px;
   width: 100%;
+}
+#downloads .download:hover {
+  background-color: #f0f0f0;
+  cursor: pointer;
+}
+#downloads .download * {
+  pointer-events: none;
+}
+#downloads .download .download-state {
+  position: absolute;
+  top: calc(50% -  5px);
+  left: 10px;
+  width: 10px;
+  height: 10px;
+}
+#downloads .download .download-state-active {
+  position: absolute;
+  top: calc(50% -  5px);
+  left: 10px;
+  width: 10px;
+  height: 10px;
+  background-color: green;
+}
+#downloads .download .download-state-inactive {
+  position: absolute;
+  top: calc(50% -  5px);
+  left: 10px;
+  width: 10px;
+  height: 10px;
+  background-color: #bbb;
 }
 #downloads .download .download-name {
   font-weight: 600;
+  max-width: 100%;
+  overflow-wrap: break-word;
+}
+#downloads .download .download-stats {
+  margin-top: 5px;
 }
 #downloads .download .download-stats .download-size,
 #downloads .download .download-stats .download-rate,
@@ -81,17 +117,17 @@ body {
 #downloads .download .download-stats .download-size::before {
   content: 'Size: ';
 }
+#downloads .download .download-stats .download-upload::before {
+  content: 'Uploaded: ';
+}
 #downloads .download .download-stats .download-rate::before {
   content: 'DL: ';
-}
-#downloads .download .download-stats .download-upload::before {
-  content: 'UL: ';
 }
 #downloads .download:not(:first-child) {
   border-top: 1px solid #d5d5d5;
 }
 #no-downloads {
-  background-color: #f0f0f0;
+  background-color: white;
   position: absolute;
   top: 60px;
   height: 100px;

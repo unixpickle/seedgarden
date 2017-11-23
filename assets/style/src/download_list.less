@@ -6,15 +6,50 @@
   padding: 0;
 
   .download {
+    @status-size: 10px;
+    @padding: 10px;
+
+    position: relative;
     box-sizing: border-box;
-    padding: 10px;
+    padding: @padding @padding @padding (@padding*2 + @status-size);
     width: 100%;
+
+    &:hover {
+      background-color: #f0f0f0;
+      cursor: pointer;
+    }
+
+    * {
+      pointer-events: none;
+    }
+
+    .download-state {
+      position: absolute;
+      top: calc(~"50% - "(@status-size / 2));
+      left: @padding;
+      width: @status-size;
+      height: @status-size;
+    }
+
+    .download-state-active {
+      .download-state();
+      background-color: green;
+    }
+
+    .download-state-inactive {
+      .download-state();
+      background-color: #bbb;
+    }
 
     .download-name {
       font-weight: 600;
+      max-width: 100%;
+      overflow-wrap: break-word;
     }
 
     .download-stats {
+      margin-top: 5px;
+
       .download-size, .download-rate, .download-upload {
         margin-right: 10px;
         &::before {
@@ -26,12 +61,12 @@
         content: 'Size: ';
       }
 
-      .download-rate::before {
-        content: 'DL: ';
+      .download-upload::before {
+        content: 'Uploaded: ';
       }
 
-      .download-upload::before {
-        content: 'UL: ';
+      .download-rate::before {
+        content: 'DL: ';
       }
     }
 

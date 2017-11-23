@@ -40,21 +40,13 @@ function DownloadList(props) {
   props.downloads.forEach(dl => {
     list.push(React.createElement(DownloadEntry, { download: dl,
       key: dl.hash,
-      onClick: () => props.onClick(dl.hash),
-      onStop: () => props.onStop(dl.hash),
-      onStart: () => props.onStart(dl.hash) }));
+      onClick: () => props.onClick(dl.hash) }));
   });
   return React.createElement(
     "ol",
     { id: "downloads" },
     list
   );
-  // TODO: list of downloads.
-
-  // TODO: flag on download indicating that an action is
-  // currently pending for it.
-
-  // TODO: callbacks for pause/resume/delete.
 }
 
 function DownloadEntry(props) {
@@ -62,6 +54,7 @@ function DownloadEntry(props) {
     "li",
     { className: 'download' + (props.actionPending ? ' download-frozen' : ''),
       onClick: props.onClick },
+    React.createElement("div", { className: 'download-state-' + (props.download.active ? 'active' : 'inactive') }),
     React.createElement(
       "label",
       { className: "download-name" },
@@ -75,31 +68,16 @@ function DownloadEntry(props) {
         { className: "download-size" },
         humanSize(props.download.sizeBytes)
       ),
-      props.download.active && React.createElement(
-        "label",
-        { className: "download-rate" },
-        humanSize(props.download.sizeBytes) + '/sec'
-      ),
       React.createElement(
         "label",
         { className: "download-upload" },
         humanSize(props.download.uploadTotal)
+      ),
+      props.download.active && React.createElement(
+        "label",
+        { className: "download-rate" },
+        humanSize(props.download.downloadRate) + '/sec'
       )
-    ),
-    props.download.active ? React.createElement(
-      "button",
-      { className: "download-stop-button",
-        onClick: e => {
-          e.stopPropagation();props.onStop();
-        } },
-      "Stop"
-    ) : React.createElement(
-      "button",
-      { className: "download-start-button",
-        onClick: e => {
-          e.stopPropagation();props.onStart();
-        } },
-      "Start"
     )
   );
 }

@@ -6,35 +6,25 @@ function DownloadList(props) {
   props.downloads.forEach((dl) => {
     list.push(<DownloadEntry download={dl}
                              key={dl.hash}
-                             onClick={() => props.onClick(dl.hash)}
-                             onStop={() => props.onStop(dl.hash)}
-                             onStart={() => props.onStart(dl.hash)}/>);
+                             onClick={() => props.onClick(dl.hash)} />);
   });
   return <ol id="downloads">{list}</ol>;
-  // TODO: list of downloads.
-
-  // TODO: flag on download indicating that an action is
-  // currently pending for it.
-
-  // TODO: callbacks for pause/resume/delete.
 }
 
 function DownloadEntry(props) {
   return (
     <li className={'download' + (props.actionPending ? ' download-frozen' : '')}
         onClick={props.onClick}>
+      <div className={'download-state-' + (props.download.active ? 'active' : 'inactive')} />
       <label className="download-name">{props.download.name}</label>
       <div className="download-stats">
         <label className="download-size">{humanSize(props.download.sizeBytes)}</label>
-        {(props.download.active &&
-          <label className="download-rate">{humanSize(props.download.sizeBytes)+'/sec'}</label>)}
         <label className="download-upload">{humanSize(props.download.uploadTotal)}</label>
+        {(props.download.active &&
+          <label className="download-rate">
+            {humanSize(props.download.downloadRate)+'/sec'}
+          </label>)}
       </div>
-      {(props.download.active ?
-        <button className="download-stop-button"
-                onClick={(e) => {e.stopPropagation(); props.onStop()}}>Stop</button> :
-        <button className="download-start-button"
-                onClick={(e) => {e.stopPropagation(); props.onStart()}}>Start</button>)}
     </li>
   );
 }
