@@ -1,0 +1,7 @@
+{
+  "name": "seedgarden",
+  "version": "0.0.0",
+  "devDependencies": {
+	"less": "2.x.x"
+  }
+}
