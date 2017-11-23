@@ -1,5 +1,23 @@
 body {
   font-family: sans-serif;
+  background-color: white;
+}
+.content-pane {
+  background-color: #f0f0f0;
+  position: absolute;
+  top: 60px;
+}
+@media (max-width: 610px) {
+  .content-pane {
+    width: calc(100% -  20px);
+    left: 10px;
+  }
+}
+@media (min-width: 610px) {
+  .content-pane {
+    width: 600px;
+    left: calc(50% -  300px);
+  }
 }
 .loader {
   display: block;
@@ -21,4 +39,81 @@ body {
   to {
     transform: rotate(360deg);
   }
+}
+#downloads {
+  background-color: #f0f0f0;
+  position: absolute;
+  top: 60px;
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+}
+@media (max-width: 610px) {
+  #downloads {
+    width: calc(100% -  20px);
+    left: 10px;
+  }
+}
+@media (min-width: 610px) {
+  #downloads {
+    width: 600px;
+    left: calc(50% -  300px);
+  }
+}
+#downloads .download {
+  box-sizing: border-box;
+  padding: 10px;
+  width: 100%;
+}
+#downloads .download .download-name {
+  font-weight: 600;
+}
+#downloads .download .download-stats .download-size,
+#downloads .download .download-stats .download-rate,
+#downloads .download .download-stats .download-upload {
+  margin-right: 10px;
+}
+#downloads .download .download-stats .download-size::before,
+#downloads .download .download-stats .download-rate::before,
+#downloads .download .download-stats .download-upload::before {
+  font-style: italic;
+}
+#downloads .download .download-stats .download-size::before {
+  content: 'Size: ';
+}
+#downloads .download .download-stats .download-rate::before {
+  content: 'DL: ';
+}
+#downloads .download .download-stats .download-upload::before {
+  content: 'UL: ';
+}
+#downloads .download:not(:first-child) {
+  border-top: 1px solid #d5d5d5;
+}
+#no-downloads {
+  background-color: #f0f0f0;
+  position: absolute;
+  top: 60px;
+  height: 100px;
+}
+@media (max-width: 610px) {
+  #no-downloads {
+    width: calc(100% -  20px);
+    left: 10px;
+  }
+}
+@media (min-width: 610px) {
+  #no-downloads {
+    width: 600px;
+    left: calc(50% -  300px);
+  }
+}
+#no-downloads h1 {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  line-height: 100px;
+  text-align: center;
+  font-size: 30px;
+  font-weight: 300;
 }

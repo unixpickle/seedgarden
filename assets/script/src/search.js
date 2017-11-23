@@ -18,7 +18,7 @@ class Search extends React.Component {
   }
 
 	render() {
-    return <div class='search-results'>Some results here!</div>;
+    return <div className='search-results'>Some results here!</div>;
     // TODO: two sections:
     //  - current downloads
     //  - search results from a website

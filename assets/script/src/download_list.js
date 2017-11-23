@@ -1,6 +1,6 @@
 function DownloadList(props) {
   if (!props.downloads) {
-    return <div id="no-downloads"></div>;
+    return <div id="no-downloads"><h1>No downloads</h1></div>;
   }
   let list = [];
   props.downloads.forEach((dl) => {
@@ -21,19 +21,19 @@ function DownloadList(props) {
 
 function DownloadEntry(props) {
   return (
-    <li class={'download' + (props.actionPending ? ' download-frozen' : '')}
+    <li className={'download' + (props.actionPending ? ' download-frozen' : '')}
         onClick={props.onClick}>
-      <label class="download-name">{props.download.name}</label>
-      <div class="download-stats">
-        <label class="download-size">{humanSize(props.download.sizeBytes)}</label>
+      <label className="download-name">{props.download.name}</label>
+      <div className="download-stats">
+        <label className="download-size">{humanSize(props.download.sizeBytes)}</label>
         {(props.download.active &&
-          <label class="download-rate">{humanSize(props.download.sizeBytes)+'/sec'}</label>)}
-        <label class="download-upload">{humanSize(props.download.uploadTotal)}</label>
+          <label className="download-rate">{humanSize(props.download.sizeBytes)+'/sec'}</label>)}
+        <label className="download-upload">{humanSize(props.download.uploadTotal)}</label>
       </div>
       {(props.download.active ?
-        <button class="download-stop-button"
+        <button className="download-stop-button"
                 onClick={(e) => {e.stopPropagation(); props.onStop()}}>Stop</button> :
-        <button class="download-start-button"
+        <button className="download-start-button"
                 onClick={(e) => {e.stopPropagation(); props.onStart()}}>Start</button>)}
     </li>
   );
@@ -41,15 +41,16 @@ function DownloadEntry(props) {
 
 function humanSize(bytes) {
   const suffixes = [' KB', ' MB', ' GB', ' TB'];
-  suffixes.forEach((suffix, idx) => {
-    const size = bytes / Math.pow(10, 3*idx + 3);
+  for (let i = 0; i < suffixes.length; ++i) {
+    const suffix = suffixes[i];
+    const size = bytes / Math.pow(10, 3 * (i + 1));
     if (size < 10) {
       return size.toFixed(2) + suffix;
     } else if (size < 100) {
       return size.toFixed(1) + suffix;
-    } else {
+    } else if (size < 1000) {
       return Math.round(size) + suffix;
     }
-  });
+  }
   return bytes + ' bytes';
 }

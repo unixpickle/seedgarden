@@ -1,0 +1,19 @@
+@pane-margin: 10px;
+@pane-max-size: 600px;
+
+.content-pane {
+  background-color: #f0f0f0;
+
+  position: absolute;
+  top: 60px;
+
+  @media (max-width: (@pane-max-size + @pane-margin)) {
+    width: calc(~"100% - "(@pane-margin*2));
+    left: @pane-margin;
+  }
+
+  @media (min-width: (@pane-max-size + @pane-margin)) {
+    width: @pane-max-size;
+    left: calc(~"50% - "(@pane-max-size/2));
+  }
+}

@@ -26,7 +26,15 @@ function DownloadInfo() {
 }
 function DownloadList(props) {
   if (!props.downloads) {
-    return React.createElement("div", { id: "no-downloads" });
+    return React.createElement(
+      "div",
+      { id: "no-downloads" },
+      React.createElement(
+        "h1",
+        null,
+        "No downloads"
+      )
+    );
   }
   let list = [];
   props.downloads.forEach(dl => {
@@ -52,42 +60,42 @@ function DownloadList(props) {
 function DownloadEntry(props) {
   return React.createElement(
     "li",
-    { "class": 'download' + (props.actionPending ? ' download-frozen' : ''),
+    { className: 'download' + (props.actionPending ? ' download-frozen' : ''),
       onClick: props.onClick },
     React.createElement(
       "label",
-      { "class": "download-name" },
+      { className: "download-name" },
       props.download.name
     ),
     React.createElement(
       "div",
-      { "class": "download-stats" },
+      { className: "download-stats" },
       React.createElement(
         "label",
-        { "class": "download-size" },
+        { className: "download-size" },
         humanSize(props.download.sizeBytes)
       ),
       props.download.active && React.createElement(
         "label",
-        { "class": "download-rate" },
+        { className: "download-rate" },
         humanSize(props.download.sizeBytes) + '/sec'
       ),
       React.createElement(
         "label",
-        { "class": "download-upload" },
+        { className: "download-upload" },
         humanSize(props.download.uploadTotal)
       )
     ),
     props.download.active ? React.createElement(
       "button",
-      { "class": "download-stop-button",
+      { className: "download-stop-button",
         onClick: e => {
           e.stopPropagation();props.onStop();
         } },
       "Stop"
     ) : React.createElement(
       "button",
-      { "class": "download-start-button",
+      { className: "download-start-button",
         onClick: e => {
           e.stopPropagation();props.onStart();
         } },
@@ -98,16 +106,17 @@ function DownloadEntry(props) {
 
 function humanSize(bytes) {
   const suffixes = [' KB', ' MB', ' GB', ' TB'];
-  suffixes.forEach((suffix, idx) => {
-    const size = bytes / Math.pow(10, 3 * idx + 3);
+  for (let i = 0; i < suffixes.length; ++i) {
+    const suffix = suffixes[i];
+    const size = bytes / Math.pow(10, 3 * (i + 1));
     if (size < 10) {
       return size.toFixed(2) + suffix;
     } else if (size < 100) {
       return size.toFixed(1) + suffix;
-    } else {
+    } else if (size < 1000) {
       return Math.round(size) + suffix;
     }
-  });
+  }
   return bytes + ' bytes';
 }
 function Loader(props) {
@@ -206,7 +215,7 @@ class Search extends React.Component {
   render() {
     return React.createElement(
       "div",
-      { "class": "search-results" },
+      { className: "search-results" },
       "Some results here!"
     );
     // TODO: two sections:
@@ -271,20 +280,20 @@ class TopBar extends React.Component {
   render() {
     return React.createElement(
       "div",
-      { "class": 'topbar' + (this.search ? ' topbar-searching' : '') },
+      { className: 'topbar' + (this.search ? ' topbar-searching' : '') },
       React.createElement(
         "button",
-        { "class": "add-button", onClick: this.props.onAdd },
+        { className: "add-button", onClick: this.props.onAdd },
         "Add Magnet URL"
       ),
-      React.createElement("input", { "class": "search-box",
+      React.createElement("input", { className: "search-box",
         onFocus: () => this.setState({ searchFocused: true }),
         onBlur: () => this.setState({ searchFocused: false }),
         onChange: e => this.props.onSearchChange(e.target.value),
         value: this.props.search || '' }),
       this.props.search && React.createElement(
         "button",
-        { "class": "clear-button", onClick: () => this.props.onSearchChange('') },
+        { className: "clear-button", onClick: () => this.props.onSearchChange('') },
         "Clear Search"
       )
     );
