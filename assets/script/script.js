@@ -258,7 +258,7 @@ class TopBar extends React.Component {
   render() {
     return React.createElement(
       "div",
-      { className: 'topbar' + (this.search ? ' topbar-searching' : '') },
+      { className: 'top-bar' + (this.search ? ' topbar-searching' : '') },
       React.createElement(
         "button",
         { className: "add-button", onClick: this.props.onAdd },
@@ -268,12 +268,7 @@ class TopBar extends React.Component {
         onFocus: () => this.setState({ searchFocused: true }),
         onBlur: () => this.setState({ searchFocused: false }),
         onChange: e => this.props.onSearchChange(e.target.value),
-        value: this.props.search || '' }),
-      this.props.search && React.createElement(
-        "button",
-        { className: "clear-button", onClick: () => this.props.onSearchChange('') },
-        "Clear Search"
-      )
+        value: this.props.search || '' })
     );
   }
 }

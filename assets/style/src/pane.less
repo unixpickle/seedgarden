@@ -1,19 +1,19 @@
-@pane-margin: 10px;
-@pane-max-size: 600px;
-
 .content-pane {
+  @margin: 10px;
+  @max-size: 600px;
+
   background-color: white;
-
   position: absolute;
-  top: 60px;
+  top: (@top-bar-size + @margin);
+  margin-bottom: @margin;
 
-  @media (max-width: (@pane-max-size + @pane-margin)) {
-    width: calc(~"100% - "(@pane-margin*2));
-    left: @pane-margin;
+  @media (max-width: (@max-size + @margin)) {
+    width: calc(~"100% - "(@margin*2));
+    left: @margin;
   }
 
-  @media (min-width: (@pane-max-size + @pane-margin)) {
-    width: @pane-max-size;
-    left: calc(~"50% - "(@pane-max-size/2));
+  @media (min-width: (@max-size + @margin)) {
+    width: @max-size;
+    left: calc(~"50% - "(@max-size/2));
   }
 }

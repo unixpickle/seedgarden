@@ -1,0 +1,67 @@
+@top-bar-size: 44px;
+
+.top-bar {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: @top-bar-size;
+  background-color: #444;
+
+  @search-box-height: 24px;
+  @search-box-width: 200px;
+
+  .search-box {
+    position: absolute;
+    top: (@top-bar-size - @search-box-height) / 2;
+    left: calc(~"50% - "(@search-box-width / 2));
+    width: @search-box-width;
+    height: @search-box-height;
+    box-sizing: border-box;
+    padding: 2px 5px;
+
+    &:focus {
+      outline: 0;
+    }
+  }
+
+  .add-button {
+    @margin: 10px;
+    @thickness: 4px;
+    @middle: (@top-bar-size - @margin*2 - @thickness) / 2;
+
+    position: absolute;
+    top: @margin;
+    right: @margin;
+    width: (@top-bar-size - @margin*2);
+    height: (@top-bar-size - @margin*2);
+    margin: 0;
+    padding: 0;
+    border: none;
+    background-color: transparent;
+    color: transparent;
+    font-size: 0;
+    cursor: pointer;
+
+    &::before, &::after {
+      content: '';
+      display: block;
+      position: absolute;
+      background-color: white;
+    }
+
+    &::before {
+      width: (@top-bar-size - @margin*2);
+      height: 4px;
+      top: @middle;
+      left: 0;
+    }
+
+    &::after {
+      width: @thickness;
+      height: (@top-bar-size - @margin*2);
+      top: 0;
+      left: @middle;
+    }
+  }
+}

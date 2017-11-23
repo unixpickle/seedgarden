@@ -5,7 +5,8 @@ body {
 .content-pane {
   background-color: white;
   position: absolute;
-  top: 60px;
+  top: 54px;
+  margin-bottom: 10px;
 }
 @media (max-width: 610px) {
   .content-pane {
@@ -43,7 +44,8 @@ body {
 #downloads {
   background-color: white;
   position: absolute;
-  top: 60px;
+  top: 54px;
+  margin-bottom: 10px;
   list-style-type: none;
   margin: 0;
   padding: 0;
@@ -129,7 +131,8 @@ body {
 #no-downloads {
   background-color: white;
   position: absolute;
-  top: 60px;
+  top: 54px;
+  margin-bottom: 10px;
   height: 100px;
 }
 @media (max-width: 610px) {
@@ -152,4 +155,57 @@ body {
   text-align: center;
   font-size: 30px;
   font-weight: 300;
+}
+.top-bar {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 44px;
+  background-color: #444;
+}
+.top-bar .search-box {
+  position: absolute;
+  top: 10px;
+  left: calc(50% -  100px);
+  width: 200px;
+  height: 24px;
+  box-sizing: border-box;
+  padding: 2px 5px;
+}
+.top-bar .search-box:focus {
+  outline: 0;
+}
+.top-bar .add-button {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  width: 24px;
+  height: 24px;
+  margin: 0;
+  padding: 0;
+  border: none;
+  background-color: transparent;
+  color: transparent;
+  font-size: 0;
+  cursor: pointer;
+}
+.top-bar .add-button::before,
+.top-bar .add-button::after {
+  content: '';
+  display: block;
+  position: absolute;
+  background-color: white;
+}
+.top-bar .add-button::before {
+  width: 24px;
+  height: 4px;
+  top: 10px;
+  left: 0;
+}
+.top-bar .add-button::after {
+  width: 4px;
+  height: 24px;
+  top: 0;
+  left: 10px;
 }
