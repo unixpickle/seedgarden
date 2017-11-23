@@ -1,22 +1,22 @@
 @top-bar-size: 44px;
 
 .top-bar {
-  position: absolute;
+  position: fixed;
   top: 0;
   left: 0;
   width: 100%;
   height: @top-bar-size;
   background-color: #444;
 
-  @search-box-height: 24px;
-  @search-box-width: 200px;
-
   .search-box {
+    @width: 200px;
+    @height: 28px;
+
     position: absolute;
-    top: (@top-bar-size - @search-box-height) / 2;
-    left: calc(~"50% - "(@search-box-width / 2));
-    width: @search-box-width;
-    height: @search-box-height;
+    top: (@top-bar-size - @height) / 2;
+    left: calc(~"50% - "(@width / 2));
+    width: @width;
+    height: @height;
     box-sizing: border-box;
     padding: 1px 5px;
     font-size: 16px;

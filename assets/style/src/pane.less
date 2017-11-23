@@ -17,3 +17,15 @@
     left: calc(~"50% - "(@max-size/2));
   }
 }
+
+.loader-pane {
+  .content-pane();
+
+  height: @loader-size * 3;
+
+  .loader {
+    position: absolute;
+    top: @loader-size;
+    left: calc(~"50% - "(@loader-size / 2));
+  }
+}

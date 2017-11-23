@@ -25,11 +25,15 @@ function DownloadInfo() {
   // TODO: sub-component for file browser.
 }
 function DownloadList(props) {
-  if (!props.downloads) {
+  if (props.downloads.length === 0) {
     return React.createElement(
       "div",
       { id: "no-downloads" },
-      React.createElement(Loader, null)
+      React.createElement(
+        "h1",
+        null,
+        "No Downloads"
+      )
     );
   }
   let list = [];
@@ -100,6 +104,14 @@ function Loader(props) {
     "Loading"
   );
 }
+
+function LoaderPane(props) {
+  return React.createElement(
+    "div",
+    { className: "loader-pane" },
+    React.createElement(Loader, null)
+  );
+}
 class Root extends React.Component {
   constructor() {
     super();
@@ -114,31 +126,21 @@ class Root extends React.Component {
   }
 
   render() {
-    return React.createElement(
-      "div",
-      { "class": "root" },
-      React.createElement(TopBar, { search: this.state.currentSearch,
-        onSearchChange: s => this.setState({ currentSearch: s }) }),
-      this.state.currentSearch && React.createElement(Search, { downloads: this.state.downloads, query: this.state.currentSearch }),
-      React.createElement(DownloadList, { downloads: this.state.downloads,
-        onClick: hash => console.log('click hash', hash),
-        onStart: hash => this.client.startTorrent(hash),
-        onStop: hash => this.client.stopTorrent(hash) })
-    );
-    if (this.state.currentSearch) {
-      // TODO: search UI here.
-      // This may be an overlay.
-    }
-    if (this.state.currentDownloadHash) {
-      // TODO: download info here.
-    } else if (this.state.currentPirateBayID) {
-      // TODO: torrent info here.
+    let elements = [];
+    if (this.state.currentSearch && this.state.downloads) {
+      elements.push(React.createElement(Search, { downloads: this.state.downloads,
+        query: this.state.currentSearch }));
     } else if (this.state.downloads) {
-      // TODO: list of torrents here.
-    } else {}
-      // TODO: loading screen here.
-
-      // TODO: add button here.
+      elements.push(React.createElement(DownloadList, { downloads: this.state.downloads,
+        onClick: hash => console.log('click hash', hash) }));
+    } else {
+      elements.push(React.createElement(LoaderPane, null));
+    }
+    elements.push(React.createElement(TopBar, { search: this.state.currentSearch,
+      onSearchChange: s => this.setState({ currentSearch: s }) }));
+    elements.unshift({});
+    elements.unshift('div');
+    return React.createElement.apply(React, elements);
   }
 }
 

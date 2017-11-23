@@ -1,6 +1,6 @@
 function DownloadList(props) {
-  if (!props.downloads) {
-    return <div id="no-downloads"><Loader /></div>;
+  if (props.downloads.length === 0) {
+    return <div id="no-downloads"><h1>No Downloads</h1></div>;
   }
   let list = [];
   props.downloads.forEach((dl) => {

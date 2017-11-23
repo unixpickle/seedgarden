@@ -3,22 +3,12 @@
   .list();
 
   .download {
+    .list-item();
+
     @status-size: 10px;
     @padding: 10px;
 
-    position: relative;
-    box-sizing: border-box;
     padding: @padding @padding @padding (@padding*2 + @status-size);
-    width: 100%;
-
-    &:hover {
-      background-color: #f0f0f0;
-      cursor: pointer;
-    }
-
-    * {
-      pointer-events: none;
-    }
 
     .download-state {
       position: absolute;
@@ -49,6 +39,8 @@
 
       .download-size, .download-rate, .download-upload {
         margin-right: 10px;
+        white-space: nowrap;
+        display: inline-block;
         &::before {
           font-style: italic;
         }
@@ -74,13 +66,18 @@
 }
 
 #no-downloads {
+  @height: 100px;
+
   .content-pane();
+  height: @height;
 
-  height: @loader-size * 3;
-
-  .loader {
-    position: absolute;
-    top: @loader-size;
-    left: calc(~"50% - "(@loader-size / 2));
+  h1 {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    line-height: @height;
+    text-align: center;
+    font-size: 30px;
+    font-weight: 300;
   }
 }

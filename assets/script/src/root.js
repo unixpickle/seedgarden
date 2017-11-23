@@ -12,32 +12,21 @@ class Root extends React.Component {
   }
 
 	render() {
-    return (
-      <div class="root">
-        <TopBar search={this.state.currentSearch}
-                onSearchChange={(s) => this.setState({currentSearch: s})} />
-        {(this.state.currentSearch &&
-          <Search downloads={this.state.downloads} query={this.state.currentSearch} />)}
-        <DownloadList downloads={this.state.downloads}
-                      onClick={(hash) => console.log('click hash', hash)}
-                      onStart={(hash) => this.client.startTorrent(hash)}
-                      onStop={(hash) => this.client.stopTorrent(hash)} />
-      </div>
-    );
-    if (this.state.currentSearch) {
-      // TODO: search UI here.
-      // This may be an overlay.
-    }
-    if (this.state.currentDownloadHash) {
-			// TODO: download info here.
-		} else if (this.state.currentPirateBayID) {
-      // TODO: torrent info here.
-		} else if (this.state.downloads) {
-      // TODO: list of torrents here.
+    let elements = [];
+    if (this.state.currentSearch && this.state.downloads) {
+      elements.push(<Search downloads={this.state.downloads}
+                            query={this.state.currentSearch} />);
+    } else if (this.state.downloads) {
+      elements.push(<DownloadList downloads={this.state.downloads}
+                                  onClick={(hash) => console.log('click hash', hash)} />);
     } else {
-      // TODO: loading screen here.
+      elements.push(<LoaderPane />);
     }
-    // TODO: add button here.
+    elements.push(<TopBar search={this.state.currentSearch}
+                          onSearchChange={(s) => this.setState({currentSearch: s})} />);
+    elements.unshift({});
+    elements.unshift('div');
+    return React.createElement.apply(React, elements);
 	}
 }
 
