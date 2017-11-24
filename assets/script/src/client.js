@@ -43,6 +43,10 @@ class TorrentClient {
     this._doCall('stop', hash);
   }
 
+  addTorrent(magnetURL) {
+    // TODO: this.
+  }
+
   _doCall(call, hash) {
     for (let i = 0; i < this._downloads.length; ++i) {
       let dl = this._downloads[i];

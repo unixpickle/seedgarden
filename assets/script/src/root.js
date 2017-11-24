@@ -47,6 +47,13 @@ class Root extends React.Component {
 		this.exitPane();
 	}
 
+	addURL() {
+		const url = prompt('Magnet URL');
+		if (url) {
+			this.client.addTorrent(url);
+		}
+	}
+
 	pushHistoryState(state) {
 		history.pushState({}, window.title, '#'+JSON.stringify(state));
 	}
@@ -60,7 +67,8 @@ class Root extends React.Component {
 				<TopBar search={this.state.currentSearch}
 				        canExit={canExit}
 								onExit={() => this.exitPane()}
-								onSearchChange={(s) => this.changeSearch(s)} />
+								onSearchChange={(s) => this.changeSearch(s)}
+								onAdd={() => this.addURL()} />
 			</div>
 		);
 	}
@@ -86,7 +94,8 @@ class Root extends React.Component {
 				return <div className='error-pane'>Download does not exist.</div>;
 			}
 		} else if (this.state.currentBayID) {
-			return <BayInfo id={this.state.currentBayID} />
+			return <BayInfo id={this.state.currentBayID}
+			                onAdd={(u) => this.client.addTorrent(u)} />
     } else {
       return <DownloadList downloads={this.state.downloads}
                            onClick={(hash) => this.showDownload(hash)} />;

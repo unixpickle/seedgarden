@@ -9,11 +9,6 @@ class BayInfo extends React.Component {
     this._lookup = new BayLookup(props.id, this.bayCallback.bind(this));
   }
 
-  addTorrent() {
-    // TODO: add magnet link, have some kind of loading
-    // indicator, etc.
-  }
-
   componentWillUnmount() {
     this._lookup.cancel();
   }
@@ -30,7 +25,7 @@ class BayInfo extends React.Component {
           <label className="bay-info-seeders">{this.state.info.seeds}</label>
           <label className="bay-info-leachers">{this.state.info.leachers}</label>
           <button className="bay-info-add-button"
-                  onClick={() => this.addTorrent()}>Add Torrent</button>
+                  onClick={() => this.props.onAdd(this.state.info.magnetURL)}>Add Torrent</button>
         </div>
       );
     }

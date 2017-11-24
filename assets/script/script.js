@@ -9,11 +9,6 @@ class BayInfo extends React.Component {
     this._lookup = new BayLookup(props.id, this.bayCallback.bind(this));
   }
 
-  addTorrent() {
-    // TODO: add magnet link, have some kind of loading
-    // indicator, etc.
-  }
-
   componentWillUnmount() {
     this._lookup.cancel();
   }
@@ -49,7 +44,7 @@ class BayInfo extends React.Component {
         React.createElement(
           "button",
           { className: "bay-info-add-button",
-            onClick: () => this.addTorrent() },
+            onClick: () => this.props.onAdd(this.state.info.magnetURL) },
           "Add Torrent"
         )
       );
@@ -103,6 +98,10 @@ class TorrentClient {
 
   stopTorrent(hash) {
     this._doCall('stop', hash);
+  }
+
+  addTorrent(magnetURL) {
+    // TODO: this.
   }
 
   _doCall(call, hash) {
@@ -440,6 +439,13 @@ class Root extends React.Component {
     this.exitPane();
   }
 
+  addURL() {
+    const url = prompt('Magnet URL');
+    if (url) {
+      this.client.addTorrent(url);
+    }
+  }
+
   pushHistoryState(state) {
     history.pushState({}, window.title, '#' + JSON.stringify(state));
   }
@@ -453,7 +459,8 @@ class Root extends React.Component {
       React.createElement(TopBar, { search: this.state.currentSearch,
         canExit: canExit,
         onExit: () => this.exitPane(),
-        onSearchChange: s => this.changeSearch(s) })
+        onSearchChange: s => this.changeSearch(s),
+        onAdd: () => this.addURL() })
     );
   }
 
@@ -482,7 +489,8 @@ class Root extends React.Component {
         );
       }
     } else if (this.state.currentBayID) {
-      return React.createElement(BayInfo, { id: this.state.currentBayID });
+      return React.createElement(BayInfo, { id: this.state.currentBayID,
+        onAdd: u => this.client.addTorrent(u) });
     } else {
       return React.createElement(DownloadList, { downloads: this.state.downloads,
         onClick: hash => this.showDownload(hash) });
