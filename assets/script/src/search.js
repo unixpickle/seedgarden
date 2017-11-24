@@ -10,10 +10,16 @@ class Search extends React.Component {
 	}
 
   componentWillUnmount() {
-    if (this.baySearch) {
-      this.baySearch.cancel();
-    }
+    this.baySearch.cancel();
   }
+
+	componentWillReceiveProps(props) {
+		if (props.query !== this.baySearch.query) {
+			this.baySearch.cancel();
+			this.setState({bayResults: null, bayLoading: true, bayError: null});
+			this.baySearch = new BaySearch(props.query, this.bayCallback.bind(this));
+		}
+	}
 
 	render() {
     const downloads = filterDownloads(this.props.downloads, this.props.query);
@@ -47,7 +53,6 @@ class Search extends React.Component {
 	}
 
   bayCallback(error, results) {
-    this.baySearch = null;
     this.setState({bayResults: results, bayLoading: false, bayError: error});
   }
 }

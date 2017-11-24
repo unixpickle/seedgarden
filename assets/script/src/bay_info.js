@@ -22,8 +22,8 @@ class BayInfo extends React.Component {
       return (
         <div className="bay-info">
           <label className="bay-info-name">{this.state.info.name}</label>
-          <label className="bay-info-seeders">{this.state.info.seeds}</label>
-          <label className="bay-info-leachers">{this.state.info.leachers}</label>
+          <label className="bay-info-seeders">{this.state.info.seeders}</label>
+          <label className="bay-info-leechers">{this.state.info.leechers}</label>
           <button className="bay-info-add-button"
                   onClick={() => this.props.onAdd(this.state.info.magnetURL)}>Add Torrent</button>
         </div>

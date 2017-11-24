@@ -479,13 +479,13 @@ button:hover {
 }
 .bay-info .bay-info-name,
 .bay-info .bay-info-seeders,
-.bay-info .bay-info-leachers {
+.bay-info .bay-info-leechers {
   display: block;
   margin-bottom: 20px;
 }
 .bay-info .bay-info-name::before,
 .bay-info .bay-info-seeders::before,
-.bay-info .bay-info-leachers::before {
+.bay-info .bay-info-leechers::before {
   font-weight: 600;
 }
 .bay-info .bay-info-name::before {
@@ -494,6 +494,6 @@ button:hover {
 .bay-info .bay-info-seeders::before {
   content: 'Seeders: ';
 }
-.bay-info .bay-info-leachers::before {
-  content: 'Leachers: ';
+.bay-info .bay-info-leechers::before {
+  content: 'Leechers: ';
 }

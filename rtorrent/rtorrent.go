@@ -24,16 +24,11 @@ func NewClientAuth(rpcURL, username, password string) *Client {
 // Call runs an RPC call.
 func (c *Client) Call(method string, arguments ...string) (data []byte, err error) {
 	defer essentials.AddCtxTo("RPC '"+method+"' call", &err)
-	var callInfo methodCall
-	callInfo.MethodName = method
-	for _, arg := range arguments {
-		callInfo.Arguments = append(callInfo.Arguments, callArgument{Value: arg})
-	}
+	callInfo := objectForCall(method, arguments)
 	buf, err := xml.Marshal(callInfo)
 	if err != nil {
 		return nil, err
 	}
-
 	req, err := http.NewRequest("POST", c.rpcURL, bytes.NewBuffer(buf))
 	if err != nil {
 		return nil, err
@@ -49,6 +44,22 @@ func (c *Client) Call(method string, arguments ...string) (data []byte, err erro
 	return ioutil.ReadAll(resp.Body)
 }
 
+func objectForCall(method string, arguments []string) interface{} {
+	if len(arguments) == 1 {
+		return singleArgCall{
+			XMLName:    xml.Name{Local: "methodCall"},
+			MethodName: method,
+			SingleArg:  arguments[0],
+		}
+	} else {
+		call := methodCall{MethodName: method}
+		for _, arg := range arguments {
+			call.Arguments = append(call.Arguments, callArgument{Value: arg})
+		}
+		return call
+	}
+}
+
 type methodCall struct {
 	MethodName string         `xml:"methodName,rawxml"`
 	Arguments  []callArgument `xml:"params>param>value>array>data>value"`
@@ -56,4 +67,10 @@ type methodCall struct {
 
 type callArgument struct {
 	Value string `xml:"string,rawxml"`
+}
+
+type singleArgCall struct {
+	XMLName    xml.Name
+	MethodName string `xml:"methodName,rawxml"`
+	SingleArg  string `xml:"params>param>value>string,rawxml"`
 }
