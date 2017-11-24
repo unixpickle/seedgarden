@@ -445,7 +445,7 @@ class Root extends React.Component {
   }
 
   render() {
-    const canExit = this.state.currentSearch || this.state.currentDownloadHash;
+    const canExit = this.state.currentSearch || this.state.currentDownloadHash || this.state.currentBayID;
     return React.createElement(
       "div",
       null,
