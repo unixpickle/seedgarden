@@ -406,6 +406,18 @@ class Root extends React.Component {
     this.setState(rootStateFromHash());
   }
 
+  changeSearch(query) {
+    const stateObj = {};
+    STATE_KEYS.forEach(k => stateObj[k] = this.state[k]);
+    stateObj.currentSearch = query;
+    if (this.state.currentSearch && query) {
+      history.replaceState({}, window.title, '#' + JSON.stringify(stateObj));
+    } else {
+      history.pushState({}, window.title, '#' + JSON.stringify(stateObj));
+    }
+    this.setState({ currentSearch: query });
+  }
+
   showDownload(hash) {
     const update = { currentDownloadHash: hash };
     this.pushHistoryState(update);
@@ -441,7 +453,7 @@ class Root extends React.Component {
       React.createElement(TopBar, { search: this.state.currentSearch,
         canExit: canExit,
         onExit: () => this.exitPane(),
-        onSearchChange: s => this.setState({ currentSearch: s }) })
+        onSearchChange: s => this.changeSearch(s) })
     );
   }
 
