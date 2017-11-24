@@ -8,9 +8,9 @@ class TopBar extends React.Component {
     return (
       <div className={'top-bar' + (this.search ? ' topbar-searching' : '')}>
         {(this.props.canExit &&
-          <button className='exit-button' onClick={this.props.onExit}>Go Home</button>)}
-        <button className='add-button' onClick={this.props.onAdd}>Add Magnet URL</button>
-        <input className='search-box'
+          <button className='top-bar-exit-button' onClick={this.props.onExit}>Go Home</button>)}
+        <button className='top-bar-add-button' onClick={this.props.onAdd}>Add Magnet URL</button>
+        <input className='top-bar-search-box'
                onFocus={() => this.setState({searchFocused: true})}
                onBlur={() => this.setState({searchFocused: false})}
                onChange={(e) => this.props.onSearchChange(e.target.value)}

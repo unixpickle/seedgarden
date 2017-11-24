@@ -630,15 +630,15 @@ class TopBar extends React.Component {
       { className: 'top-bar' + (this.search ? ' topbar-searching' : '') },
       this.props.canExit && React.createElement(
         "button",
-        { className: "exit-button", onClick: this.props.onExit },
+        { className: "top-bar-exit-button", onClick: this.props.onExit },
         "Go Home"
       ),
       React.createElement(
         "button",
-        { className: "add-button", onClick: this.props.onAdd },
+        { className: "top-bar-add-button", onClick: this.props.onAdd },
         "Add Magnet URL"
       ),
-      React.createElement("input", { className: "search-box",
+      React.createElement("input", { className: "top-bar-search-box",
         onFocus: () => this.setState({ searchFocused: true }),
         onBlur: () => this.setState({ searchFocused: false }),
         onChange: e => this.props.onSearchChange(e.target.value),

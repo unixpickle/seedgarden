@@ -8,7 +8,7 @@
   height: @top-bar-size;
   background-color: #444;
 
-  .search-box {
+  .top-bar-search-box {
     @width: 200px;
     @height: 28px;
 
@@ -26,7 +26,7 @@
     }
   }
 
-  .add-button {
+  .top-bar-add-button {
     @margin: 10px;
     @thickness: 4px;
     @middle: (@top-bar-size - @margin*2 - @thickness) / 2;
@@ -66,8 +66,8 @@
     }
   }
 
-  .exit-button {
-    .add-button();
+  .top-bar-exit-button {
+    .top-bar-add-button();
     /* TODO: only rotate before/after */
     transform: rotate(45deg);
     left: @margin;
