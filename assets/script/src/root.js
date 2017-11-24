@@ -54,6 +54,11 @@ class Root extends React.Component {
 		}
 	}
 
+	addFromBay(url) {
+		this.client.addTorrent(url);
+		this.exitPane();
+	}
+
 	pushHistoryState(state) {
 		history.pushState({}, window.title, '#'+JSON.stringify(state));
 	}
@@ -95,7 +100,7 @@ class Root extends React.Component {
 			}
 		} else if (this.state.currentBayID) {
 			return <BayInfo id={this.state.currentBayID}
-			                onAdd={(u) => this.client.addTorrent(u)} />
+			                onAdd={(u) => this.addFromBay(u)} />
     } else {
       return <DownloadList downloads={this.state.downloads}
                            onClick={(hash) => this.showDownload(hash)} />;
