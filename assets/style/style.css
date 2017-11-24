@@ -23,6 +23,19 @@ body {
     transform: rotate(360deg);
   }
 }
+button {
+  height: 36px;
+  line-height: 36px;
+  border: none;
+  padding: 0 20px;
+  font-size: 18px;
+  color: white;
+  background-color: #999;
+  cursor: pointer;
+}
+button:hover {
+  background-color: #777;
+}
 .content-pane {
   background-color: white;
   position: absolute;
@@ -407,6 +420,7 @@ body {
   position: absolute;
   top: 54px;
   margin-bottom: 10px;
+  padding: 10px;
 }
 @media (max-width: 610px) {
   .download-info {
@@ -419,4 +433,27 @@ body {
     width: 600px;
     left: calc(50% -  300px);
   }
+}
+.download-info .download-frozen {
+  pointer-events: none;
+  opacity: 0.5;
+}
+.download-info .download-actions {
+  margin-top: 10px;
+  text-align: center;
+}
+.download-info .download-actions button {
+  margin: 0 5px;
+}
+.download-info table {
+  margin: auto;
+}
+.download-info table td:first-child {
+  font-weight: 600;
+  text-align: right;
+  padding-right: 10px;
+}
+.download-info table td:not(:first-child) {
+  word-wrap: break-word;
+  word-break: break-all;
 }

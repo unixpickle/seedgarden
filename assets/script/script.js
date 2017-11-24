@@ -222,14 +222,18 @@ function DownloadInfo(props) {
     React.createElement(
       'div',
       { className: 'download-actions' + (dl.actionPending ? ' download-frozen' : '') },
-      React.createElement(
+      dl.active ? React.createElement(
         'button',
-        { className: 'download-action-button' },
-        dl.active ? 'Stop' : 'Start'
+        { className: 'download-action-button', onClick: props.onStop },
+        'Stop'
+      ) : React.createElement(
+        'button',
+        { className: 'download-action-button', onClick: props.onStart },
+        'Start'
       ),
       React.createElement(
         'button',
-        { className: 'download-delete-button' },
+        { className: 'download-delete-button', onClick: props.onDelete },
         'Delete'
       )
     )
@@ -353,6 +357,11 @@ class Root extends React.Component {
     this.pushHistoryState({});
   }
 
+  deleteTorrent(hash) {
+    this.client.deleteTorrent(hash);
+    this.exitPane();
+  }
+
   pushHistoryState(state) {
     history.pushState({}, window.title, '#' + JSON.stringify(state));
   }
@@ -381,7 +390,10 @@ class Root extends React.Component {
         return x.hash === this.state.currentDownloadHash;
       });
       if (result) {
-        return React.createElement(DownloadInfo, { download: result });
+        return React.createElement(DownloadInfo, { download: result,
+          onStart: () => this.client.startTorrent(result.hash),
+          onStop: () => this.client.stopTorrent(result.hash),
+          onDelete: () => this.deleteTorrent(result.hash) });
       } else {
         return React.createElement(
           'div',

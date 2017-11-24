@@ -24,6 +24,11 @@ class Root extends React.Component {
 		this.pushHistoryState({});
 	}
 
+	deleteTorrent(hash) {
+		this.client.deleteTorrent(hash);
+		this.exitPane();
+	}
+
 	pushHistoryState(state) {
 		history.pushState({}, window.title, '#'+JSON.stringify(state));
 	}
@@ -52,7 +57,10 @@ class Root extends React.Component {
 				return x.hash === this.state.currentDownloadHash;
 			});
 			if (result) {
-				return <DownloadInfo download={result} />;
+				return <DownloadInfo download={result}
+				                     onStart={() => this.client.startTorrent(result.hash)}
+														 onStop={() => this.client.stopTorrent(result.hash)}
+														 onDelete={() => this.deleteTorrent(result.hash)} />;
 			} else {
 				return <div className='error-pane'>Download does not exist.</div>;
 			}

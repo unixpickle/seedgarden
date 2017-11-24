@@ -14,8 +14,10 @@ function DownloadInfo(props) {
         </tbody>
       </table>
       <div className={'download-actions' + (dl.actionPending ? ' download-frozen' : '')}>
-        <button className="download-action-button">{dl.active ? 'Stop' : 'Start'}</button>
-        <button className="download-delete-button">Delete</button>
+        {(dl.active ?
+          <button className="download-action-button" onClick={props.onStop}>Stop</button> :
+          <button className="download-action-button" onClick={props.onStart}>Start</button>)}
+        <button className="download-delete-button" onClick={props.onDelete}>Delete</button>
       </div>
     </div>
   );
