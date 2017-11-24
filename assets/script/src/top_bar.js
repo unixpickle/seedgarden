@@ -7,6 +7,8 @@ class TopBar extends React.Component {
   render() {
     return (
       <div className={'top-bar' + (this.search ? ' topbar-searching' : '')}>
+        {(this.props.canExit &&
+          <button className='exit-button' onClick={this.props.onExit}>Go Home</button>)}
         <button className='add-button' onClick={this.props.onAdd}>Add Magnet URL</button>
         <input className='search-box'
                onFocus={() => this.setState({searchFocused: true})}

@@ -285,6 +285,43 @@ body {
   top: 0;
   left: 10px;
 }
+.top-bar .exit-button {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  width: 24px;
+  height: 24px;
+  margin: 0;
+  padding: 0;
+  border: none;
+  background-color: transparent;
+  color: transparent;
+  font-size: 0;
+  cursor: pointer;
+  /* TODO: only rotate before/after */
+  transform: rotate(45deg);
+  left: 10px;
+  right: auto;
+}
+.top-bar .exit-button::before,
+.top-bar .exit-button::after {
+  content: '';
+  display: block;
+  position: absolute;
+  background-color: white;
+}
+.top-bar .exit-button::before {
+  width: 24px;
+  height: 4px;
+  top: 10px;
+  left: 0;
+}
+.top-bar .exit-button::after {
+  width: 4px;
+  height: 24px;
+  top: 0;
+  left: 10px;
+}
 .search-results {
   background-color: white;
   position: absolute;

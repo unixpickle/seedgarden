@@ -1,3 +1,5 @@
+const STATE_KEYS = ['currentSearch', 'currentDownloadHash', 'currentPirateBayID'];
+
 class Root extends React.Component {
 	constructor() {
 		super();
@@ -17,15 +19,25 @@ class Root extends React.Component {
 		this.pushHistoryState(stateDict);
 	}
 
+	exitPane() {
+		const newState = {};
+		STATE_KEYS.forEach((k) => newState[k] = null);
+		this.setState(newState);
+		this.pushHistoryState({});
+	}
+
 	pushHistoryState(state) {
 		history.pushState({}, window.title, '#'+JSON.stringify(state));
 	}
 
 	render() {
+		const canExit = (this.state.currentSearch || this.state.currentDownloadHash);
 		return (
 			<div>
 				{this.contentPane()}
 				<TopBar search={this.state.currentSearch}
+				        canExit={canExit}
+								onExit={() => this.exitPane()}
 								onSearchChange={(s) => this.setState({currentSearch: s})} />
 			</div>
 		);
@@ -55,11 +67,7 @@ class Root extends React.Component {
 
 function initialStateFromHash() {
   let result = rootStateFromHash();
-  ['currentSearch', 'currentDownloadHash', 'currentPirateBayID', 'downloads'].forEach((k) => {
-    if (!result.hasOwnProperty(k)) {
-      result[k] = null;
-    }
-  });
+	result.downloads = null;
   return result;
 }
 
@@ -70,7 +78,13 @@ function rootStateFromHash() {
   }
   try {
     let parsed = JSON.parse(location.hash.substr(1));
-    Object.keys(parsed).forEach((k) => result[k] = parsed[k]);
+		STATE_KEYS.forEach((k) => {
+	    if (parsed.hasOwnProperty(k)) {
+	      result[k] = parsed[k];
+	    } else {
+				result[k] = null;
+			}
+	  });
   } catch (e) {
   }
   return result;
