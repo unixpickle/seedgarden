@@ -2,7 +2,6 @@ class Search extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state = {
-      downloads: filterDownloads(this.props.downloads, this.props.query),
       bayResults: null,
       bayLoading: true,
       bayError: null
@@ -18,19 +17,34 @@ class Search extends React.Component {
   }
 
 	render() {
-    return <div className='search-results'>Some results here!</div>;
-    // TODO: two sections:
-    //  - current downloads
-    //  - search results from a website
-
-    // TODO: deal with "no results" in both sections.
-    // TODO: deal with null results in both sections,
-    // which either indicates loading or error.
-
-    // TODO: callback for showing download or bay result.
-
-    // TODO: support rendering in full screen or as a
-    // dropdown.
+    const downloads = filterDownloads(this.props.downloads, this.props.query);
+    let downloadElems = downloads.map((d, i) => {
+      return <SearchListing onClick={() => this.props.onClickDownload(d.hash)}
+                            key={'dl-'+i} name={d.name} />;
+    });
+    if (downloadElems.length == 0) {
+      downloadElems = <SearchEmpty key="dl-empty" />;
+    }
+    let bayElems = <SearchLoading key="bay-loading" />;
+    if (this.state.bayResults) {
+      bayElems = this.state.bayResults.map((r, i) => {
+        return <SearchListing onClick={() => this.props.onClickBay(r.id)}
+                              key={'bay-'+i} name={r.name} />;
+      });
+      if (bayElems.length === 0) {
+        bayElems = <SearchEmpty key="bay-empty" />;
+      }
+    } else if (this.state.bayError) {
+      bayElems = <SearchError key="bay-error" message={this.state.bayError} />;
+    }
+    return (
+      <ol className='search-results'>
+        <SearchHeading key="heading-1" text="In the client" />
+        {downloadElems}
+        <SearchHeading key="heading-2" text="On the bay" />
+        {bayElems}
+      </ol>
+    );
 	}
 
   bayCallback(error, results) {
@@ -39,34 +53,29 @@ class Search extends React.Component {
   }
 }
 
-class BaySearch {
-  constructor(query) {
-    this.query = query;
-    this._timeout = null;
-  }
+function SearchHeading(props) {
+  return <div className="search-heading">{props.text}</div>;
+}
 
-  start(cb) {
-    // TODO: real request here.
-    this._timeout = setTimeout(() => {
-      cb('Failed to search the bay', null);
-      this._timeout = null;
-    }, 1000);
-  }
+function SearchListing(props) {
+  return <div className="search-listing" onClick={props.onClick}>{props.name}</div>;
+}
 
-  cancel() {
-    if (this._timeout) {
-      clearTimeout(this._timeout);
-      this._timeout = null;
-    }
-  }
+function SearchEmpty() {
+  return <div className="search-empty">No results</div>
+}
+
+function SearchLoading() {
+  return <div className="search-loading"><Loader /></div>
+}
+
+function SearchError(props) {
+  return <div className="search-error">{props.message}</div>
 }
 
 function filterDownloads(downloads, query) {
-  if (!downloads) {
-    return null;
-  }
-  // TODO: match the query against downloads.
-  return downloads
+  query = query.toLowerCase();
+  return downloads.filter((x) => x.name.toLowerCase().includes(query));
 }
 
 window.addEventListener('load', function() {

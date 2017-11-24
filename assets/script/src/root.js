@@ -24,6 +24,7 @@ class Root extends React.Component {
     }
     elements.push(<TopBar search={this.state.currentSearch}
                           onSearchChange={(s) => this.setState({currentSearch: s})} />);
+
     elements.unshift({});
     elements.unshift('div');
     return React.createElement.apply(React, elements);

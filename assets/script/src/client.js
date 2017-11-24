@@ -65,3 +65,25 @@ class TorrentClient {
     }
   }
 }
+
+class BaySearch {
+  constructor(query) {
+    this.query = query;
+    this._timeout = null;
+  }
+
+  start(cb) {
+    // TODO: real request here.
+    this._timeout = setTimeout(() => {
+      cb('Failed to search the bay', null);
+      this._timeout = null;
+    }, 1000);
+  }
+
+  cancel() {
+    if (this._timeout) {
+      clearTimeout(this._timeout);
+      this._timeout = null;
+    }
+  }
+}

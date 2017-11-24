@@ -70,10 +70,21 @@ body {
   margin: 0;
   padding: 0;
 }
+.passive-list-item {
+  position: relative;
+  box-sizing: border-box;
+  width: 100%;
+}
+.passive-list-item:not(:last-child) {
+  border-bottom: 1px solid #d5d5d5;
+}
 .list-item {
   position: relative;
   box-sizing: border-box;
   width: 100%;
+}
+.list-item:not(:last-child) {
+  border-bottom: 1px solid #d5d5d5;
 }
 .list-item:hover {
   background-color: #f0f0f0;
@@ -108,6 +119,9 @@ body {
   box-sizing: border-box;
   width: 100%;
   padding: 10px 10px 10px 30px;
+}
+#downloads .download:not(:last-child) {
+  border-bottom: 1px solid #d5d5d5;
 }
 #downloads .download:hover {
   background-color: #f0f0f0;
@@ -167,9 +181,6 @@ body {
 }
 #downloads .download .download-stats .download-rate::before {
   content: 'DL: ';
-}
-#downloads .download:not(:first-child) {
-  border-top: 1px solid #d5d5d5;
 }
 #no-downloads {
   background-color: white;
@@ -273,4 +284,63 @@ body {
     width: 600px;
     left: calc(50% -  300px);
   }
+}
+.search-results .search-heading {
+  position: relative;
+  box-sizing: border-box;
+  width: 100%;
+  font-weight: 600;
+  padding: 10px;
+}
+.search-results .search-heading:not(:last-child) {
+  border-bottom: 1px solid #d5d5d5;
+}
+.search-results .search-listing,
+.search-results .search-empty,
+.search-results .search-error {
+  padding: 15px 10px;
+  overflow-wrap: break-word;
+}
+.search-results .search-empty,
+.search-results .search-error {
+  position: relative;
+  box-sizing: border-box;
+  width: 100%;
+  font-style: italic;
+}
+.search-results .search-empty:not(:last-child),
+.search-results .search-error:not(:last-child) {
+  border-bottom: 1px solid #d5d5d5;
+}
+.search-results .search-error {
+  color: red;
+}
+.search-results .search-listing {
+  position: relative;
+  box-sizing: border-box;
+  width: 100%;
+}
+.search-results .search-listing:not(:last-child) {
+  border-bottom: 1px solid #d5d5d5;
+}
+.search-results .search-listing:hover {
+  background-color: #f0f0f0;
+  cursor: pointer;
+}
+.search-results .search-listing * {
+  pointer-events: none;
+}
+.search-results .search-loading {
+  position: relative;
+  box-sizing: border-box;
+  width: 100%;
+  height: 50px;
+}
+.search-results .search-loading:not(:last-child) {
+  border-bottom: 1px solid #d5d5d5;
+}
+.search-results .search-loading .loader {
+  position: absolute;
+  top: 15px;
+  left: calc(50% -  10px);
 }
