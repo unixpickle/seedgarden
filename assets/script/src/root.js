@@ -51,7 +51,8 @@ class Root extends React.Component {
 			return <LoaderPane />;
     } if (this.state.currentSearch) {
 			return <Search downloads={this.state.downloads}
-                     query={this.state.currentSearch} />;
+                     query={this.state.currentSearch}
+										 onClickDownload={(hash) => this.showDownload(hash)} />;
 		} else if (this.state.currentDownloadHash) {
 			const result = this.state.downloads.find((x) => {
 				return x.hash === this.state.currentDownloadHash;
