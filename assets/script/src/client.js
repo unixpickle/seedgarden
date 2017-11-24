@@ -67,15 +67,37 @@ class TorrentClient {
 }
 
 class BaySearch {
-  constructor(query) {
+  constructor(query, cb) {
     this.query = query;
-    this._timeout = null;
-  }
-
-  start(cb) {
     // TODO: real request here.
     this._timeout = setTimeout(() => {
-      cb('Failed to search the bay', null);
+      cb(null, [
+        {name: 'Adobe Photoshop', id: '123123123'},
+        {name: 'Windows 10', id: '321321321'}
+      ]);
+      this._timeout = null;
+    }, 1000);
+  }
+
+  cancel() {
+    if (this._timeout) {
+      clearTimeout(this._timeout);
+      this._timeout = null;
+    }
+  }
+}
+
+class BayLookup {
+  constructor(query, cb) {
+    this.query = query;
+    // TODO: real request here.
+    this._timeout = setTimeout(() => {
+      cb(null, {
+        name: 'Some torrent',
+        magnetURL: 'https://foo.com',
+        seeds: 10,
+        leachers: 11
+      });
       this._timeout = null;
     }, 1000);
   }

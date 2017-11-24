@@ -1,0 +1,27 @@
+.bay-info {
+  .content-pane();
+
+  padding: 10px;
+  text-align: center;
+
+  .bay-info-name, .bay-info-seeders, .bay-info-leachers {
+    display: block;
+    margin-bottom: 20px;
+
+    &::before {
+      font-weight: 600;
+    }
+  }
+
+  .bay-info-name::before {
+    content: 'Name: ';
+  }
+
+  .bay-info-seeders::before {
+    content: 'Seeders: ';
+  }
+
+  .bay-info-leachers::before {
+    content: 'Leachers: ';
+  }
+}

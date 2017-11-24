@@ -457,3 +457,43 @@ button:hover {
   word-wrap: break-word;
   word-break: break-all;
 }
+.bay-info {
+  background-color: white;
+  position: absolute;
+  top: 54px;
+  margin-bottom: 10px;
+  padding: 10px;
+  text-align: center;
+}
+@media (max-width: 610px) {
+  .bay-info {
+    width: calc(100% -  20px);
+    left: 10px;
+  }
+}
+@media (min-width: 610px) {
+  .bay-info {
+    width: 600px;
+    left: calc(50% -  300px);
+  }
+}
+.bay-info .bay-info-name,
+.bay-info .bay-info-seeders,
+.bay-info .bay-info-leachers {
+  display: block;
+  margin-bottom: 20px;
+}
+.bay-info .bay-info-name::before,
+.bay-info .bay-info-seeders::before,
+.bay-info .bay-info-leachers::before {
+  font-weight: 600;
+}
+.bay-info .bay-info-name::before {
+  content: 'Name: ';
+}
+.bay-info .bay-info-seeders::before {
+  content: 'Seeders: ';
+}
+.bay-info .bay-info-leachers::before {
+  content: 'Leachers: ';
+}

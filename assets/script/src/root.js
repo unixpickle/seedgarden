@@ -1,4 +1,4 @@
-const STATE_KEYS = ['currentSearch', 'currentDownloadHash', 'currentPirateBayID'];
+const STATE_KEYS = ['currentSearch', 'currentDownloadHash', 'currentBayID'];
 
 class Root extends React.Component {
 	constructor() {
@@ -15,6 +15,12 @@ class Root extends React.Component {
 
 	showDownload(hash) {
 		const update = {currentDownloadHash: hash};
+		this.pushHistoryState(update);
+		this.setState(Object.assign(emptyState(), update));
+	}
+
+	showBay(id) {
+		const update = {currentBayID: id};
 		this.pushHistoryState(update);
 		this.setState(Object.assign(emptyState(), update));
 	}
@@ -52,7 +58,8 @@ class Root extends React.Component {
     } if (this.state.currentSearch) {
 			return <Search downloads={this.state.downloads}
                      query={this.state.currentSearch}
-										 onClickDownload={(hash) => this.showDownload(hash)} />;
+										 onClickDownload={(hash) => this.showDownload(hash)}
+										 onClickBay={(id) => this.showBay(id)} />;
 		} else if (this.state.currentDownloadHash) {
 			const result = this.state.downloads.find((x) => {
 				return x.hash === this.state.currentDownloadHash;
@@ -65,6 +72,8 @@ class Root extends React.Component {
 			} else {
 				return <div className='error-pane'>Download does not exist.</div>;
 			}
+		} else if (this.state.currentBayID) {
+			return <BayInfo id={this.state.currentBayID} />
     } else {
       return <DownloadList downloads={this.state.downloads}
                            onClick={(hash) => this.showDownload(hash)} />;

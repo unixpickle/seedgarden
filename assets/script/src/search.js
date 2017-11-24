@@ -6,8 +6,7 @@ class Search extends React.Component {
       bayLoading: true,
       bayError: null
     };
-    this.baySearch = new BaySearch(this.props.query);
-    this.baySearch.start((error, results) => this.bayCallback(error, results));
+    this.baySearch = new BaySearch(this.props.query, this.bayCallback.bind(this));
 	}
 
   componentWillUnmount() {

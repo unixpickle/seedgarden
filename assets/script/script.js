@@ -1,22 +1,63 @@
 class BayInfo extends React.Component {
-  constructor() {
-    super();
-    self.state = {
+  constructor(props) {
+    super(props);
+    this.state = {
       loading: true,
-      name: null,
-      magnetURL: null,
-      error: null
+      error: null,
+      info: null
     };
-    // TODO: make request here.
+    this._lookup = new BayLookup(props.id, this.bayCallback.bind(this));
+  }
+
+  addTorrent() {
+    // TODO: add magnet link, have some kind of loading
+    // indicator, etc.
   }
 
   componentWillUnmount() {
-    // TODO: cancel pending requests here.
+    this._lookup.cancel();
   }
 
   render() {
-    // TODO: show loading/error/info.
-    // TODO: callback for adding magnet link.
+    if (this.state.loading) {
+      return React.createElement(LoaderPane, null);
+    } else if (this.state.error) {
+      return React.createElement(
+        "div",
+        { className: "error-pane" },
+        this.state.error
+      );
+    } else {
+      return React.createElement(
+        "div",
+        { className: "bay-info" },
+        React.createElement(
+          "label",
+          { className: "bay-info-name" },
+          this.state.info.name
+        ),
+        React.createElement(
+          "label",
+          { className: "bay-info-seeders" },
+          this.state.info.seeds
+        ),
+        React.createElement(
+          "label",
+          { className: "bay-info-leachers" },
+          this.state.info.leachers
+        ),
+        React.createElement(
+          "button",
+          { className: "bay-info-add-button",
+            onClick: () => this.addTorrent() },
+          "Add Torrent"
+        )
+      );
+    }
+  }
+
+  bayCallback(error, info) {
+    this.setState({ loading: false, error: error, info: info });
   }
 }
 class TorrentClient {
@@ -88,15 +129,34 @@ class TorrentClient {
 }
 
 class BaySearch {
-  constructor(query) {
+  constructor(query, cb) {
     this.query = query;
-    this._timeout = null;
-  }
-
-  start(cb) {
     // TODO: real request here.
     this._timeout = setTimeout(() => {
-      cb('Failed to search the bay', null);
+      cb(null, [{ name: 'Adobe Photoshop', id: '123123123' }, { name: 'Windows 10', id: '321321321' }]);
+      this._timeout = null;
+    }, 1000);
+  }
+
+  cancel() {
+    if (this._timeout) {
+      clearTimeout(this._timeout);
+      this._timeout = null;
+    }
+  }
+}
+
+class BayLookup {
+  constructor(query, cb) {
+    this.query = query;
+    // TODO: real request here.
+    this._timeout = setTimeout(() => {
+      cb(null, {
+        name: 'Some torrent',
+        magnetURL: 'https://foo.com',
+        seeds: 10,
+        leachers: 11
+      });
       this._timeout = null;
     }, 1000);
   }
@@ -111,108 +171,108 @@ class BaySearch {
 function DownloadInfo(props) {
   const dl = props.download;
   return React.createElement(
-    'div',
-    { className: 'download-info' },
+    "div",
+    { className: "download-info" },
     React.createElement(
-      'table',
-      { className: 'download-info-table' },
+      "table",
+      { className: "download-info-table" },
       React.createElement(
-        'tbody',
+        "tbody",
         null,
         React.createElement(
-          'tr',
+          "tr",
           null,
           React.createElement(
-            'td',
+            "td",
             null,
-            'Name'
+            "Name"
           ),
           React.createElement(
-            'td',
+            "td",
             null,
             dl.name
           )
         ),
         React.createElement(
-          'tr',
+          "tr",
           null,
           React.createElement(
-            'td',
+            "td",
             null,
-            'Progress'
+            "Progress"
           ),
           React.createElement(
-            'td',
+            "td",
             null,
             (100 * dl.completedBytes / dl.sizeBytes).toFixed(2) + '%'
           )
         ),
         React.createElement(
-          'tr',
+          "tr",
           null,
           React.createElement(
-            'td',
+            "td",
             null,
-            'Size'
+            "Size"
           ),
           React.createElement(
-            'td',
+            "td",
             null,
             formatSize(dl.sizeBytes)
           )
         ),
         React.createElement(
-          'tr',
+          "tr",
           null,
           React.createElement(
-            'td',
+            "td",
             null,
-            'Completed'
+            "Completed"
           ),
           React.createElement(
-            'td',
+            "td",
             null,
             formatSize(dl.completedBytes)
           )
         ),
         React.createElement(
-          'tr',
+          "tr",
           null,
           React.createElement(
-            'td',
+            "td",
             null,
-            'DL Rate'
+            "DL Rate"
           ),
           React.createElement(
-            'td',
+            "td",
             null,
             formatRate(dl.downloadRate)
           )
         ),
         React.createElement(
-          'tr',
+          "tr",
           null,
           React.createElement(
-            'td',
+            "td",
             null,
-            'UL Rate'
+            "UL Rate"
           ),
           React.createElement(
-            'td',
+            "td",
             null,
             formatRate(dl.uploadRate)
           )
         ),
         React.createElement(
-          'tr',
+          "tr",
           null,
           React.createElement(
-            'td',
+            "td",
             null,
-            'Uploaded'
+            "Uploaded"
           ),
           React.createElement(
-            'td',
+            "td",
             null,
             formatSize(dl.uploadTotal)
           )
@@ -220,21 +280,21 @@ function DownloadInfo(props) {
       )
     ),
     React.createElement(
-      'div',
+      "div",
       { className: 'download-actions' + (dl.actionPending ? ' download-frozen' : '') },
       dl.active ? React.createElement(
-        'button',
-        { className: 'download-action-button', onClick: props.onStop },
-        'Stop'
+        "button",
+        { className: "download-action-button", onClick: props.onStop },
+        "Stop"
       ) : React.createElement(
-        'button',
-        { className: 'download-action-button', onClick: props.onStart },
-        'Start'
+        "button",
+        { className: "download-action-button", onClick: props.onStart },
+        "Start"
       ),
       React.createElement(
-        'button',
-        { className: 'download-delete-button', onClick: props.onDelete },
-        'Delete'
+        "button",
+        { className: "download-delete-button", onClick: props.onDelete },
+        "Delete"
       )
     )
   );
@@ -262,12 +322,12 @@ function formatRate(rate) {
 function DownloadList(props) {
   if (props.downloads.length === 0) {
     return React.createElement(
-      'div',
-      { id: 'no-downloads' },
+      "div",
+      { id: "no-downloads" },
       React.createElement(
-        'h1',
+        "h1",
         null,
-        'No Downloads'
+        "No Downloads"
       )
     );
   }
@@ -278,39 +338,39 @@ function DownloadList(props) {
       onClick: () => props.onClick(dl.hash) }));
   });
   return React.createElement(
-    'ol',
-    { id: 'downloads' },
+    "ol",
+    { id: "downloads" },
     list
   );
 }
 
 function DownloadEntry(props) {
   return React.createElement(
-    'li',
+    "li",
     { className: 'download' + (props.actionPending ? ' download-frozen' : ''),
       onClick: props.onClick },
-    React.createElement('div', { className: 'download-state-' + (props.download.active ? 'active' : 'inactive') }),
+    React.createElement("div", { className: 'download-state-' + (props.download.active ? 'active' : 'inactive') }),
     React.createElement(
-      'label',
-      { className: 'download-name' },
+      "label",
+      { className: "download-name" },
       props.download.name
     ),
     React.createElement(
-      'div',
-      { className: 'download-stats' },
+      "div",
+      { className: "download-stats" },
       React.createElement(
-        'label',
-        { className: 'download-size' },
+        "label",
+        { className: "download-size" },
         formatSize(props.download.sizeBytes)
       ),
       React.createElement(
-        'label',
-        { className: 'download-upload' },
+        "label",
+        { className: "download-upload" },
         formatSize(props.download.uploadTotal)
       ),
       props.download.active && React.createElement(
-        'label',
-        { className: 'download-rate' },
+        "label",
+        { className: "download-rate" },
         formatRate(props.download.downloadRate)
       )
     )
@@ -318,20 +378,20 @@ function DownloadEntry(props) {
 }
 function Loader(props) {
   return React.createElement(
-    'div',
-    { className: 'loader' },
-    'Loading'
+    "div",
+    { className: "loader" },
+    "Loading"
   );
 }
 
 function LoaderPane(props) {
   return React.createElement(
-    'div',
-    { className: 'loader-pane' },
+    "div",
+    { className: "loader-pane" },
     React.createElement(Loader, null)
   );
 }
-const STATE_KEYS = ['currentSearch', 'currentDownloadHash', 'currentPirateBayID'];
+const STATE_KEYS = ['currentSearch', 'currentDownloadHash', 'currentBayID'];
 
 class Root extends React.Component {
   constructor() {
@@ -348,6 +408,12 @@ class Root extends React.Component {
 
   showDownload(hash) {
     const update = { currentDownloadHash: hash };
+    this.pushHistoryState(update);
+    this.setState(Object.assign(emptyState(), update));
+  }
+
+  showBay(id) {
+    const update = { currentBayID: id };
     this.pushHistoryState(update);
     this.setState(Object.assign(emptyState(), update));
   }
@@ -369,7 +435,7 @@ class Root extends React.Component {
   render() {
     const canExit = this.state.currentSearch || this.state.currentDownloadHash;
     return React.createElement(
-      'div',
+      "div",
       null,
       this.contentPane(),
       React.createElement(TopBar, { search: this.state.currentSearch,
@@ -385,7 +451,8 @@ class Root extends React.Component {
     }if (this.state.currentSearch) {
       return React.createElement(Search, { downloads: this.state.downloads,
         query: this.state.currentSearch,
-        onClickDownload: hash => this.showDownload(hash) });
+        onClickDownload: hash => this.showDownload(hash),
+        onClickBay: id => this.showBay(id) });
     } else if (this.state.currentDownloadHash) {
       const result = this.state.downloads.find(x => {
         return x.hash === this.state.currentDownloadHash;
@@ -397,11 +464,13 @@ class Root extends React.Component {
           onDelete: () => this.deleteTorrent(result.hash) });
       } else {
         return React.createElement(
-          'div',
-          { className: 'error-pane' },
-          'Download does not exist.'
+          "div",
+          { className: "error-pane" },
+          "Download does not exist."
         );
       }
+    } else if (this.state.currentBayID) {
+      return React.createElement(BayInfo, { id: this.state.currentBayID });
     } else {
       return React.createElement(DownloadList, { downloads: this.state.downloads,
         onClick: hash => this.showDownload(hash) });
@@ -443,8 +512,7 @@ class Search extends React.Component {
       bayLoading: true,
       bayError: null
     };
-    this.baySearch = new BaySearch(this.props.query);
-    this.baySearch.start((error, results) => this.bayCallback(error, results));
+    this.baySearch = new BaySearch(this.props.query, this.bayCallback.bind(this));
   }
 
   componentWillUnmount() {
@@ -460,26 +528,26 @@ class Search extends React.Component {
         key: 'dl-' + i, name: d.name });
     });
     if (downloadElems.length == 0) {
-      downloadElems = React.createElement(SearchEmpty, { key: 'dl-empty' });
+      downloadElems = React.createElement(SearchEmpty, { key: "dl-empty" });
     }
-    let bayElems = React.createElement(SearchLoading, { key: 'bay-loading' });
+    let bayElems = React.createElement(SearchLoading, { key: "bay-loading" });
     if (this.state.bayResults) {
       bayElems = this.state.bayResults.map((r, i) => {
         return React.createElement(SearchListing, { onClick: () => this.props.onClickBay(r.id),
           key: 'bay-' + i, name: r.name });
       });
       if (bayElems.length === 0) {
-        bayElems = React.createElement(SearchEmpty, { key: 'bay-empty' });
+        bayElems = React.createElement(SearchEmpty, { key: "bay-empty" });
       }
     } else if (this.state.bayError) {
-      bayElems = React.createElement(SearchError, { key: 'bay-error', message: this.state.bayError });
+      bayElems = React.createElement(SearchError, { key: "bay-error", message: this.state.bayError });
     }
     return React.createElement(
-      'ol',
-      { className: 'search-results' },
-      React.createElement(SearchHeading, { key: 'heading-1', text: 'In the client' }),
+      "ol",
+      { className: "search-results" },
+      React.createElement(SearchHeading, { key: "heading-1", text: "In the client" }),
       downloadElems,
-      React.createElement(SearchHeading, { key: 'heading-2', text: 'On the bay' }),
+      React.createElement(SearchHeading, { key: "heading-2", text: "On the bay" }),
       bayElems
     );
   }
@@ -492,40 +560,40 @@ class Search extends React.Component {
 
 function SearchHeading(props) {
   return React.createElement(
-    'div',
-    { className: 'search-heading' },
+    "div",
+    { className: "search-heading" },
     props.text
   );
 }
 
 function SearchListing(props) {
   return React.createElement(
-    'div',
-    { className: 'search-listing', onClick: props.onClick },
+    "div",
+    { className: "search-listing", onClick: props.onClick },
     props.name
   );
 }
 
 function SearchEmpty() {
   return React.createElement(
-    'div',
-    { className: 'search-empty' },
-    'No results'
+    "div",
+    { className: "search-empty" },
+    "No results"
   );
 }
 
 function SearchLoading() {
   return React.createElement(
-    'div',
-    { className: 'search-loading' },
+    "div",
+    { className: "search-loading" },
     React.createElement(Loader, null)
   );
 }
 
 function SearchError(props) {
   return React.createElement(
-    'div',
-    { className: 'search-error' },
+    "div",
+    { className: "search-error" },
     props.message
   );
 }
@@ -546,24 +614,24 @@ class TopBar extends React.Component {
 
   render() {
     return React.createElement(
-      'div',
+      "div",
       { className: 'top-bar' + (this.search ? ' topbar-searching' : '') },
       this.props.canExit && React.createElement(
-        'button',
-        { className: 'exit-button', onClick: this.props.onExit },
-        'Go Home'
+        "button",
+        { className: "exit-button", onClick: this.props.onExit },
+        "Go Home"
       ),
       React.createElement(
-        'button',
-        { className: 'add-button', onClick: this.props.onAdd },
-        'Add Magnet URL'
+        "button",
+        { className: "add-button", onClick: this.props.onAdd },
+        "Add Magnet URL"
       ),
-      React.createElement('input', { className: 'search-box',
+      React.createElement("input", { className: "search-box",
         onFocus: () => this.setState({ searchFocused: true }),
         onBlur: () => this.setState({ searchFocused: false }),
         onChange: e => this.props.onSearchChange(e.target.value),
         value: this.props.search || '',
-        placeholder: 'Search' })
+        placeholder: "Search" })
     );
   }
 }
