@@ -14,15 +14,13 @@ class Root extends React.Component {
   }
 
 	showDownload(hash) {
-		const stateDict = {currentSearch: null, currentDownloadHash: hash};
-		this.setState(stateDict);
-		this.pushHistoryState(stateDict);
+		const update = {currentDownloadHash: hash};
+		this.pushHistoryState(update);
+		this.setState(Object.assign(emptyState(), update));
 	}
 
 	exitPane() {
-		const newState = {};
-		STATE_KEYS.forEach((k) => newState[k] = null);
-		this.setState(newState);
+		this.setState(emptyState());
 		this.pushHistoryState({});
 	}
 
@@ -72,22 +70,21 @@ function initialStateFromHash() {
 }
 
 function rootStateFromHash() {
-  let result = {};
+  let result = emptyState();
   if (location.hash.length < 2) {
     return result;
   }
   try {
-    let parsed = JSON.parse(location.hash.substr(1));
-		STATE_KEYS.forEach((k) => {
-	    if (parsed.hasOwnProperty(k)) {
-	      result[k] = parsed[k];
-	    } else {
-				result[k] = null;
-			}
-	  });
+		Object.assign(result, JSON.parse(location.hash.substr(1)));
   } catch (e) {
   }
   return result;
+}
+
+function emptyState() {
+	let result = {};
+	STATE_KEYS.forEach((k) => result[k] = null);
+	return result;
 }
 
 window.addEventListener('load', function() {
