@@ -11,23 +11,45 @@ class Root extends React.Component {
     this.setState(rootStateFromHash());
   }
 
-	render() {
-    let elements = [];
-    if (this.state.currentSearch && this.state.downloads) {
-      elements.push(<Search downloads={this.state.downloads}
-                            query={this.state.currentSearch} />);
-    } else if (this.state.downloads) {
-      elements.push(<DownloadList downloads={this.state.downloads}
-                                  onClick={(hash) => console.log('click hash', hash)} />);
-    } else {
-      elements.push(<LoaderPane />);
-    }
-    elements.push(<TopBar search={this.state.currentSearch}
-                          onSearchChange={(s) => this.setState({currentSearch: s})} />);
+	showDownload(hash) {
+		const stateDict = {currentSearch: null, currentDownloadHash: hash};
+		this.setState(stateDict);
+		this.pushHistoryState(stateDict);
+	}
 
-    elements.unshift({});
-    elements.unshift('div');
-    return React.createElement.apply(React, elements);
+	pushHistoryState(state) {
+		history.pushState({}, window.title, '#'+JSON.stringify(state));
+	}
+
+	render() {
+		return (
+			<div>
+				{this.contentPane()}
+				<TopBar search={this.state.currentSearch}
+								onSearchChange={(s) => this.setState({currentSearch: s})} />
+			</div>
+		);
+	}
+
+	contentPane() {
+		if (!this.state.downloads) {
+			return <LoaderPane />;
+    } if (this.state.currentSearch) {
+			return <Search downloads={this.state.downloads}
+                     query={this.state.currentSearch} />;
+		} else if (this.state.currentDownloadHash) {
+			const result = this.state.downloads.find((x) => {
+				return x.hash === this.state.currentDownloadHash;
+			});
+			if (result) {
+				return <DownloadInfo download={result} />;
+			} else {
+				return <div className='error-pane'>Download does not exist.</div>;
+			}
+    } else {
+      return <DownloadList downloads={this.state.downloads}
+                           onClick={(hash) => this.showDownload(hash)} />;
+    }
 	}
 }
 

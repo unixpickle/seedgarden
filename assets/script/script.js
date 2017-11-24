@@ -108,10 +108,152 @@ class BaySearch {
     }
   }
 }
-function DownloadInfo() {
-  // TODO: page with info for download.
-  // TODO: callbacks for start, stop, delete.
-  // TODO: sub-component for file browser.
+function DownloadInfo(props) {
+  const dl = props.download;
+  return React.createElement(
+    'div',
+    { className: 'download-info' },
+    React.createElement(
+      'table',
+      { className: 'download-info-table' },
+      React.createElement(
+        'tbody',
+        null,
+        React.createElement(
+          'tr',
+          null,
+          React.createElement(
+            'td',
+            null,
+            'Name'
+          ),
+          React.createElement(
+            'td',
+            null,
+            dl.name
+          )
+        ),
+        React.createElement(
+          'tr',
+          null,
+          React.createElement(
+            'td',
+            null,
+            'Progress'
+          ),
+          React.createElement(
+            'td',
+            null,
+            (100 * dl.completedBytes / dl.sizeBytes).toFixed(2) + '%'
+          )
+        ),
+        React.createElement(
+          'tr',
+          null,
+          React.createElement(
+            'td',
+            null,
+            'Size'
+          ),
+          React.createElement(
+            'td',
+            null,
+            formatSize(dl.sizeBytes)
+          )
+        ),
+        React.createElement(
+          'tr',
+          null,
+          React.createElement(
+            'td',
+            null,
+            'Completed'
+          ),
+          React.createElement(
+            'td',
+            null,
+            formatSize(dl.completedBytes)
+          )
+        ),
+        React.createElement(
+          'tr',
+          null,
+          React.createElement(
+            'td',
+            null,
+            'DL Rate'
+          ),
+          React.createElement(
+            'td',
+            null,
+            formatRate(dl.downloadRate)
+          )
+        ),
+        React.createElement(
+          'tr',
+          null,
+          React.createElement(
+            'td',
+            null,
+            'UL Rate'
+          ),
+          React.createElement(
+            'td',
+            null,
+            formatRate(dl.uploadRate)
+          )
+        ),
+        React.createElement(
+          'tr',
+          null,
+          React.createElement(
+            'td',
+            null,
+            'Uploaded'
+          ),
+          React.createElement(
+            'td',
+            null,
+            formatSize(dl.uploadTotal)
+          )
+        )
+      )
+    ),
+    React.createElement(
+      'div',
+      { className: 'download-actions' + (dl.actionPending ? ' download-frozen' : '') },
+      React.createElement(
+        'button',
+        { className: 'download-action-button' },
+        dl.active ? 'Stop' : 'Start'
+      ),
+      React.createElement(
+        'button',
+        { className: 'download-delete-button' },
+        'Delete'
+      )
+    )
+  );
+}
+
+function formatSize(bytes) {
+  const suffixes = [' KB', ' MB', ' GB', ' TB'];
+  for (let i = 0; i < suffixes.length; ++i) {
+    const suffix = suffixes[i];
+    const size = bytes / Math.pow(10, 3 * (i + 1));
+    if (size < 10) {
+      return size.toFixed(2) + suffix;
+    } else if (size < 100) {
+      return size.toFixed(1) + suffix;
+    } else if (size < 1000) {
+      return Math.round(size) + suffix;
+    }
+  }
+  return bytes + ' bytes';
+}
+
+function formatRate(rate) {
+  return formatSize(rate) + '/sec';
 }
 function DownloadList(props) {
   if (props.downloads.length === 0) {
@@ -155,36 +297,20 @@ function DownloadEntry(props) {
       React.createElement(
         'label',
         { className: 'download-size' },
-        humanSize(props.download.sizeBytes)
+        formatSize(props.download.sizeBytes)
       ),
       React.createElement(
         'label',
         { className: 'download-upload' },
-        humanSize(props.download.uploadTotal)
+        formatSize(props.download.uploadTotal)
       ),
       props.download.active && React.createElement(
         'label',
         { className: 'download-rate' },
-        humanSize(props.download.downloadRate) + '/sec'
+        formatRate(props.download.downloadRate)
       )
     )
   );
-}
-
-function humanSize(bytes) {
-  const suffixes = [' KB', ' MB', ' GB', ' TB'];
-  for (let i = 0; i < suffixes.length; ++i) {
-    const suffix = suffixes[i];
-    const size = bytes / Math.pow(10, 3 * (i + 1));
-    if (size < 10) {
-      return size.toFixed(2) + suffix;
-    } else if (size < 100) {
-      return size.toFixed(1) + suffix;
-    } else if (size < 1000) {
-      return Math.round(size) + suffix;
-    }
-  }
-  return bytes + ' bytes';
 }
 function Loader(props) {
   return React.createElement(
@@ -214,23 +340,49 @@ class Root extends React.Component {
     this.setState(rootStateFromHash());
   }
 
-  render() {
-    let elements = [];
-    if (this.state.currentSearch && this.state.downloads) {
-      elements.push(React.createElement(Search, { downloads: this.state.downloads,
-        query: this.state.currentSearch }));
-    } else if (this.state.downloads) {
-      elements.push(React.createElement(DownloadList, { downloads: this.state.downloads,
-        onClick: hash => console.log('click hash', hash) }));
-    } else {
-      elements.push(React.createElement(LoaderPane, null));
-    }
-    elements.push(React.createElement(TopBar, { search: this.state.currentSearch,
-      onSearchChange: s => this.setState({ currentSearch: s }) }));
+  showDownload(hash) {
+    const stateDict = { currentSearch: null, currentDownloadHash: hash };
+    this.setState(stateDict);
+    this.pushHistoryState(stateDict);
+  }
 
-    elements.unshift({});
-    elements.unshift('div');
-    return React.createElement.apply(React, elements);
+  pushHistoryState(state) {
+    history.pushState({}, window.title, '#' + JSON.stringify(state));
+  }
+
+  render() {
+    return React.createElement(
+      'div',
+      null,
+      this.contentPane(),
+      React.createElement(TopBar, { search: this.state.currentSearch,
+        onSearchChange: s => this.setState({ currentSearch: s }) })
+    );
+  }
+
+  contentPane() {
+    if (!this.state.downloads) {
+      return React.createElement(LoaderPane, null);
+    }if (this.state.currentSearch) {
+      return React.createElement(Search, { downloads: this.state.downloads,
+        query: this.state.currentSearch });
+    } else if (this.state.currentDownloadHash) {
+      const result = this.state.downloads.find(x => {
+        return x.hash === this.state.currentDownloadHash;
+      });
+      if (result) {
+        return React.createElement(DownloadInfo, { download: result });
+      } else {
+        return React.createElement(
+          'div',
+          { className: 'error-pane' },
+          'Download does not exist.'
+        );
+      }
+    } else {
+      return React.createElement(DownloadList, { downloads: this.state.downloads,
+        onClick: hash => this.showDownload(hash) });
+    }
   }
 }
 

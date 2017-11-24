@@ -65,6 +65,27 @@ body {
   top: 20px;
   left: calc(50% -  10px);
 }
+.error-pane {
+  background-color: white;
+  position: absolute;
+  top: 54px;
+  margin-bottom: 10px;
+  padding: 20px 10px;
+  text-align: center;
+  color: red;
+}
+@media (max-width: 610px) {
+  .error-pane {
+    width: calc(100% -  20px);
+    left: 10px;
+  }
+}
+@media (min-width: 610px) {
+  .error-pane {
+    width: 600px;
+    left: calc(50% -  300px);
+  }
+}
 .list {
   list-style-type: none;
   margin: 0;
@@ -343,4 +364,22 @@ body {
   position: absolute;
   top: 15px;
   left: calc(50% -  10px);
+}
+.download-info {
+  background-color: white;
+  position: absolute;
+  top: 54px;
+  margin-bottom: 10px;
+}
+@media (max-width: 610px) {
+  .download-info {
+    width: calc(100% -  20px);
+    left: 10px;
+  }
+}
+@media (min-width: 610px) {
+  .download-info {
+    width: 600px;
+    left: calc(50% -  300px);
+  }
 }
