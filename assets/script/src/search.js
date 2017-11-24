@@ -26,7 +26,7 @@ class Search extends React.Component {
     let downloadElems = downloads.map((d, i) => {
       return <SearchListing onClick={() => this.props.onClickDownload(d.hash)}
                             key={'dl-'+i} name={d.name} />;
-    });
+    }).reverse();
     if (downloadElems.length == 0) {
       downloadElems = <SearchEmpty key="dl-empty" />;
     }
