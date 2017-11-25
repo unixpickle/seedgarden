@@ -4,18 +4,18 @@
   padding: 0;
 }
 
-.passive-list-item {
+.passive-list-item(@spacing) {
   position: relative;
   box-sizing: border-box;
   width: 100%;
 
   &:not(:last-child) {
-    border-bottom: 1px solid #d5d5d5;
+    border-bottom: @spacing solid #d5d5d5;
   }
 }
 
-.list-item {
-  .passive-list-item();
+.list-item(@spacing) {
+  .passive-list-item(@spacing);
 
   &:hover {
     background-color: #f0f0f0;

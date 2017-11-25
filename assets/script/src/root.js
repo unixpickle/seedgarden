@@ -107,7 +107,9 @@ class Root extends React.Component {
 			                onAdd={(u) => this.addFromBay(u)} />
     } else {
       return <DownloadList downloads={this.state.downloads}
-                           onClick={(hash) => this.showDownload(hash)} />;
+                           onClick={(hash) => this.showDownload(hash)}
+													 onStart={(hash) => this.client.startTorrent(hash)}
+													 onStop={(hash) => this.client.stopTorrent(hash)} />;
     }
 	}
 }

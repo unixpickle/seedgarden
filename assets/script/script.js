@@ -432,7 +432,9 @@ function DownloadList(props) {
   let list = props.downloads.map(dl => {
     return React.createElement(DownloadEntry, { download: dl,
       key: dl.hash,
-      onClick: () => props.onClick(dl.hash) });
+      onClick: () => props.onClick(dl.hash),
+      onStart: () => props.onStart(dl.hash),
+      onStop: () => props.onStop(dl.hash) });
   }).reverse();
   return React.createElement(
     "ol",
@@ -442,34 +444,28 @@ function DownloadList(props) {
 }
 
 function DownloadEntry(props) {
+  const dl = props.download;
   return React.createElement(
     "li",
-    { className: 'download' + (props.actionPending ? ' download-frozen' : ''),
-      onClick: props.onClick },
-    React.createElement("div", { className: 'download-state-' + (props.download.active ? 'active' : 'inactive') }),
-    React.createElement(
-      "label",
-      { className: "download-name" },
-      props.download.name
+    { className: 'download' + (props.actionPending ? ' download-frozen' : '') },
+    dl.active ? React.createElement(
+      "button",
+      { className: "download-stop-button", onClick: props.onStop },
+      "Stop"
+    ) : React.createElement(
+      "button",
+      { className: "download-start-button", onClick: props.onStart },
+      "Start"
     ),
     React.createElement(
       "div",
-      { className: "download-stats" },
+      { className: "download-description", onClick: props.onClick },
       React.createElement(
         "label",
-        { className: "download-size" },
-        formatSize(props.download.sizeBytes)
+        { className: "download-name" },
+        dl.name
       ),
-      React.createElement(
-        "label",
-        { className: "download-upload" },
-        formatSize(props.download.uploadTotal)
-      ),
-      props.download.active && React.createElement(
-        "label",
-        { className: "download-rate" },
-        formatRate(props.download.downloadRate)
-      )
+      React.createElement(LoadingBar, { progress: dl.completedBytes / dl.sizeBytes, color: downloadLoaderColor(dl) })
     )
   );
 }
@@ -487,6 +483,29 @@ function LoaderPane(props) {
     { className: "loader-pane" },
     React.createElement(Loader, null)
   );
+}
+
+function LoadingBar(props) {
+  const style = {
+    width: (props.progress * 100).toFixed(3) + '%',
+    backgroundColor: props.color
+  };
+  return React.createElement(
+    "div",
+    { className: "loading-bar" },
+    React.createElement("div", { className: "loading-bar-filler", style: style })
+  );
+}
+
+function downloadLoaderColor(dl) {
+  if (dl.completedBytes < dl.sizeBytes) {
+    if (dl.active) {
+      return '#65bcd4';
+    } else {
+      return '#feb4b1';
+    }
+  }
+  return '#a7e48b';
 }
 const STATE_KEYS = ['currentSearch', 'currentDownloadHash', 'currentBayID'];
 
@@ -600,7 +619,9 @@ class Root extends React.Component {
         onAdd: u => this.addFromBay(u) });
     } else {
       return React.createElement(DownloadList, { downloads: this.state.downloads,
-        onClick: hash => this.showDownload(hash) });
+        onClick: hash => this.showDownload(hash),
+        onStart: hash => this.client.startTorrent(hash),
+        onStop: hash => this.client.stopTorrent(hash) });
     }
   }
 }
@@ -668,7 +689,6 @@ class Search extends React.Component {
       downloadElems = React.createElement(SearchEmpty, { key: "dl-empty" });
     }
     let bayElems = React.createElement(SearchLoading, { key: "bay-loading" });
-    console.log('yoooo', this.state.bayError);
     if (this.state.bayResults) {
       bayElems = this.state.bayResults.map((r, i) => {
         return React.createElement(SearchListing, { onClick: () => this.props.onClickBay(r.id),

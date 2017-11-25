@@ -1,12 +1,13 @@
 .search-results {
   @item-margins: 10px;
   @item-padding: 5px;
+  @spacing: 10px;
 
   .content-pane();
   .list();
 
   .search-heading {
-    .passive-list-item();
+    .passive-list-item(@spacing);
     font-weight: 600;
     padding: @item-margins;
   }
@@ -17,7 +18,7 @@
   }
 
   .search-empty, .search-error {
-    .passive-list-item();
+    .passive-list-item(@spacing);
     font-style: italic;
   }
 
@@ -26,11 +27,11 @@
   }
 
   .search-listing {
-    .list-item();
+    .list-item(@spacing);
   }
 
   .search-loading {
-    .passive-list-item();
+    .passive-list-item(@spacing);
 
     height: (@loader-size + (@item-margins + @item-padding)*2);
 

@@ -35,7 +35,6 @@ class Search extends React.Component {
       downloadElems = <SearchEmpty key="dl-empty" />;
     }
     let bayElems = <SearchLoading key="bay-loading" />;
-		console.log('yoooo', this.state.bayError)
     if (this.state.bayResults) {
       bayElems = this.state.bayResults.map((r, i) => {
         return <SearchListing onClick={() => this.props.onClickBay(r.id)}

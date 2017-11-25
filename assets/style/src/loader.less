@@ -20,3 +20,27 @@
     from {transform: rotate(0deg);}
     to {transform: rotate(360deg);}
 }
+
+.loading-bar {
+	@thickness: 4px;
+
+	position: relative;
+	height: @thickness;
+
+	&::before, .loading-bar-filler {
+		position: absolute;
+		left: 0;
+		height: @thickness;
+	}
+
+	&::before {
+		content: '';
+		display: block;
+		width: 100%;
+		background-color: #d5d5d5;
+	}
+
+	.loading-bar-filler {
+		background-color: #65bcd4;
+	}
+}

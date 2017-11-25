@@ -6,7 +6,7 @@
   left: 0;
   width: 100%;
   height: @top-bar-size;
-  background-color: #444;
+  background-color: #65bcd4;
 
   .top-bar-search-box {
     @width: 200px;
@@ -18,8 +18,10 @@
     width: @width;
     height: @height;
     box-sizing: border-box;
-    padding: 1px 5px;
+    border: none;
+    padding: 1px (@height/2 + 2px);
     font-size: 16px;
+    border-radius: (@height / 2);
 
     &:focus {
       outline: 0;

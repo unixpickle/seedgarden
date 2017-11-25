@@ -3,60 +3,68 @@
   .list();
 
   .download {
-    .list-item();
+    .list-item(20px);
 
-    @status-size: 10px;
-    @padding: 10px;
+    @play-pause-size: 32px;
+    @padding: 16px;
 
-    padding: @padding @padding @padding (@padding*2 + @status-size);
+    padding: 0;
 
-    .download-state {
+    .download-description {
+      pointer-events: auto;
+      padding: @padding @padding @padding (@padding + @play-pause-size);
+      background-color: white;
+
+      &:hover {
+        background-color: #f0f0f0;
+      }
+
+      .download-name {
+        .char-wrapped();
+        font-weight: 600;
+        max-width: 100%;
+      }
+
+      .loading-bar {
+        margin-top: 15px;
+      }
+    }
+
+    .download-start-button, .download-stop-button {
+      pointer-events: auto;
       position: absolute;
-      top: calc(~"50% - "(@status-size / 2));
-      left: @padding;
-      width: @status-size;
-      height: @status-size;
-    }
+      padding: 0;
+      margin: 0;
+      top: 0;
+      left: 0;
+      width: @play-pause-size;
+      height: 100%;
 
-    .download-state-active {
-      .download-state();
-      background-color: green;
-    }
+      border: none;
+      font-size: 0;
+      color: transparent;
+      background-color: white;
+      border-right: 1px solid #d5d5d5;
 
-    .download-state-inactive {
-      .download-state();
-      background-color: #bbb;
-    }
-
-    .download-name {
-      .char-wrapped();
-      font-weight: 600;
-      max-width: 100%;
-    }
-
-    .download-stats {
-      margin-top: 5px;
-
-      .download-size, .download-rate, .download-upload {
-        margin-right: 10px;
-        white-space: nowrap;
-        display: inline-block;
-        &::before {
-          font-style: italic;
-        }
+      &:focus {
+        outline: 0;
       }
 
-      .download-size::before {
-        content: 'Size: ';
+      &:hover {
+        background-color: #f0f0f0;
       }
 
-      .download-upload::before {
-        content: 'Uploaded: ';
-      }
+      background-size: (@play-pause-size / 2);
+      background-repeat: no-repeat;
+      background-position: center;
+    }
 
-      .download-rate::before {
-        content: 'DL: ';
-      }
+    .download-start-button {
+      background-image: url('../images/play.svg');
+    }
+
+    .download-stop-button {
+      background-image: url('../images/pause.svg');
     }
   }
 }
