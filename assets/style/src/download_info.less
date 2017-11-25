@@ -30,4 +30,33 @@
       .char-wrapped();
     }
   }
+
+  .download-files, .download-files-loading, .download-files-error {
+    margin-top: 10px;
+  }
+
+  .download-files-loading {
+    position: relative;
+    height: (@loader-size + 20px);
+
+    .loader {
+      position: absolute;
+      left: calc(~"50% - "(@loader-size / 2));
+      top: 10px;
+    }
+  }
+
+  .download-files-error {
+    .char-wrapped();
+
+    text-align: center;
+    color: red;
+  }
+
+  .download-files {
+    a {
+      .char-wrapped();
+      display: block;
+    }
+  }
 }

@@ -2,6 +2,10 @@ body {
   font-family: sans-serif;
   background-color: #d5d5d5;
 }
+.char-wrapped {
+  word-wrap: break-word;
+  word-break: break-all;
+}
 .loader {
   display: block;
   width: 20px;
@@ -41,6 +45,7 @@ button:hover {
   position: absolute;
   top: 54px;
   margin-bottom: 10px;
+  box-sizing: border-box;
 }
 @media (max-width: 610px) {
   .content-pane {
@@ -59,6 +64,7 @@ button:hover {
   position: absolute;
   top: 54px;
   margin-bottom: 10px;
+  box-sizing: border-box;
   height: 60px;
 }
 @media (max-width: 610px) {
@@ -83,6 +89,9 @@ button:hover {
   position: absolute;
   top: 54px;
   margin-bottom: 10px;
+  box-sizing: border-box;
+  word-wrap: break-word;
+  word-break: break-all;
   padding: 20px 10px;
   text-align: center;
   color: red;
@@ -132,6 +141,7 @@ button:hover {
   position: absolute;
   top: 54px;
   margin-bottom: 10px;
+  box-sizing: border-box;
   list-style-type: none;
   margin: 0;
   padding: 0;
@@ -188,9 +198,10 @@ button:hover {
   background-color: #bbb;
 }
 #downloads .download .download-name {
+  word-wrap: break-word;
+  word-break: break-all;
   font-weight: 600;
   max-width: 100%;
-  overflow-wrap: break-word;
 }
 #downloads .download .download-stats {
   margin-top: 5px;
@@ -221,6 +232,7 @@ button:hover {
   position: absolute;
   top: 54px;
   margin-bottom: 10px;
+  box-sizing: border-box;
   height: 100px;
 }
 @media (max-width: 610px) {
@@ -340,6 +352,7 @@ button:hover {
   position: absolute;
   top: 54px;
   margin-bottom: 10px;
+  box-sizing: border-box;
   list-style-type: none;
   margin: 0;
   padding: 0;
@@ -369,8 +382,9 @@ button:hover {
 .search-results .search-listing,
 .search-results .search-empty,
 .search-results .search-error {
+  word-wrap: break-word;
+  word-break: break-all;
   padding: 15px 10px;
-  overflow-wrap: break-word;
 }
 .search-results .search-empty,
 .search-results .search-error {
@@ -420,6 +434,7 @@ button:hover {
   position: absolute;
   top: 54px;
   margin-bottom: 10px;
+  box-sizing: border-box;
   padding: 10px;
 }
 @media (max-width: 610px) {
@@ -457,11 +472,37 @@ button:hover {
   word-wrap: break-word;
   word-break: break-all;
 }
+.download-info .download-files,
+.download-info .download-files-loading,
+.download-info .download-files-error {
+  margin-top: 10px;
+}
+.download-info .download-files-loading {
+  position: relative;
+  height: 40px;
+}
+.download-info .download-files-loading .loader {
+  position: absolute;
+  left: calc(50% -  10px);
+  top: 10px;
+}
+.download-info .download-files-error {
+  word-wrap: break-word;
+  word-break: break-all;
+  text-align: center;
+  color: red;
+}
+.download-info .download-files a {
+  word-wrap: break-word;
+  word-break: break-all;
+  display: block;
+}
 .bay-info {
   background-color: white;
   position: absolute;
   top: 54px;
   margin-bottom: 10px;
+  box-sizing: border-box;
   padding: 10px;
   text-align: center;
 }
@@ -496,4 +537,8 @@ button:hover {
 }
 .bay-info .bay-info-leechers::before {
   content: 'Leechers: ';
+}
+.bay-info .bay-info-name {
+  word-wrap: break-word;
+  word-break: break-all;
 }

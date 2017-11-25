@@ -103,10 +103,10 @@ class BaySearch {
   }
 }
 
-class BayLookup {
-  constructor(id, cb) {
+class CancelableCall {
+  constructor(url, cb) {
     this._cb = cb;
-    _callBackendAPI('/api/baylookup?id=' + encodeURIComponent(id)).then((obj) => {
+    _callBackendAPI(url).then((obj) => {
       this._cb(null, obj);
     }).catch((err) => {
       this._cb(err, null);
@@ -115,6 +115,18 @@ class BayLookup {
 
   cancel() {
     this._cb = (x, y) => null;
+  }
+}
+
+class BayLookup extends CancelableCall {
+  constructor(id, cb) {
+    super('/api/baylookup?id=' + encodeURIComponent(id), cb);
+  }
+}
+
+class ListFiles extends CancelableCall {
+  constructor(hash, cb) {
+    super('/api/files?hash=' + encodeURIComponent(hash), cb);
   }
 }
 

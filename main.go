@@ -2,8 +2,13 @@ package main
 
 import (
 	"encoding/json"
+	"errors"
 	"flag"
 	"net/http"
+	"net/url"
+	"os"
+	"path/filepath"
+	"time"
 
 	"github.com/unixpickle/essentials"
 	"github.com/unixpickle/seedgarden/piratebay"
@@ -37,6 +42,8 @@ func main() {
 	http.HandleFunc("/api/add", ServeAdd)
 	http.HandleFunc("/api/baysearch", ServeBaySearch)
 	http.HandleFunc("/api/baylookup", ServeBayLookup)
+	http.HandleFunc("/api/files", ServeFiles)
+	http.HandleFunc("/api/download", ServeDownload)
 
 	http.ListenAndServe(addr, nil)
 }
@@ -66,23 +73,21 @@ func ServeStop(w http.ResponseWriter, r *http.Request) {
 }
 
 func ServeDelete(w http.ResponseWriter, r *http.Request) {
-	// TODO: this is commented out for safety.
-	serveObject(w, "success")
-	// listing, err := GlobalClient.Downloads()
-	// if err != nil {
-	// 	serveObject(w, err)
-	// 	return
-	// }
-	// for _, item := range listing {
-	// 	if item.Hash == r.FormValue("hash") {
-	// 		if err := GlobalClient.Erase(item.Hash); err != nil {
-	// 			serveObject(w, err)
-	// 			return
-	// 		}
-	// 		os.RemoveAll(item.BasePath)
-	// 		serveObject(w, "success")
-	// 	}
-	// }
+	listing, err := GlobalClient.Downloads()
+	if err != nil {
+		serveObject(w, err)
+		return
+	}
+	for _, item := range listing {
+		if item.Hash == r.FormValue("hash") {
+			if err := GlobalClient.Erase(item.Hash); err != nil {
+				serveObject(w, err)
+				return
+			}
+			os.RemoveAll(item.BasePath)
+			serveObject(w, "success")
+		}
+	}
 }
 
 func ServeAdd(w http.ResponseWriter, r *http.Request) {
@@ -107,6 +112,73 @@ func ServeBayLookup(w http.ResponseWriter, r *http.Request) {
 	} else {
 		serveObject(w, result)
 	}
+}
+
+func ServeFiles(w http.ResponseWriter, r *http.Request) {
+	item, err := findDownload(r.FormValue("hash"))
+	if err != nil {
+		serveObject(w, err)
+		return
+	}
+
+	var results []map[string]string
+	err = filepath.Walk(item.BasePath,
+		func(path string, info os.FileInfo, err error) error {
+			if err != nil {
+				return err
+			}
+			if info.IsDir() {
+				return nil
+			}
+			rel, err := filepath.Rel(item.BasePath, path)
+			if err != nil {
+				return err
+			}
+			results = append(results, map[string]string{
+				"Link": "/api/download?path=" + url.QueryEscape(path) + "&signature=" + Sign(path),
+				"Path": rel,
+			})
+			return nil
+		})
+	if err != nil {
+		serveObject(w, err)
+	} else {
+		serveObject(w, results)
+	}
+}
+
+func ServeDownload(w http.ResponseWriter, r *http.Request) {
+	path := r.FormValue("path")
+	signature := r.FormValue("signature")
+	if Sign(path) != signature {
+		serveObject(w, errors.New("bad signature"))
+		return
+	}
+	f, err := os.Open(path)
+	if err != nil {
+		serveObject(w, err)
+		return
+	}
+	defer f.Close()
+	w.Header().Set("Content-Disposition", dispositionHeader(filepath.Base(path)))
+	http.ServeContent(w, r, filepath.Base(path), time.Time{}, f)
+}
+
+func dispositionHeader(filename string) string {
+	return "attachment; filename*=UTF-8''" + url.PathEscape(filename)
+}
+
+func findDownload(hash string) (*rtorrent.Download, error) {
+	listing, err := GlobalClient.Downloads()
+	if err != nil {
+		return nil, err
+	}
+	for _, item := range listing {
+		if item.Hash == hash {
+			return item, nil
+		}
+	}
+	return nil, errors.New("download not found")
 }
 
 func serveObject(w http.ResponseWriter, obj interface{}) {

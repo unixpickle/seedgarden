@@ -1,26 +1,61 @@
-function DownloadInfo(props) {
-  const dl = props.download;
-  return (
-    <div className="download-info">
-      <table className="download-info-table">
-        <tbody>
-          <tr><td>Name</td><td>{dl.name}</td></tr>
-          <tr><td>Progress</td><td>{(100*dl.completedBytes/dl.sizeBytes).toFixed(2) + '%'}</td></tr>
-          <tr><td>Size</td><td>{formatSize(dl.sizeBytes)}</td></tr>
-          <tr><td>Completed</td><td>{formatSize(dl.completedBytes)}</td></tr>
-          <tr><td>DL Rate</td><td>{formatRate(dl.downloadRate)}</td></tr>
-          <tr><td>UL Rate</td><td>{formatRate(dl.uploadRate)}</td></tr>
-          <tr><td>Uploaded</td><td>{formatSize(dl.uploadTotal)}</td></tr>
-        </tbody>
-      </table>
-      <div className={'download-actions' + (dl.actionPending ? ' download-frozen' : '')}>
-        {(dl.active ?
-          <button className="download-action-button" onClick={props.onStop}>Stop</button> :
-          <button className="download-action-button" onClick={props.onStart}>Start</button>)}
-        <button className="download-delete-button" onClick={props.onDelete}>Delete</button>
+class DownloadInfo extends React.Component {
+  constructor() {
+    super();
+    this.state = {filesLoading: true, filesError: null, files: null};
+    this.fileReq = null;
+  }
+
+  componentWillMount() {
+    this.fileReq = new ListFiles(this.props.download.hash, this.filesCallback.bind(this));
+  }
+
+  componentWillUnmount() {
+    this.fileReq.cancel();
+  }
+
+  render() {
+    const dl = this.props.download;
+    return (
+      <div className="download-info">
+        <table className="download-info-table">
+          <tbody>
+            <tr><td>Name</td><td>{dl.name}</td></tr>
+            <tr><td>Progress</td><td>{(100*dl.completedBytes/dl.sizeBytes).toFixed(2) + '%'}</td></tr>
+            <tr><td>Size</td><td>{formatSize(dl.sizeBytes)}</td></tr>
+            <tr><td>Completed</td><td>{formatSize(dl.completedBytes)}</td></tr>
+            <tr><td>DL Rate</td><td>{formatRate(dl.downloadRate)}</td></tr>
+            <tr><td>UL Rate</td><td>{formatRate(dl.uploadRate)}</td></tr>
+            <tr><td>Uploaded</td><td>{formatSize(dl.uploadTotal)}</td></tr>
+          </tbody>
+        </table>
+        <div className={'download-actions' + (dl.actionPending ? ' download-frozen' : '')}>
+          {(dl.active ?
+            <button className="download-action-button" onClick={this.props.onStop}>Stop</button> :
+            <button className="download-action-button" onClick={this.props.onStart}>Start</button>)}
+          <button className="download-delete-button" onClick={this.props.onDelete}>Delete</button>
+        </div>
+        {this.filesElement()}
       </div>
-    </div>
-  );
+    );
+  }
+
+  filesElement() {
+    if (this.state.files) {
+      return (
+        <div className="download-files">
+          {this.state.files.map((x) => <a key={x.link} href={x.link}>{x.path}</a>)}
+        </div>
+      );
+    } else if (this.state.filesError) {
+      return <div className="download-files-error">{this.state.filesError}</div>
+    } else {
+      return <div className="download-files-loading"><Loader /></div>;
+    }
+  }
+
+  filesCallback(error, files) {
+    this.setState({filesLoading: false, filesError: error, files: files});
+  }
 }
 
 function formatSize(bytes) {

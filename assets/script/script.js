@@ -6,6 +6,10 @@ class BayInfo extends React.Component {
       error: null,
       info: null
     };
+    this._lookup = null;
+  }
+
+  componentWillMount() {
     this._lookup = new BayLookup(props.id, this.bayCallback.bind(this));
   }
 
@@ -107,11 +111,11 @@ class TorrentClient {
         x.actionPending = false;
         return x;
       });
-      this.onChange();
+      setTimeout(this.onChange, 0);
     }).catch(e => {
       this._gettingList = false;
       // TODO: maybe handle error here...
-      console.log(e);
+      console.trace(e);
     });
   }
 
@@ -126,7 +130,7 @@ class TorrentClient {
         dl.actionPending = true;
         _callBackendAPI('/api/' + call + '?hash=' + encodeURIComponent(hash)).then(() => {
           dl.actionPending = false;
-          this.onChange();
+          setTimeout(this.onChange, 0);
           this._getList();
         }).catch(() => {
           dl.actionPending = false;
@@ -160,10 +164,10 @@ class BaySearch {
   }
 }
 
-class BayLookup {
-  constructor(id, cb) {
+class CancelableCall {
+  constructor(url, cb) {
     this._cb = cb;
-    _callBackendAPI('/api/baylookup?id=' + encodeURIComponent(id)).then(obj => {
+    _callBackendAPI(url).then(obj => {
       this._cb(null, obj);
     }).catch(err => {
       this._cb(err, null);
@@ -175,15 +179,27 @@ class BayLookup {
   }
 }
 
+class BayLookup extends CancelableCall {
+  constructor(id, cb) {
+    super('/api/baylookup?id=' + encodeURIComponent(id), cb);
+  }
+}
+
+class ListFiles extends CancelableCall {
+  constructor(hash, cb) {
+    super('/api/files?hash=' + encodeURIComponent(hash), cb);
+  }
+}
+
 function _callBackendAPI(url) {
   return fetch(url).then(resp => {
     if (!resp.ok) {
-      throw Error('request failed');
+      return Promise.reject(new Error('request failed'));
     }
     return resp.json();
   }).then(obj => {
     if (obj.hasOwnProperty('error')) {
-      throw Error(obj['error']);
+      return Promise.reject(obj['error']);
     }
     return _lowercaseObj(obj);
   });
@@ -203,136 +219,183 @@ function _lowercaseObj(obj) {
   });
   return result;
 }
-function DownloadInfo(props) {
-  const dl = props.download;
-  return React.createElement(
-    "div",
-    { className: "download-info" },
-    React.createElement(
-      "table",
-      { className: "download-info-table" },
+class DownloadInfo extends React.Component {
+  constructor() {
+    super();
+    this.state = { filesLoading: true, filesError: null, files: null };
+    this.fileReq = null;
+  }
+
+  componentWillMount() {
+    this.fileReq = new ListFiles(this.props.download.hash, this.filesCallback.bind(this));
+  }
+
+  componentWillUnmount() {
+    this.fileReq.cancel();
+  }
+
+  render() {
+    const dl = this.props.download;
+    return React.createElement(
+      "div",
+      { className: "download-info" },
       React.createElement(
-        "tbody",
-        null,
+        "table",
+        { className: "download-info-table" },
         React.createElement(
-          "tr",
+          "tbody",
           null,
           React.createElement(
-            "td",
+            "tr",
             null,
-            "Name"
+            React.createElement(
+              "td",
+              null,
+              "Name"
+            ),
+            React.createElement(
+              "td",
+              null,
+              dl.name
+            )
           ),
           React.createElement(
-            "td",
+            "tr",
             null,
-            dl.name
-          )
-        ),
-        React.createElement(
-          "tr",
-          null,
-          React.createElement(
-            "td",
-            null,
-            "Progress"
+            React.createElement(
+              "td",
+              null,
+              "Progress"
+            ),
+            React.createElement(
+              "td",
+              null,
+              (100 * dl.completedBytes / dl.sizeBytes).toFixed(2) + '%'
+            )
           ),
           React.createElement(
-            "td",
+            "tr",
             null,
-            (100 * dl.completedBytes / dl.sizeBytes).toFixed(2) + '%'
-          )
-        ),
-        React.createElement(
-          "tr",
-          null,
-          React.createElement(
-            "td",
-            null,
-            "Size"
+            React.createElement(
+              "td",
+              null,
+              "Size"
+            ),
+            React.createElement(
+              "td",
+              null,
+              formatSize(dl.sizeBytes)
+            )
           ),
           React.createElement(
-            "td",
+            "tr",
             null,
-            formatSize(dl.sizeBytes)
-          )
-        ),
-        React.createElement(
-          "tr",
-          null,
-          React.createElement(
-            "td",
-            null,
-            "Completed"
+            React.createElement(
+              "td",
+              null,
+              "Completed"
+            ),
+            React.createElement(
+              "td",
+              null,
+              formatSize(dl.completedBytes)
+            )
           ),
           React.createElement(
-            "td",
+            "tr",
             null,
-            formatSize(dl.completedBytes)
-          )
-        ),
-        React.createElement(
-          "tr",
-          null,
-          React.createElement(
-            "td",
-            null,
-            "DL Rate"
+            React.createElement(
+              "td",
+              null,
+              "DL Rate"
+            ),
+            React.createElement(
+              "td",
+              null,
+              formatRate(dl.downloadRate)
+            )
           ),
           React.createElement(
-            "td",
+            "tr",
             null,
-            formatRate(dl.downloadRate)
-          )
-        ),
-        React.createElement(
-          "tr",
-          null,
-          React.createElement(
-            "td",
-            null,
-            "UL Rate"
+            React.createElement(
+              "td",
+              null,
+              "UL Rate"
+            ),
+            React.createElement(
+              "td",
+              null,
+              formatRate(dl.uploadRate)
+            )
           ),
           React.createElement(
-            "td",
+            "tr",
             null,
-            formatRate(dl.uploadRate)
-          )
-        ),
-        React.createElement(
-          "tr",
-          null,
-          React.createElement(
-            "td",
-            null,
-            "Uploaded"
-          ),
-          React.createElement(
-            "td",
-            null,
-            formatSize(dl.uploadTotal)
+            React.createElement(
+              "td",
+              null,
+              "Uploaded"
+            ),
+            React.createElement(
+              "td",
+              null,
+              formatSize(dl.uploadTotal)
+            )
           )
         )
-      )
-    ),
-    React.createElement(
-      "div",
-      { className: 'download-actions' + (dl.actionPending ? ' download-frozen' : '') },
-      dl.active ? React.createElement(
-        "button",
-        { className: "download-action-button", onClick: props.onStop },
-        "Stop"
-      ) : React.createElement(
-        "button",
-        { className: "download-action-button", onClick: props.onStart },
-        "Start"
       ),
       React.createElement(
-        "button",
-        { className: "download-delete-button", onClick: props.onDelete },
-        "Delete"
-      )
-    )
-  );
+        "div",
+        { className: 'download-actions' + (dl.actionPending ? ' download-frozen' : '') },
+        dl.active ? React.createElement(
+          "button",
+          { className: "download-action-button", onClick: this.props.onStop },
+          "Stop"
+        ) : React.createElement(
+          "button",
+          { className: "download-action-button", onClick: this.props.onStart },
+          "Start"
+        ),
+        React.createElement(
+          "button",
+          { className: "download-delete-button", onClick: this.props.onDelete },
+          "Delete"
+        )
+      ),
+      this.filesElement()
+    );
+  }
+
+  filesElement() {
+    if (this.state.files) {
+      return React.createElement(
+        "div",
+        { className: "download-files" },
+        this.state.files.map(x => React.createElement(
+          "a",
+          { key: x.link, href: x.link },
+          x.path
+        ))
+      );
+    } else if (this.state.filesError) {
+      return React.createElement(
+        "div",
+        { className: "download-files-error" },
+        this.state.filesError
+      );
+    } else {
+      return React.createElement(
+        "div",
+        { className: "download-files-loading" },
+        React.createElement(Loader, null)
+      );
+    }
+  }
+
+  filesCallback(error, files) {
+    this.setState({ filesLoading: false, filesError: error, files: files });
+  }
 }
 
 function formatSize(bytes) {
@@ -366,12 +429,11 @@ function DownloadList(props) {
       )
     );
   }
-  let list = [];
-  props.downloads.forEach(dl => {
-    list.push(React.createElement(DownloadEntry, { download: dl,
+  let list = props.downloads.map(dl => {
+    return React.createElement(DownloadEntry, { download: dl,
       key: dl.hash,
-      onClick: () => props.onClick(dl.hash) }));
-  });
+      onClick: () => props.onClick(dl.hash) });
+  }).reverse();
   return React.createElement(
     "ol",
     { id: "downloads" },
@@ -433,6 +495,10 @@ class Root extends React.Component {
     super();
     this.state = initialStateFromHash();
     window.onpopstate = () => this.handlePopState();
+    this.client = null;
+  }
+
+  componentWillMount() {
     this.client = new TorrentClient();
     this.client.onChange = () => this.setState({ downloads: this.client.downloads() });
   }
@@ -573,6 +639,10 @@ class Search extends React.Component {
       bayLoading: true,
       bayError: null
     };
+    this.baySearch = null;
+  }
+
+  componentWillMount() {
     this.baySearch = new BaySearch(this.props.query, this.bayCallback.bind(this));
   }
 
@@ -593,11 +663,12 @@ class Search extends React.Component {
     let downloadElems = downloads.map((d, i) => {
       return React.createElement(SearchListing, { onClick: () => this.props.onClickDownload(d.hash),
         key: 'dl-' + i, name: d.name });
-    });
+    }).reverse();
     if (downloadElems.length == 0) {
       downloadElems = React.createElement(SearchEmpty, { key: "dl-empty" });
     }
     let bayElems = React.createElement(SearchLoading, { key: "bay-loading" });
+    console.log('yoooo', this.state.bayError);
     if (this.state.bayResults) {
       bayElems = this.state.bayResults.map((r, i) => {
         return React.createElement(SearchListing, { onClick: () => this.props.onClickBay(r.id),
@@ -620,6 +691,7 @@ class Search extends React.Component {
   }
 
   bayCallback(error, results) {
+    error = error && error.toString();
     this.setState({ bayResults: results, bayLoading: false, bayError: error });
   }
 }
