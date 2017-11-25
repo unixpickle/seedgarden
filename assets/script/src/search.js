@@ -6,7 +6,11 @@ class Search extends React.Component {
       bayLoading: true,
       bayError: null
     };
-    this.baySearch = new BaySearch(this.props.query, this.bayCallback.bind(this));
+    this.baySearch = null;
+	}
+
+	componentWillMount() {
+		this.baySearch = new BaySearch(this.props.query, this.bayCallback.bind(this));
 	}
 
   componentWillUnmount() {
@@ -31,6 +35,7 @@ class Search extends React.Component {
       downloadElems = <SearchEmpty key="dl-empty" />;
     }
     let bayElems = <SearchLoading key="bay-loading" />;
+		console.log('yoooo', this.state.bayError)
     if (this.state.bayResults) {
       bayElems = this.state.bayResults.map((r, i) => {
         return <SearchListing onClick={() => this.props.onClickBay(r.id)}
@@ -53,6 +58,7 @@ class Search extends React.Component {
 	}
 
   bayCallback(error, results) {
+		error = error && error.toString();
     this.setState({bayResults: results, bayLoading: false, bayError: error});
   }
 }

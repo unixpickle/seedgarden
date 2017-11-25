@@ -5,7 +5,11 @@ class Root extends React.Component {
 		super();
 		this.state = initialStateFromHash();
 		window.onpopstate = () => this.handlePopState();
-    this.client = new TorrentClient();
+    this.client = null;
+	}
+
+	componentWillMount() {
+		this.client = new TorrentClient();
     this.client.onChange = () => this.setState({downloads: this.client.downloads()});
 	}
 

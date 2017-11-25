@@ -50,11 +50,11 @@ class TorrentClient {
         x.actionPending = false;
         return x;
       });
-      this.onChange();
+      setTimeout(this.onChange, 0);
     }).catch((e) => {
       this._gettingList = false;
       // TODO: maybe handle error here...
-      console.log(e);
+      console.trace(e);
     });
   }
 
@@ -69,7 +69,7 @@ class TorrentClient {
         dl.actionPending = true;
         _callBackendAPI('/api/'+call+'?hash=' + encodeURIComponent(hash)).then(() => {
           dl.actionPending = false;
-          this.onChange();
+          setTimeout(this.onChange, 0);
           this._getList();
         }).catch(() => {
           dl.actionPending = false;
@@ -121,12 +121,12 @@ class BayLookup {
 function _callBackendAPI(url) {
   return fetch(url).then((resp) => {
     if (!resp.ok) {
-      throw Error('request failed');
+      return Promise.reject(new Error('request failed'));
     }
     return resp.json();
   }).then((obj) => {
     if (obj.hasOwnProperty('error')) {
-      throw Error(obj['error']);
+      return Promise.reject(obj['error']);
     }
     return _lowercaseObj(obj);
   });

@@ -6,6 +6,10 @@ class BayInfo extends React.Component {
       error: null,
       info: null
     };
+    this._lookup = null;
+  }
+
+  componentWillMount() {
     this._lookup = new BayLookup(props.id, this.bayCallback.bind(this));
   }
 
