@@ -41,7 +41,7 @@ func parseSearch(body io.Reader) ([]*SearchResult, error) {
 		link, ok := scrape.Find(resultElem, scrape.ByTag(atom.A))
 		if ok {
 			href := scrape.Attr(link, "href")
-			title := scrape.Attr(link, "title")
+			title := scrape.Text(link)
 			parts := strings.Split(href, "/")
 			if len(parts) >= 3 {
 				results = append(results, &SearchResult{Name: title, ID: parts[2]})

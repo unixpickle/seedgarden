@@ -10,7 +10,7 @@ class BayInfo extends React.Component {
   }
 
   componentWillMount() {
-    this._lookup = new BayLookup(props.id, this.bayCallback.bind(this));
+    this._lookup = new BayLookup(this.props.id, this.bayCallback.bind(this));
   }
 
   componentWillUnmount() {

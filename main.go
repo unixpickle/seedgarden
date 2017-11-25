@@ -84,7 +84,7 @@ func ServeDelete(w http.ResponseWriter, r *http.Request) {
 				serveObject(w, err)
 				return
 			}
-			os.RemoveAll(item.BasePath)
+			os.RemoveAll(item.Path())
 			serveObject(w, "success")
 		}
 	}
@@ -122,7 +122,7 @@ func ServeFiles(w http.ResponseWriter, r *http.Request) {
 	}
 
 	var results []map[string]string
-	err = filepath.Walk(item.BasePath,
+	err = filepath.Walk(item.Path(),
 		func(path string, info os.FileInfo, err error) error {
 			if err != nil {
 				return err
@@ -130,9 +130,12 @@ func ServeFiles(w http.ResponseWriter, r *http.Request) {
 			if info.IsDir() {
 				return nil
 			}
-			rel, err := filepath.Rel(item.BasePath, path)
+			rel, err := filepath.Rel(item.Path(), path)
 			if err != nil {
 				return err
+			}
+			if rel == "." {
+				rel = filepath.Base(path)
 			}
 			results = append(results, map[string]string{
 				"Link": "/api/download?path=" + url.QueryEscape(path) + "&signature=" + Sign(path),

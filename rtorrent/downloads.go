@@ -13,6 +13,7 @@ type Download struct {
 	Hash           string
 	Directory      string
 	BasePath       string
+	BaseFilename   string
 	CompletedBytes int64
 	SizeBytes      int64
 	Name           string
@@ -23,11 +24,20 @@ type Download struct {
 	State          int
 }
 
+// Path gets the path to the downloaded torrent.
+func (c *Download) Path() string {
+	if c.BasePath != "" {
+		return c.BasePath
+	}
+	return c.Directory
+}
+
+// Downloads lists all the downloads in the client.
 func (c *Client) Downloads() (downloads []*Download, err error) {
 	defer essentials.AddCtxTo("get downloads", &err)
 	body, err := c.Call("d.multicall", "main", "d.get_hash=", "d.get_directory=",
-		"d.get_base_path=", "d.get_completed_bytes=", "d.get_size_bytes=", "d.get_name=",
-		"d.get_up_rate=", "d.get_down_rate=", "d.get_up_total=", "d.get_down_total=",
+		"d.get_base_path=", "d.get_base_filename=", "d.get_completed_bytes=", "d.get_size_bytes=",
+		"d.get_name=", "d.get_up_rate=", "d.get_down_rate=", "d.get_up_total=", "d.get_down_total=",
 		"d.get_state=")
 	if err != nil {
 		return nil, err
@@ -37,21 +47,22 @@ func (c *Client) Downloads() (downloads []*Download, err error) {
 		return nil, err
 	}
 	for _, download := range resp.Downloads {
-		if len(download.Values) != 11 {
+		if len(download.Values) != 12 {
 			return nil, errors.New("unexpected number of values")
 		}
 		downloads = append(downloads, &Download{
 			Hash:           download.Values[0].String,
 			Directory:      download.Values[1].String,
 			BasePath:       download.Values[2].String,
-			CompletedBytes: download.Values[3].Int,
-			SizeBytes:      download.Values[4].Int,
-			Name:           download.Values[5].String,
-			UploadRate:     download.Values[6].Int,
-			DownloadRate:   download.Values[7].Int,
-			UploadTotal:    download.Values[8].Int,
-			DownloadTotal:  download.Values[9].Int,
-			State:          int(download.Values[10].Int),
+			BaseFilename:   download.Values[3].String,
+			CompletedBytes: download.Values[4].Int,
+			SizeBytes:      download.Values[5].Int,
+			Name:           download.Values[6].String,
+			UploadRate:     download.Values[7].Int,
+			DownloadRate:   download.Values[8].Int,
+			UploadTotal:    download.Values[9].Int,
+			DownloadTotal:  download.Values[10].Int,
+			State:          int(download.Values[11].Int),
 		})
 	}
 	return downloads, nil
