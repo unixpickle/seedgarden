@@ -432,9 +432,7 @@ function DownloadList(props) {
   let list = props.downloads.map(dl => {
     return React.createElement(DownloadEntry, { download: dl,
       key: dl.hash,
-      onClick: () => props.onClick(dl.hash),
-      onStart: () => props.onStart(dl.hash),
-      onStop: () => props.onStop(dl.hash) });
+      onClick: () => props.onClick(dl.hash) });
   }).reverse();
   return React.createElement(
     "ol",
@@ -447,26 +445,14 @@ function DownloadEntry(props) {
   const dl = props.download;
   return React.createElement(
     "li",
-    { className: 'download' + (props.actionPending ? ' download-frozen' : '') },
-    dl.active ? React.createElement(
-      "button",
-      { className: "download-stop-button", onClick: props.onStop },
-      "Stop"
-    ) : React.createElement(
-      "button",
-      { className: "download-start-button", onClick: props.onStart },
-      "Start"
-    ),
+    { className: 'download' + (props.actionPending ? ' download-frozen' : ''),
+      onClick: props.onClick },
     React.createElement(
-      "div",
-      { className: "download-description", onClick: props.onClick },
-      React.createElement(
-        "label",
-        { className: "download-name" },
-        dl.name
-      ),
-      React.createElement(LoadingBar, { progress: dl.completedBytes / dl.sizeBytes, color: downloadLoaderColor(dl) })
-    )
+      "label",
+      { className: "download-name" },
+      dl.name
+    ),
+    React.createElement(LoadingBar, { progress: dl.completedBytes / dl.sizeBytes, color: downloadLoaderColor(dl) })
   );
 }
 function Loader(props) {
@@ -585,8 +571,12 @@ class Root extends React.Component {
       React.createElement(TopBar, { search: this.state.currentSearch,
         canExit: canExit,
         onExit: () => this.exitPane(),
-        onSearchChange: s => this.changeSearch(s),
-        onAdd: () => this.addURL() })
+        onSearchChange: s => this.changeSearch(s) }),
+      React.createElement(
+        "button",
+        { id: "add-button", onClick: () => this.addURL() },
+        "Add Torrent"
+      )
     );
   }
 
@@ -619,9 +609,7 @@ class Root extends React.Component {
         onAdd: u => this.addFromBay(u) });
     } else {
       return React.createElement(DownloadList, { downloads: this.state.downloads,
-        onClick: hash => this.showDownload(hash),
-        onStart: hash => this.client.startTorrent(hash),
-        onStop: hash => this.client.stopTorrent(hash) });
+        onClick: hash => this.showDownload(hash) });
     }
   }
 }
@@ -778,11 +766,6 @@ class TopBar extends React.Component {
         "button",
         { className: "top-bar-exit-button", onClick: this.props.onExit },
         "Go Home"
-      ),
-      React.createElement(
-        "button",
-        { className: "top-bar-add-button", onClick: this.props.onAdd },
-        "Add Magnet URL"
       ),
       React.createElement("input", { className: "top-bar-search-box",
         onFocus: () => this.setState({ searchFocused: true }),

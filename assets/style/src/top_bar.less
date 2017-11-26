@@ -1,6 +1,8 @@
-@top-bar-size: 44px;
+@top-bar-size: 48px;
 
 .top-bar {
+  @margin: 10px;
+
   position: fixed;
   top: 0;
   left: 0;
@@ -14,7 +16,7 @@
 
     position: absolute;
     top: (@top-bar-size - @height) / 2;
-    left: calc(~"50% - "(@width / 2));
+    right: @margin;
     width: @width;
     height: @height;
     box-sizing: border-box;
@@ -28,14 +30,10 @@
     }
   }
 
-  .top-bar-add-button {
-    @margin: 10px;
-    @thickness: 4px;
-    @middle: (@top-bar-size - @margin*2 - @thickness) / 2;
-
+  .top-bar-exit-button {
     position: absolute;
     top: @margin;
-    right: @margin;
+    left: @margin;
     width: (@top-bar-size - @margin*2);
     height: (@top-bar-size - @margin*2);
     margin: 0;
@@ -45,34 +43,7 @@
     color: transparent;
     font-size: 0;
     cursor: pointer;
-
-    &::before, &::after {
-      content: '';
-      display: block;
-      position: absolute;
-      background-color: white;
-    }
-
-    &::before {
-      width: (@top-bar-size - @margin*2);
-      height: 4px;
-      top: @middle;
-      left: 0;
-    }
-
-    &::after {
-      width: @thickness;
-      height: (@top-bar-size - @margin*2);
-      top: 0;
-      left: @middle;
-    }
-  }
-
-  .top-bar-exit-button {
-    .top-bar-add-button();
-    /* TODO: only rotate before/after */
-    transform: rotate(45deg);
-    left: @margin;
-    right: auto;
+    background-image: url('../images/back.svg');
+    background-size: 100%;
   }
 }

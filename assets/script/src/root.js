@@ -76,8 +76,8 @@ class Root extends React.Component {
 				<TopBar search={this.state.currentSearch}
 				        canExit={canExit}
 								onExit={() => this.exitPane()}
-								onSearchChange={(s) => this.changeSearch(s)}
-								onAdd={() => this.addURL()} />
+								onSearchChange={(s) => this.changeSearch(s)} />
+				<button id="add-button" onClick={() => this.addURL()}>Add Torrent</button>
 			</div>
 		);
 	}
@@ -107,9 +107,7 @@ class Root extends React.Component {
 			                onAdd={(u) => this.addFromBay(u)} />
     } else {
       return <DownloadList downloads={this.state.downloads}
-                           onClick={(hash) => this.showDownload(hash)}
-													 onStart={(hash) => this.client.startTorrent(hash)}
-													 onStop={(hash) => this.client.stopTorrent(hash)} />;
+                           onClick={(hash) => this.showDownload(hash)} />;
     }
 	}
 }

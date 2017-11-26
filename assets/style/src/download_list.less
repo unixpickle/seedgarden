@@ -5,66 +5,19 @@
   .download {
     .list-item(20px);
 
-    @play-pause-size: 32px;
     @padding: 16px;
 
-    padding: 0;
+    padding: @padding;
+    background-color: white;
 
-    .download-description {
-      pointer-events: auto;
-      padding: @padding @padding @padding (@padding + @play-pause-size);
-      background-color: white;
-
-      &:hover {
-        background-color: #f0f0f0;
-      }
-
-      .download-name {
-        .char-wrapped();
-        font-weight: 600;
-        max-width: 100%;
-      }
-
-      .loading-bar {
-        margin-top: 15px;
-      }
+    .download-name {
+      .char-wrapped();
+      color: #777;
+      max-width: 100%;
     }
 
-    .download-start-button, .download-stop-button {
-      pointer-events: auto;
-      position: absolute;
-      padding: 0;
-      margin: 0;
-      top: 0;
-      left: 0;
-      width: @play-pause-size;
-      height: 100%;
-
-      border: none;
-      font-size: 0;
-      color: transparent;
-      background-color: white;
-      border-right: 1px solid #d5d5d5;
-
-      &:focus {
-        outline: 0;
-      }
-
-      &:hover {
-        background-color: #f0f0f0;
-      }
-
-      background-size: (@play-pause-size / 2);
-      background-repeat: no-repeat;
-      background-position: center;
-    }
-
-    .download-start-button {
-      background-image: url('../images/play.svg');
-    }
-
-    .download-stop-button {
-      background-image: url('../images/pause.svg');
+    .loading-bar {
+      margin-top: 15px;
     }
   }
 }

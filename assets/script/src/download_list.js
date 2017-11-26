@@ -5,9 +5,7 @@ function DownloadList(props) {
   let list = props.downloads.map((dl) => {
     return <DownloadEntry download={dl}
                           key={dl.hash}
-                          onClick={() => props.onClick(dl.hash)}
-                          onStart={() => props.onStart(dl.hash)}
-                          onStop={() => props.onStop(dl.hash)} />;
+                          onClick={() => props.onClick(dl.hash)} />;
   }).reverse();
   return <ol id="downloads">{list}</ol>;
 }
@@ -15,14 +13,10 @@ function DownloadList(props) {
 function DownloadEntry(props) {
   const dl = props.download;
   return (
-    <li className={'download' + (props.actionPending ? ' download-frozen' : '')}>
-      {(dl.active ?
-        <button className="download-stop-button" onClick={props.onStop}>Stop</button> :
-        <button className="download-start-button" onClick={props.onStart}>Start</button>)}
-      <div className="download-description" onClick={props.onClick}>
-        <label className="download-name">{dl.name}</label>
-        <LoadingBar progress={dl.completedBytes / dl.sizeBytes} color={downloadLoaderColor(dl)} />
-      </div>
+    <li className={'download' + (props.actionPending ? ' download-frozen' : '')}
+        onClick={props.onClick}>
+      <label className="download-name">{dl.name}</label>
+      <LoadingBar progress={dl.completedBytes / dl.sizeBytes} color={downloadLoaderColor(dl)} />
     </li>
   );
 }

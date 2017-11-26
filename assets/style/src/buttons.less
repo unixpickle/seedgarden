@@ -11,4 +11,39 @@ button {
   &:hover {
     background-color: #777;
   }
+
+  &:focus {
+    outline: 0;
+  }
+}
+
+#add-button {
+  @size: 44px;
+  position: fixed;
+  bottom: 10px;
+  right: 10px;
+  width: @size;
+  height: @size;
+  border-radius: (@size / 2);
+  margin: 0;
+  padding: 0;
+  border: none;
+  background-color: transparent;
+  color: transparent;
+  font-size: 0;
+  cursor: pointer;
+  background-image: url('../images/magnet.svg');
+  background-color: #65bcd4;
+  background-size: (@size / 2);
+  background-repeat: no-repeat;
+  background-position: center;
+
+  box-shadow: 0 0 7px rgba(0, 0, 0, 0.3);
+  transition: box-shadow 0.1s linear;
+
+  &:hover {
+    background-color: #65bcd4;
+
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+  }
 }
