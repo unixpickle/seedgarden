@@ -54,7 +54,13 @@ class ListFiles extends CancelableCall {
 }
 
 function _callBackendAPI(url) {
-  return fetch(url).then((resp) => {
+  return fetch(url).catch((err) => {
+    if (err instanceof TypeError) {
+      return Promise.reject('connection failed');
+    } else {
+      return Promise.reject(err);
+    }
+  }).then((resp) => {
     if (!resp.ok) {
       return Promise.reject(new Error('request failed'));
     }
