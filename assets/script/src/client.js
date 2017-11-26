@@ -1,6 +1,3 @@
-const REFRESH_INTERVAL = 5000;
-const BAY_SEARCH_DELAY = 1000;
-
 class TorrentClient {
   constructor() {
     this.onChange = () => false;
@@ -9,7 +6,7 @@ class TorrentClient {
     this._gettingList = false;
     this._getList();
 
-    setInterval(() => this._getList(), REFRESH_INTERVAL);
+    setInterval(() => this._getList(), TorrentClient.REFRESH_INTERVAL);
   }
 
   downloads() {
@@ -32,7 +29,8 @@ class TorrentClient {
   }
 
   addTorrent(magnetURL) {
-    _callBackendAPI('/api/add?url=' + encodeURIComponent(magnetURL));
+    const addURL = '/api/add?url=' + encodeURIComponent(magnetURL);
+    _callBackendAPI(addURL).then(() => this._getList());
   }
 
   _getList() {
@@ -64,7 +62,7 @@ class TorrentClient {
 
   _torrentCall(call, hash) {
     for (let i = 0; i < this._downloads.length; ++i) {
-      let dl = this._downloads[i];
+      const dl = this._downloads[i];
       if (dl.hash == hash && !dl.actionPending) {
         dl.actionPending = true;
         _callBackendAPI('/api/'+call+'?hash=' + encodeURIComponent(hash)).then(() => {
@@ -74,87 +72,12 @@ class TorrentClient {
         }).catch(() => {
           dl.actionPending = false;
         });
+        setTimeout(this.onChange, 0);
       }
     }
   }
-}
 
-class BaySearch {
-  constructor(query, cb) {
-    this.query = query;
-    this._cb = cb;
-    // Delay the request so that we don't spam the bay
-    // while the user types out a search query.
-    this._callTimeout = setTimeout(() => {
-      this._callTimeout = null;
-      _callBackendAPI('/api/baysearch?query=' + encodeURIComponent(query)).then((obj) => {
-        this._cb(null, obj);
-      }).catch((err) => {
-        this._cb(err, null);
-      });
-    }, BAY_SEARCH_DELAY);
+  static get REFRESH_INTERVAL() {
+    return 5000;
   }
-
-  cancel() {
-    if (this._callTimeout) {
-      clearTimeout(this._callTimeout);
-    }
-    this._cb = (x, y) => null;
-  }
-}
-
-class CancelableCall {
-  constructor(url, cb) {
-    this._cb = cb;
-    _callBackendAPI(url).then((obj) => {
-      this._cb(null, obj);
-    }).catch((err) => {
-      this._cb(err, null);
-    });
-  }
-
-  cancel() {
-    this._cb = (x, y) => null;
-  }
-}
-
-class BayLookup extends CancelableCall {
-  constructor(id, cb) {
-    super('/api/baylookup?id=' + encodeURIComponent(id), cb);
-  }
-}
-
-class ListFiles extends CancelableCall {
-  constructor(hash, cb) {
-    super('/api/files?hash=' + encodeURIComponent(hash), cb);
-  }
-}
-
-function _callBackendAPI(url) {
-  return fetch(url).then((resp) => {
-    if (!resp.ok) {
-      return Promise.reject(new Error('request failed'));
-    }
-    return resp.json();
-  }).then((obj) => {
-    if (obj.hasOwnProperty('error')) {
-      return Promise.reject(obj['error']);
-    }
-    return _lowercaseObj(obj);
-  });
-}
-
-function _lowercaseObj(obj) {
-  if (Array.isArray(obj)) {
-    return obj.map(_lowercaseObj);
-  }
-  let result = {};
-  Object.keys(obj).forEach((k) => {
-    if (k == 'ID') {
-      result.id = obj[k];
-    } else {
-      result[k[0].toLowerCase() + k.substr(1)] = obj[k];
-    }
-  });
-  return result;
 }

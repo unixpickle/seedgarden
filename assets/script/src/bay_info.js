@@ -21,7 +21,7 @@ class BayInfo extends React.Component {
     if (this.state.loading) {
       return <LoaderPane />;
     } else if (this.state.error) {
-      return <div className="error-pane">{this.state.error}</div>;
+      return <div className="error-pane">{this.state.error + ''}</div>;
     } else {
       return (
         <div className="bay-info">

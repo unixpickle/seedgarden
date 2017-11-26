@@ -26,34 +26,45 @@ class Search extends React.Component {
   }
 
   render() {
-    const downloads = filterDownloads(this.props.downloads, this.props.query);
-    let downloadElems = downloads.map((d, i) => {
-      return <SearchListing onClick={() => this.props.onClickDownload(d.hash)}
-                            key={'dl-'+i} name={d.name} />;
-    }).reverse();
-    if (downloadElems.length == 0) {
-      downloadElems = <SearchEmpty key="dl-empty" />;
-    }
-    let bayElems = <SearchLoading key="bay-loading" />;
-    if (this.state.bayResults) {
-      bayElems = this.state.bayResults.map((r, i) => {
-        return <SearchListing onClick={() => this.props.onClickBay(r.id)}
-                              key={'bay-'+i} name={r.name} />;
-      });
-      if (bayElems.length === 0) {
-        bayElems = <SearchEmpty key="bay-empty" />;
-      }
-    } else if (this.state.bayError) {
-      bayElems = <SearchError key="bay-error" message={this.state.bayError} />;
-    }
     return (
       <ol className='search-results'>
         <SearchHeading key="heading-1" text="In the client" />
-        {downloadElems}
+        {this.downloadListing()}
         <SearchHeading key="heading-2" text="On the bay" />
-        {bayElems}
+        {this.bayListing()}
       </ol>
     );
+  }
+
+  downloadListing() {
+    const downloads = filterDownloads(this.props.downloads, this.props.query);
+    const elems = downloads.map((d, i) => {
+      return <SearchListing onClick={() => this.props.onClickDownload(d.hash)}
+                            key={'dl-'+i} name={d.name} />;
+    }).reverse();
+    if (elems.length == 0) {
+      return <SearchEmpty key="dl-empty" />;
+    } else {
+      return elems;
+    }
+  }
+
+  bayListing() {
+    if (this.state.bayResults) {
+      const elems = this.state.bayResults.map((r, i) => {
+        return <SearchListing onClick={() => this.props.onClickBay(r.id)}
+                              key={'bay-'+i} name={r.name} />;
+      });
+      if (elems.length === 0) {
+        return <SearchEmpty key="bay-empty" />;
+      } else {
+        return elems;
+      }
+    } else if (this.state.bayError) {
+      return <SearchError key="bay-error" message={this.state.bayError} />;
+    } else {
+      return <SearchLoading key="bay-loading" />;
+    }
   }
 
   bayCallback(error, results) {

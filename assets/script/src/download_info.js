@@ -47,7 +47,7 @@ class DownloadInfo extends React.Component {
         </div>
       );
     } else if (this.state.filesError) {
-      return <div className="download-files-error">{this.state.filesError}</div>
+      return <div className="download-files-error">{this.state.filesError + ''}</div>
     } else {
       return <div className="download-files-loading"><Loader /></div>;
     }
