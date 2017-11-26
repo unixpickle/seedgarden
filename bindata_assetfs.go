@@ -211,7 +211,7 @@ func assetsScriptScriptJs() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "assets/script/script.js", size: 19582, mode: os.FileMode(420), modTime: time.Unix(1511656402, 0)}
+	info := bindataFileInfo{name: "assets/script/script.js", size: 19582, mode: os.FileMode(420), modTime: time.Unix(1511657506, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -231,7 +231,7 @@ func assetsStyleStyleCss() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "assets/style/style.css", size: 9050, mode: os.FileMode(420), modTime: time.Unix(1511656403, 0)}
+	info := bindataFileInfo{name: "assets/style/style.css", size: 9050, mode: os.FileMode(420), modTime: time.Unix(1511657507, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }

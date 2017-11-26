@@ -1,19 +1,19 @@
 @loader-size: 20px;
 
 .loader {
-	display: block;
-	width: @loader-size;
-	height: @loader-size;
-	color: transparent;
-	font-size: 0;
+  display: block;
+  width: @loader-size;
+  height: @loader-size;
+  color: transparent;
+  font-size: 0;
 
-	background-image: url(../images/loader.svg);
-	background-size: 100% 100%;
+  background-image: url(../images/loader.svg);
+  background-size: 100% 100%;
 
-	animation-name: rotate;
-	animation-duration: 1s;
-	animation-iteration-count: infinite;
-	animation-timing-function: linear;
+  animation-name: rotate;
+  animation-duration: 1s;
+  animation-iteration-count: infinite;
+  animation-timing-function: linear;
 }
 
 @keyframes rotate {
@@ -22,25 +22,25 @@
 }
 
 .loading-bar {
-	@thickness: 4px;
+  @thickness: 4px;
 
-	position: relative;
-	height: @thickness;
+  position: relative;
+  height: @thickness;
 
-	&::before, .loading-bar-filler {
-		position: absolute;
-		left: 0;
-		height: @thickness;
-	}
+  &::before, .loading-bar-filler {
+    position: absolute;
+    left: 0;
+    height: @thickness;
+  }
 
-	&::before {
-		content: '';
-		display: block;
-		width: 100%;
-		background-color: #d5d5d5;
-	}
+  &::before {
+    content: '';
+    display: block;
+    width: 100%;
+    background-color: #d5d5d5;
+  }
 
-	.loading-bar-filler {
-		background-color: #65bcd4;
-	}
+  .loading-bar-filler {
+    background-color: #65bcd4;
+  }
 }

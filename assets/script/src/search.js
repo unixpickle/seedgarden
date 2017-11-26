@@ -1,31 +1,31 @@
 class Search extends React.Component {
-	constructor(props) {
-		super(props);
-		this.state = {
+  constructor(props) {
+    super(props);
+    this.state = {
       bayResults: null,
       bayLoading: true,
       bayError: null
     };
     this.baySearch = null;
-	}
+  }
 
-	componentWillMount() {
-		this.baySearch = new BaySearch(this.props.query, this.bayCallback.bind(this));
-	}
+  componentWillMount() {
+    this.baySearch = new BaySearch(this.props.query, this.bayCallback.bind(this));
+  }
 
   componentWillUnmount() {
     this.baySearch.cancel();
   }
 
-	componentWillReceiveProps(props) {
-		if (props.query !== this.baySearch.query) {
-			this.baySearch.cancel();
-			this.setState({bayResults: null, bayLoading: true, bayError: null});
-			this.baySearch = new BaySearch(props.query, this.bayCallback.bind(this));
-		}
-	}
+  componentWillReceiveProps(props) {
+    if (props.query !== this.baySearch.query) {
+      this.baySearch.cancel();
+      this.setState({bayResults: null, bayLoading: true, bayError: null});
+      this.baySearch = new BaySearch(props.query, this.bayCallback.bind(this));
+    }
+  }
 
-	render() {
+  render() {
     const downloads = filterDownloads(this.props.downloads, this.props.query);
     let downloadElems = downloads.map((d, i) => {
       return <SearchListing onClick={() => this.props.onClickDownload(d.hash)}
@@ -54,10 +54,10 @@ class Search extends React.Component {
         {bayElems}
       </ol>
     );
-	}
+  }
 
   bayCallback(error, results) {
-		error = error && error.toString();
+    error = error && error.toString();
     this.setState({bayResults: results, bayLoading: false, bayError: error});
   }
 }
@@ -88,5 +88,5 @@ function filterDownloads(downloads, query) {
 }
 
 window.addEventListener('load', function() {
-	ReactDOM.render(<Root />, document.getElementById('content'));
+  ReactDOM.render(<Root />, document.getElementById('content'));
 });
