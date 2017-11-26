@@ -505,6 +505,43 @@ function DownloadList(props) {
 
 function DownloadEntry(props) {
   const dl = props.download;
+
+  let details = React.createElement(LoadingBar, { progress: dl.completedBytes / dl.sizeBytes,
+    color: downloadLoaderColor(dl) });
+  if (!dl.active && dl.completedBytes === dl.sizeBytes) {
+    details = React.createElement(
+      'div',
+      { className: 'download-info-box' },
+      React.createElement(
+        'div',
+        { className: 'download-info-field' },
+        React.createElement(
+          'label',
+          null,
+          'Size:'
+        ),
+        React.createElement(
+          'label',
+          null,
+          formatSize(dl.sizeBytes)
+        )
+      ),
+      React.createElement(
+        'div',
+        { className: 'download-info-field' },
+        React.createElement(
+          'label',
+          null,
+          'Uploaded:'
+        ),
+        React.createElement(
+          'label',
+          null,
+          formatSize(dl.uploadTotal)
+        )
+      )
+    );
+  }
   return React.createElement(
     'li',
     { className: 'download' + (props.actionPending ? ' download-frozen' : ''),
@@ -514,8 +551,7 @@ function DownloadEntry(props) {
       { className: 'download-name' },
       dl.name
     ),
-    React.createElement(LoadingBar, { progress: dl.completedBytes / dl.sizeBytes,
-      color: downloadLoaderColor(dl) })
+    details
   );
 }
 function Loader(props) {

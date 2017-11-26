@@ -209,6 +209,26 @@ button:focus {
 #downloads .download .loading-bar {
   margin-top: 15px;
 }
+#downloads .download .download-info-box {
+  margin-top: 10px;
+}
+#downloads .download .download-info-box::after {
+  content: ' ';
+  display: block;
+  height: 0;
+  clear: both;
+}
+#downloads .download .download-info-box .download-info-field {
+  float: left;
+  margin-right: 10px;
+}
+#downloads .download .download-info-box .download-info-field label:first-child {
+  color: #65bcd4;
+  margin-right: 5px;
+}
+#downloads .download .download-info-box .download-info-field label:last-child {
+  color: #777;
+}
 #no-downloads {
   background-color: white;
   position: absolute;

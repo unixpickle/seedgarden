@@ -19,6 +19,31 @@
     .loading-bar {
       margin-top: 15px;
     }
+
+    .download-info-box {
+      margin-top: 10px;
+
+      &::after {
+        content: ' ';
+        display: block;
+        height: 0;
+        clear: both;
+      }
+
+      .download-info-field {
+        float: left;
+        margin-right: 10px;
+
+        label:first-child {
+          color: #65bcd4;
+          margin-right: 5px;
+        }
+
+        label:last-child {
+          color: #777;
+        }
+      }
+    }
   }
 }
 
