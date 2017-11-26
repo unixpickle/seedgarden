@@ -3,6 +3,12 @@ const STATE_KEYS = ['currentSearch', 'currentDownloadHash', 'currentBayID'];
 class Root extends React.Component {
   constructor() {
     super();
+
+    // Make going home not reload the page.
+    if (location.hash == '') {
+      history.replaceState({}, window.title, stateToHash({}));
+    }
+
     this.state = initialStateFromHash();
     window.onpopstate = () => this.handlePopState();
     this.client = null;
@@ -18,15 +24,14 @@ class Root extends React.Component {
   }
 
   changeSearch(query) {
-    const stateObj = {};
-    STATE_KEYS.forEach((k) => stateObj[k] = this.state[k]);
-    stateObj.currentSearch = query;
-    if (this.state.currentSearch && query) {
-      history.replaceState({}, window.title, '#'+JSON.stringify(stateObj));
-    } else {
-      history.pushState({}, window.title, '#'+JSON.stringify(stateObj));
-    }
-    this.setState({currentSearch: query});
+    const oldSearch = this.state.currentSearch;
+    const newState = this.setState({currentSearch: query}, () => {
+      if (oldSearch && query) {
+        history.replaceState({}, window.title, stateToHash(this.state));
+      } else {
+        history.pushState({}, window.title, stateToHash(this.state));
+      }
+    });
   }
 
   showDownload(hash) {
@@ -64,7 +69,7 @@ class Root extends React.Component {
   }
 
   pushHistoryState(state) {
-    history.pushState({}, window.title, '#'+JSON.stringify(state));
+    history.pushState({}, window.title, stateToHash(state));
   }
 
   render() {
@@ -112,6 +117,15 @@ class Root extends React.Component {
   }
 }
 
+function stateToHash(state) {
+  var smallState = {};
+  STATE_KEYS.forEach((k) => (state[k] && (smallState[k] = state[k])));
+  if (!Object.keys(smallState).length) {
+    return '#';
+  }
+  return '#' + encodeURIComponent(JSON.stringify(smallState));
+}
+
 function initialStateFromHash() {
   let result = rootStateFromHash();
   result.downloads = null;
@@ -124,7 +138,7 @@ function rootStateFromHash() {
     return result;
   }
   try {
-    Object.assign(result, JSON.parse(location.hash.substr(1)));
+    Object.assign(result, JSON.parse(decodeURIComponent(location.hash.substr(1))));
   } catch (e) {
   }
   return result;
