@@ -2,3 +2,12 @@
   word-wrap: break-word;
   word-break: break-all;
 }
+
+.clear-float {
+  &::after {
+    content: ' ';
+    clear: both;
+    height: 0;
+    display: block;
+  }
+}

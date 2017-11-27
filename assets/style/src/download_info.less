@@ -3,31 +3,95 @@
 
   padding: 10px;
 
-  .download-frozen {
+  .download-info-pending {
     pointer-events: none;
     opacity: 0.5;
   }
 
-  .download-actions {
-    margin-top: 10px;
-    text-align: center;
+  .download-info-heading {
+    @play-pause-size: 30px;
 
-    button {
-      margin: 0 5px;
+    position: relative;
+
+    .download-stop-button, .download-start-button {
+      position: absolute;
+      width: @play-pause-size;
+      height: 100%;
+      padding: 0;
+      margin: 0;
+      top: 0;
+      left: 0;
+      border: none;
+      font-size: 0;
+      color: transparent;
+
+      background-size: (@play-pause-size / 2);
+      background-repeat: no-repeat;
+      background-position: center;
+      background-color: transparent;
+    }
+
+    .download-start-button {
+      background-image: url('../images/play.svg');
+    }
+
+    .download-stop-button {
+      background-image: url('../images/pause.svg');
+    }
+
+    .download-info-name {
+      .char-wrapped();
+      box-sizing: border-box;
+      display: inline-block;
+      position: relative;
+      top: 0;
+      left: @play-pause-size;
+      width: calc(~"100% - "(@play-pause-size));
+      color: #777;
+      padding: 5px 0 5px 5px;
     }
   }
 
-  table {
-    margin: auto;
+  .download-info-delete-container {
+    text-align: center;
+    margin-top: 20px;
+  }
 
-    td:first-child {
-      font-weight: 600;
-      text-align: right;
-      padding-right: 10px;
+  .download-info-row {
+    .clear-float();
+
+    margin-top: 20px;
+
+    @media (max-width: 500px) {
+      padding: 0 5px;
     }
 
-    td:not(:first-child) {
-      .char-wrapped();
+    @media (min-width: 500px) {
+      padding: 0 30px;
+    }
+
+    .download-info-data {
+      .clear-float();
+
+      label:first-child {
+        display: block;
+        float: top;
+        color: #65bcd4;
+        margin-bottom: 5px;
+      }
+
+      label:last-child {
+        float: bottom;
+        color: #777;
+      }
+    }
+
+    .download-info-data:first-child {
+      float: left;
+    }
+
+    .download-info-data:last-child {
+      float: right;
     }
   }
 

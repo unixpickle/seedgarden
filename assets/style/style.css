@@ -6,6 +6,12 @@ body {
   word-wrap: break-word;
   word-break: break-all;
 }
+.clear-float::after {
+  content: ' ';
+  clear: both;
+  height: 0;
+  display: block;
+}
 .loader {
   display: block;
   width: 20px;
@@ -50,6 +56,7 @@ button {
   height: 36px;
   line-height: 36px;
   border: none;
+  border-radius: 0;
   padding: 0 20px;
   font-size: 18px;
   color: white;
@@ -214,9 +221,9 @@ button:focus {
 }
 #downloads .download .download-info-box::after {
   content: ' ';
-  display: block;
-  height: 0;
   clear: both;
+  height: 0;
+  display: block;
 }
 #downloads .download .download-info-box .download-info-field {
   float: left;
@@ -399,37 +406,102 @@ button:focus {
     left: calc(50% -  300px);
   }
 }
-.download-info .download-frozen {
+.download-info .download-info-pending {
   pointer-events: none;
   opacity: 0.5;
 }
-.download-info .download-actions {
-  margin-top: 10px;
-  text-align: center;
+.download-info .download-info-heading {
+  position: relative;
 }
-.download-info .download-actions button {
-  margin: 0 5px;
+.download-info .download-info-heading .download-stop-button,
+.download-info .download-info-heading .download-start-button {
+  position: absolute;
+  width: 30px;
+  height: 100%;
+  padding: 0;
+  margin: 0;
+  top: 0;
+  left: 0;
+  border: none;
+  font-size: 0;
+  color: transparent;
+  background-size: 15px;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-color: transparent;
 }
-.download-info table {
-  margin: auto;
+.download-info .download-info-heading .download-start-button {
+  background-image: url('../images/play.svg');
 }
-.download-info table td:first-child {
-  font-weight: 600;
-  text-align: right;
-  padding-right: 10px;
+.download-info .download-info-heading .download-stop-button {
+  background-image: url('../images/pause.svg');
 }
-.download-info table td:not(:first-child) {
+.download-info .download-info-heading .download-info-name {
   word-wrap: break-word;
   word-break: break-all;
+  box-sizing: border-box;
+  display: inline-block;
+  position: relative;
+  top: 0;
+  left: 30px;
+  width: calc(100% -  30px);
+  color: #777;
+  padding: 5px 0 5px 5px;
+}
+.download-info .download-info-delete-container {
+  text-align: center;
+  margin-top: 20px;
+}
+.download-info .download-info-row {
+  margin-top: 20px;
+}
+.download-info .download-info-row::after {
+  content: ' ';
+  clear: both;
+  height: 0;
+  display: block;
+}
+@media (max-width: 500px) {
+  .download-info .download-info-row {
+    padding: 0 5px;
+  }
+}
+@media (min-width: 500px) {
+  .download-info .download-info-row {
+    padding: 0 30px;
+  }
+}
+.download-info .download-info-row .download-info-data::after {
+  content: ' ';
+  clear: both;
+  height: 0;
+  display: block;
+}
+.download-info .download-info-row .download-info-data label:first-child {
+  display: block;
+  float: top;
+  color: #65bcd4;
+  margin-bottom: 5px;
+}
+.download-info .download-info-row .download-info-data label:last-child {
+  float: bottom;
+  color: #777;
+}
+.download-info .download-info-row .download-info-data:first-child {
+  float: left;
+}
+.download-info .download-info-row .download-info-data:last-child {
+  float: right;
 }
 .download-info .download-files,
 .download-info .download-files-loading,
 .download-info .download-files-error {
-  margin-top: 10px;
+  margin-top: 20px;
 }
 .download-info .download-files-loading {
   position: relative;
   height: 40px;
+  width: 100%;
 }
 .download-info .download-files-loading .loader {
   position: absolute;
@@ -442,10 +514,23 @@ button:focus {
   text-align: center;
   color: red;
 }
+.download-info .download-files {
+  text-align: center;
+}
+.download-info .download-files .heading {
+  font-weight: 600;
+  margin-bottom: 5px;
+}
 .download-info .download-files a {
   word-wrap: break-word;
   word-break: break-all;
   display: block;
+  text-decoration: none;
+  color: #777;
+  padding: 5px 0;
+}
+.download-info .download-files a:hover {
+  color: #999;
 }
 .bay-info {
   background-color: white;

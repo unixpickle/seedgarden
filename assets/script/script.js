@@ -298,130 +298,134 @@ class DownloadInfo extends React.Component {
 
   render() {
     const dl = this.props.download;
+    const extraButtonClass = dl.actionPending ? ' download-info-pending' : '';
+    // TODO: show progress bar.
     return React.createElement(
       'div',
       { className: 'download-info' },
       React.createElement(
-        'table',
-        { className: 'download-info-table' },
+        'div',
+        { className: 'download-info-heading' },
+        dl.active ? React.createElement(
+          'button',
+          { className: 'download-stop-button' + extraButtonClass,
+            onClick: this.props.onStop },
+          'Stop'
+        ) : React.createElement(
+          'button',
+          { className: 'download-start-button' + extraButtonClass,
+            onClick: this.props.onStart },
+          'Start'
+        ),
         React.createElement(
-          'tbody',
-          null,
+          'label',
+          { className: 'download-info-name' },
+          dl.name
+        )
+      ),
+      React.createElement(
+        'div',
+        { className: 'download-info-row' },
+        React.createElement(
+          'div',
+          { className: 'download-info-data' },
           React.createElement(
-            'tr',
+            'label',
             null,
-            React.createElement(
-              'td',
-              null,
-              'Name'
-            ),
-            React.createElement(
-              'td',
-              null,
-              dl.name
-            )
+            'Size:'
           ),
           React.createElement(
-            'tr',
+            'label',
             null,
-            React.createElement(
-              'td',
-              null,
-              'Progress'
-            ),
-            React.createElement(
-              'td',
-              null,
-              (100 * dl.completedBytes / dl.sizeBytes).toFixed(2) + '%'
-            )
+            formatSize(dl.sizeBytes)
+          )
+        ),
+        React.createElement(
+          'div',
+          { className: 'download-info-data' },
+          React.createElement(
+            'label',
+            null,
+            '% Complete:'
           ),
           React.createElement(
-            'tr',
+            'label',
             null,
-            React.createElement(
-              'td',
-              null,
-              'Size'
-            ),
-            React.createElement(
-              'td',
-              null,
-              formatSize(dl.sizeBytes)
-            )
-          ),
-          React.createElement(
-            'tr',
-            null,
-            React.createElement(
-              'td',
-              null,
-              'Completed'
-            ),
-            React.createElement(
-              'td',
-              null,
-              formatSize(dl.completedBytes)
-            )
-          ),
-          React.createElement(
-            'tr',
-            null,
-            React.createElement(
-              'td',
-              null,
-              'DL Rate'
-            ),
-            React.createElement(
-              'td',
-              null,
-              formatRate(dl.downloadRate)
-            )
-          ),
-          React.createElement(
-            'tr',
-            null,
-            React.createElement(
-              'td',
-              null,
-              'UL Rate'
-            ),
-            React.createElement(
-              'td',
-              null,
-              formatRate(dl.uploadRate)
-            )
-          ),
-          React.createElement(
-            'tr',
-            null,
-            React.createElement(
-              'td',
-              null,
-              'Uploaded'
-            ),
-            React.createElement(
-              'td',
-              null,
-              formatSize(dl.uploadTotal)
-            )
+            (100 * dl.completedBytes / dl.sizeBytes).toFixed(2) + '%'
           )
         )
       ),
       React.createElement(
         'div',
-        { className: 'download-actions' + (dl.actionPending ? ' download-frozen' : '') },
-        dl.active ? React.createElement(
-          'button',
-          { className: 'download-action-button', onClick: this.props.onStop },
-          'Stop'
-        ) : React.createElement(
-          'button',
-          { className: 'download-action-button', onClick: this.props.onStart },
-          'Start'
+        { className: 'download-info-row' },
+        React.createElement(
+          'div',
+          { className: 'download-info-data' },
+          React.createElement(
+            'label',
+            null,
+            'Downloaded:'
+          ),
+          React.createElement(
+            'label',
+            null,
+            formatSize(dl.completedBytes)
+          )
         ),
         React.createElement(
+          'div',
+          { className: 'download-info-data' },
+          React.createElement(
+            'label',
+            null,
+            'Rate:'
+          ),
+          React.createElement(
+            'label',
+            null,
+            formatRate(dl.downloadRate)
+          )
+        )
+      ),
+      React.createElement(
+        'div',
+        { className: 'download-info-row' },
+        React.createElement(
+          'div',
+          { className: 'download-info-data' },
+          React.createElement(
+            'label',
+            null,
+            'Uploaded:'
+          ),
+          React.createElement(
+            'label',
+            null,
+            formatSize(dl.uploadTotal)
+          )
+        ),
+        React.createElement(
+          'div',
+          { className: 'download-info-data' },
+          React.createElement(
+            'label',
+            null,
+            'Rate:'
+          ),
+          React.createElement(
+            'label',
+            null,
+            formatRate(dl.uploadRate)
+          )
+        )
+      ),
+      React.createElement(
+        'div',
+        { className: 'download-info-delete-container' },
+        React.createElement(
           'button',
-          { className: 'download-delete-button', onClick: this.props.onDelete },
+          { className: 'download-delete-button' + extraButtonClass,
+            onClick: this.props.onDelete },
           'Delete'
         )
       ),
@@ -434,6 +438,11 @@ class DownloadInfo extends React.Component {
       return React.createElement(
         'div',
         { className: 'download-files' },
+        React.createElement(
+          'label',
+          { className: 'heading' },
+          'Files'
+        ),
         this.state.files.map(x => React.createElement(
           'a',
           { key: x.link, href: x.link },

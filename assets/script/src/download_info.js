@@ -15,24 +15,51 @@ class DownloadInfo extends React.Component {
 
   render() {
     const dl = this.props.download;
+    const extraButtonClass = (dl.actionPending ? ' download-info-pending' : '');
+    // TODO: show progress bar.
     return (
       <div className="download-info">
-        <table className="download-info-table">
-          <tbody>
-            <tr><td>Name</td><td>{dl.name}</td></tr>
-            <tr><td>Progress</td><td>{(100*dl.completedBytes/dl.sizeBytes).toFixed(2) + '%'}</td></tr>
-            <tr><td>Size</td><td>{formatSize(dl.sizeBytes)}</td></tr>
-            <tr><td>Completed</td><td>{formatSize(dl.completedBytes)}</td></tr>
-            <tr><td>DL Rate</td><td>{formatRate(dl.downloadRate)}</td></tr>
-            <tr><td>UL Rate</td><td>{formatRate(dl.uploadRate)}</td></tr>
-            <tr><td>Uploaded</td><td>{formatSize(dl.uploadTotal)}</td></tr>
-          </tbody>
-        </table>
-        <div className={'download-actions' + (dl.actionPending ? ' download-frozen' : '')}>
+        <div className="download-info-heading">
           {(dl.active ?
-            <button className="download-action-button" onClick={this.props.onStop}>Stop</button> :
-            <button className="download-action-button" onClick={this.props.onStart}>Start</button>)}
-          <button className="download-delete-button" onClick={this.props.onDelete}>Delete</button>
+            <button className={'download-stop-button' + extraButtonClass}
+                    onClick={this.props.onStop}>Stop</button> :
+            <button className={'download-start-button' + extraButtonClass}
+                    onClick={this.props.onStart}>Start</button>)}
+          <label className="download-info-name">{dl.name}</label>
+        </div>
+        <div className="download-info-row">
+          <div className="download-info-data">
+            <label>Size:</label>
+            <label>{formatSize(dl.sizeBytes)}</label>
+          </div>
+          <div className="download-info-data">
+            <label>% Complete:</label>
+            <label>{(100*dl.completedBytes/dl.sizeBytes).toFixed(2) + '%'}</label>
+          </div>
+        </div>
+        <div className="download-info-row">
+          <div className="download-info-data">
+            <label>Downloaded:</label>
+            <label>{formatSize(dl.completedBytes)}</label>
+          </div>
+          <div className="download-info-data">
+            <label>Rate:</label>
+            <label>{formatRate(dl.downloadRate)}</label>
+          </div>
+        </div>
+        <div className="download-info-row">
+          <div className="download-info-data">
+            <label>Uploaded:</label>
+            <label>{formatSize(dl.uploadTotal)}</label>
+          </div>
+          <div className="download-info-data">
+            <label>Rate:</label>
+            <label>{formatRate(dl.uploadRate)}</label>
+          </div>
+        </div>
+        <div className="download-info-delete-container">
+          <button className={'download-delete-button' + extraButtonClass}
+                  onClick={this.props.onDelete}>Delete</button>
         </div>
         {this.filesElement()}
       </div>

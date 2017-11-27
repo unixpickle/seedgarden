@@ -21,14 +21,9 @@
     }
 
     .download-info-box {
-      margin-top: 10px;
+      .clear-float();
 
-      &::after {
-        content: ' ';
-        display: block;
-        height: 0;
-        clear: both;
-      }
+      margin-top: 10px;
 
       .download-info-field {
         float: left;
