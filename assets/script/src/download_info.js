@@ -43,6 +43,7 @@ class DownloadInfo extends React.Component {
     if (this.state.files) {
       return (
         <div className="download-files">
+          <label className="heading">Files</label>
           {this.state.files.map((x) => <a key={x.link} href={x.link}>{x.path}</a>)}
         </div>
       );
