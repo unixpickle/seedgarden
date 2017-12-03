@@ -168,6 +168,26 @@ button:focus {
   margin: 0;
   padding: 0;
 }
+.list-item-info-box {
+  margin-top: 10px;
+}
+.list-item-info-box::after {
+  content: ' ';
+  clear: both;
+  height: 0;
+  display: block;
+}
+.list-item-info-box .list-item-info-field {
+  float: left;
+  margin-right: 10px;
+}
+.list-item-info-box .list-item-info-field label:first-child {
+  color: #65bcd4;
+  margin-right: 5px;
+}
+.list-item-info-box .list-item-info-field label:last-child {
+  color: #777;
+}
 #downloads {
   background-color: white;
   position: absolute;
@@ -194,6 +214,7 @@ button:focus {
   position: relative;
   box-sizing: border-box;
   width: 100%;
+  color: #777;
   padding: 16px;
   background-color: white;
 }
@@ -225,15 +246,15 @@ button:focus {
   height: 0;
   display: block;
 }
-#downloads .download .download-info-box .download-info-field {
+#downloads .download .download-info-box .list-item-info-field {
   float: left;
   margin-right: 10px;
 }
-#downloads .download .download-info-box .download-info-field label:first-child {
+#downloads .download .download-info-box .list-item-info-field label:first-child {
   color: #65bcd4;
   margin-right: 5px;
 }
-#downloads .download .download-info-box .download-info-field label:last-child {
+#downloads .download .download-info-box .list-item-info-field label:last-child {
   color: #777;
 }
 #no-downloads {
@@ -361,6 +382,7 @@ button:focus {
   position: relative;
   box-sizing: border-box;
   width: 100%;
+  color: #777;
 }
 .search-results .search-listing:not(:last-child) {
   border-bottom: 1px solid #d5d5d5;
@@ -555,13 +577,15 @@ button:focus {
 }
 .bay-info .bay-info-name,
 .bay-info .bay-info-seeders,
-.bay-info .bay-info-leechers {
+.bay-info .bay-info-leechers,
+.bay-info .bay-info-size {
   display: block;
   margin-bottom: 20px;
 }
 .bay-info .bay-info-name::before,
 .bay-info .bay-info-seeders::before,
-.bay-info .bay-info-leechers::before {
+.bay-info .bay-info-leechers::before,
+.bay-info .bay-info-size::before {
   font-weight: 600;
 }
 .bay-info .bay-info-name::before {
@@ -572,6 +596,9 @@ button:focus {
 }
 .bay-info .bay-info-leechers::before {
   content: 'Leechers: ';
+}
+.bay-info .bay-info-size::before {
+  content: 'Size: ';
 }
 .bay-info .bay-info-name {
   word-wrap: break-word;

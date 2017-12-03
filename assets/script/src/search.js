@@ -53,7 +53,8 @@ class Search extends React.Component {
     if (this.state.bayResults) {
       const elems = this.state.bayResults.map((r, i) => {
         return <SearchListing onClick={() => this.props.onClickBay(r.id)}
-                              key={'bay-'+i} name={r.name} />;
+                              key={'bay-'+i} name={r.name}
+                              keys={['Size']} values={[r.size]} />;
       });
       if (elems.length === 0) {
         return <SearchEmpty key="bay-empty" />;
@@ -78,7 +79,12 @@ function SearchHeading(props) {
 }
 
 function SearchListing(props) {
-  return <div className="search-listing" onClick={props.onClick}>{props.name}</div>;
+  return (
+    <div className="search-listing" onClick={props.onClick}>
+      <label>{props.name}</label>
+      {props.keys && <ListInfoBox keys={props.keys} values={props.values} />}
+    </div>
+  );
 }
 
 function SearchEmpty() {

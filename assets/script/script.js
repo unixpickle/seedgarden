@@ -185,6 +185,11 @@ class BayInfo extends React.Component {
           this.state.info.leechers
         ),
         React.createElement(
+          'label',
+          { className: 'bay-info-size' },
+          this.state.info.size
+        ),
+        React.createElement(
           'button',
           { className: 'bay-info-add-button',
             onClick: () => this.props.onAdd(this.state.info.magnetURL) },
@@ -518,38 +523,8 @@ function DownloadEntry(props) {
   let details = React.createElement(LoadingBar, { progress: dl.completedBytes / dl.sizeBytes,
     color: downloadLoaderColor(dl) });
   if (!dl.active && dl.completedBytes === dl.sizeBytes) {
-    details = React.createElement(
-      'div',
-      { className: 'download-info-box' },
-      React.createElement(
-        'div',
-        { className: 'download-info-field' },
-        React.createElement(
-          'label',
-          null,
-          'Size:'
-        ),
-        React.createElement(
-          'label',
-          null,
-          formatSize(dl.sizeBytes)
-        )
-      ),
-      React.createElement(
-        'div',
-        { className: 'download-info-field' },
-        React.createElement(
-          'label',
-          null,
-          'Uploaded:'
-        ),
-        React.createElement(
-          'label',
-          null,
-          formatSize(dl.uploadTotal)
-        )
-      )
-    );
+    details = React.createElement(ListInfoBox, { keys: ['Size', 'Uploaded'],
+      values: [formatSize(dl.sizeBytes), formatSize(dl.uploadTotal)] });
   }
   return React.createElement(
     'li',
@@ -561,6 +536,31 @@ function DownloadEntry(props) {
       dl.name
     ),
     details
+  );
+}
+function ListInfoBox(props) {
+  const fields = [];
+  props.keys.forEach((key, i) => {
+    fields.push(React.createElement(
+      'div',
+      { className: 'list-item-info-field', key: i },
+      React.createElement(
+        'label',
+        null,
+        key,
+        ':'
+      ),
+      React.createElement(
+        'label',
+        null,
+        props.values[i]
+      )
+    ));
+  });
+  return React.createElement(
+    'div',
+    { className: 'list-item-info-box' },
+    fields
   );
 }
 function Loader(props) {
@@ -773,7 +773,8 @@ class Search extends React.Component {
     if (this.state.bayResults) {
       const elems = this.state.bayResults.map((r, i) => {
         return React.createElement(SearchListing, { onClick: () => this.props.onClickBay(r.id),
-          key: 'bay-' + i, name: r.name });
+          key: 'bay-' + i, name: r.name,
+          keys: ['Size'], values: [r.size] });
       });
       if (elems.length === 0) {
         return React.createElement(SearchEmpty, { key: 'bay-empty' });
@@ -805,7 +806,12 @@ function SearchListing(props) {
   return React.createElement(
     'div',
     { className: 'search-listing', onClick: props.onClick },
-    props.name
+    React.createElement(
+      'label',
+      null,
+      props.name
+    ),
+    props.keys && React.createElement(ListInfoBox, { keys: props.keys, values: props.values })
   );
 }
 

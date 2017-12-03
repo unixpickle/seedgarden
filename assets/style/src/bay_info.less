@@ -4,7 +4,7 @@
   padding: 10px;
   text-align: center;
 
-  .bay-info-name, .bay-info-seeders, .bay-info-leechers {
+  .bay-info-name, .bay-info-seeders, .bay-info-leechers, .bay-info-size {
     display: block;
     margin-bottom: 20px;
 
@@ -23,6 +23,10 @@
 
   .bay-info-leechers::before {
     content: 'Leechers: ';
+  }
+
+  .bay-info-size::before {
+    content: 'Size: ';
   }
 
   .bay-info-name {

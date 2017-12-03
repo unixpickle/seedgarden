@@ -4,6 +4,7 @@ import (
 	"io"
 	"net/http"
 	"net/url"
+	"regexp"
 	"strings"
 
 	"github.com/unixpickle/essentials"
@@ -12,9 +13,12 @@ import (
 	"golang.org/x/net/html/atom"
 )
 
+var sizeRegexp = regexp.MustCompile("Size ([^,]*),")
+
 type SearchResult struct {
 	Name string
 	ID   string
+	Size string
 }
 
 func Search(query string) (results []*SearchResult, err error) {
@@ -43,9 +47,18 @@ func parseSearch(body io.Reader) ([]*SearchResult, error) {
 			href := scrape.Attr(link, "href")
 			title := scrape.Text(link)
 			parts := strings.Split(href, "/")
-			if len(parts) >= 3 {
-				results = append(results, &SearchResult{Name: title, ID: parts[2]})
+			if len(parts) < 3 {
+				continue
 			}
+			result := &SearchResult{Name: title, ID: parts[2]}
+			desc, ok := scrape.Find(resultElem.Parent, scrape.ByClass("detDesc"))
+			if ok {
+				match := sizeRegexp.FindStringSubmatch(scrape.Text(desc))
+				if match != nil {
+					result.Size = match[1]
+				}
+			}
+			results = append(results, result)
 		}
 	}
 

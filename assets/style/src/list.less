@@ -17,6 +17,8 @@
 .list-item(@spacing) {
   .passive-list-item(@spacing);
 
+  color: #777;
+
   &:hover {
     background-color: #f0f0f0;
     cursor: pointer;
@@ -24,5 +26,25 @@
 
   * {
     pointer-events: none;
+  }
+}
+
+.list-item-info-box {
+  .clear-float();
+
+  margin-top: 10px;
+
+  .list-item-info-field {
+    float: left;
+    margin-right: 10px;
+
+    label:first-child {
+      color: #65bcd4;
+      margin-right: 5px;
+    }
+
+    label:last-child {
+      color: #777;
+    }
   }
 }
