@@ -470,6 +470,10 @@ button:focus {
   color: #777;
   padding: 5px 0 5px 5px;
 }
+.download-info .loading-bar {
+  margin-top: 10px;
+  margin-left: 35px;
+}
 .download-info .download-info-delete-container {
   text-align: center;
   margin-top: 20px;

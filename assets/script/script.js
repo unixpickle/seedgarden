@@ -328,6 +328,8 @@ class DownloadInfo extends React.Component {
           dl.name
         )
       ),
+      dl.active ? React.createElement(LoadingBar, { progress: dl.completedBytes / dl.sizeBytes,
+        color: downloadLoaderColor(dl) }) : null,
       React.createElement(
         'div',
         { className: 'download-info-row' },

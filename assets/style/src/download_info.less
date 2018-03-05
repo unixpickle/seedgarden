@@ -8,9 +8,9 @@
     opacity: 0.5;
   }
 
-  .download-info-heading {
-    @play-pause-size: 30px;
+  @play-pause-size: 30px;
 
+  .download-info-heading {
     position: relative;
 
     .download-stop-button, .download-start-button {
@@ -50,6 +50,11 @@
       color: #777;
       padding: 5px 0 5px 5px;
     }
+  }
+
+  .loading-bar {
+    margin-top: 10px;
+    margin-left: (@play-pause-size + 5px);
   }
 
   .download-info-delete-container {

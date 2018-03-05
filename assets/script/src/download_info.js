@@ -27,6 +27,10 @@ class DownloadInfo extends React.Component {
                     onClick={this.props.onStart}>Start</button>)}
           <label className="download-info-name">{dl.name}</label>
         </div>
+        {(dl.active ?
+          <LoadingBar progress={dl.completedBytes / dl.sizeBytes}
+                      color={downloadLoaderColor(dl)} /> :
+          null)}
         <div className="download-info-row">
           <div className="download-info-data">
             <label>Size:</label>
