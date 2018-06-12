@@ -8,6 +8,7 @@ import (
 	"net/url"
 	"os"
 	"path/filepath"
+	"reflect"
 	"time"
 
 	"github.com/unixpickle/essentials"
@@ -188,6 +189,14 @@ func serveObject(w http.ResponseWriter, obj interface{}) {
 	if err, ok := obj.(error); ok {
 		obj = map[string]string{"error": err.Error()}
 	}
+
+	// Don't send null for empty slices.
+	if reflect.TypeOf(obj).Kind() == reflect.Slice {
+		if reflect.ValueOf(obj).Len() == 0 {
+			obj = reflect.MakeSlice(reflect.TypeOf(obj), 0, 0).Interface()
+		}
+	}
+
 	data, _ := json.Marshal(obj)
 	w.Write(data)
 }
