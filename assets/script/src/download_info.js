@@ -16,7 +16,6 @@ class DownloadInfo extends React.Component {
   render() {
     const dl = this.props.download;
     const extraButtonClass = (dl.actionPending ? ' download-info-pending' : '');
-    // TODO: show progress bar.
     return (
       <div className="download-info">
         <div className="download-info-heading">
