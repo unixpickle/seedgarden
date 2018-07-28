@@ -478,46 +478,51 @@ button:focus {
   text-align: center;
   margin-top: 20px;
 }
-.download-info .download-info-row {
+.download-info .download-info-table {
   margin-top: 20px;
+  width: 100%;
 }
-.download-info .download-info-row::after {
+.download-info .download-info-table::after {
+  content: ' ';
+  clear: both;
+  height: 0;
+  display: block;
+}
+.download-info .download-info-table .download-info-data {
+  display: inline-block;
+}
+.download-info .download-info-table .download-info-data::after {
   content: ' ';
   clear: both;
   height: 0;
   display: block;
 }
 @media (max-width: 500px) {
-  .download-info .download-info-row {
+  .download-info .download-info-table .download-info-data {
     padding: 0 5px;
   }
 }
 @media (min-width: 500px) {
-  .download-info .download-info-row {
+  .download-info .download-info-table .download-info-data {
     padding: 0 30px;
   }
 }
-.download-info .download-info-row .download-info-data::after {
-  content: ' ';
-  clear: both;
-  height: 0;
-  display: block;
-}
-.download-info .download-info-row .download-info-data label:first-child {
+.download-info .download-info-table .download-info-data label:first-child {
   display: block;
   float: top;
   color: #65bcd4;
   margin-bottom: 5px;
 }
-.download-info .download-info-row .download-info-data label:last-child {
+.download-info .download-info-table .download-info-data label:last-child {
   float: bottom;
   color: #777;
 }
-.download-info .download-info-row .download-info-data:first-child {
-  float: left;
+.download-info .download-info-table td:first-child {
+  width: 100%;
 }
-.download-info .download-info-row .download-info-data:last-child {
-  float: right;
+.download-info .download-info-table td:last-child {
+  width: auto;
+  white-space: nowrap;
 }
 .download-info .download-files,
 .download-info .download-files-loading,

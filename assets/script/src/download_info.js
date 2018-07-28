@@ -30,36 +30,52 @@ class DownloadInfo extends React.Component {
           <LoadingBar progress={dl.completedBytes / dl.sizeBytes}
                       color={downloadLoaderColor(dl)} /> :
           null)}
-        <div className="download-info-row">
-          <div className="download-info-data">
-            <label>Size:</label>
-            <label>{formatSize(dl.sizeBytes)}</label>
-          </div>
-          <div className="download-info-data">
-            <label>% Complete:</label>
-            <label>{(100*dl.completedBytes/dl.sizeBytes).toFixed(2) + '%'}</label>
-          </div>
-        </div>
-        <div className="download-info-row">
-          <div className="download-info-data">
-            <label>Downloaded:</label>
-            <label>{formatSize(dl.completedBytes)}</label>
-          </div>
-          <div className="download-info-data">
-            <label>Rate:</label>
-            <label>{formatRate(dl.downloadRate)}</label>
-          </div>
-        </div>
-        <div className="download-info-row">
-          <div className="download-info-data">
-            <label>Uploaded:</label>
-            <label>{formatSize(dl.uploadTotal)}</label>
-          </div>
-          <div className="download-info-data">
-            <label>Rate:</label>
-            <label>{formatRate(dl.uploadRate)}</label>
-          </div>
-        </div>
+        <table className="download-info-table">
+          <tbody>
+            <tr>
+              <td>
+                <div className="download-info-data">
+                  <label>Size:</label>
+                  <label>{formatSize(dl.sizeBytes)}</label>
+                </div>
+              </td>
+              <td>
+                <div className="download-info-data">
+                  <label>% Complete:</label>
+                  <label>{(100*dl.completedBytes/dl.sizeBytes).toFixed(2) + '%'}</label>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <div className="download-info-data">
+                  <label>Downloaded:</label>
+                  <label>{formatSize(dl.completedBytes)}</label>
+                </div>
+              </td>
+              <td>
+                <div className="download-info-data">
+                  <label>Rate:</label>
+                  <label>{formatRate(dl.downloadRate)}</label>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <div className="download-info-data">
+                  <label>Uploaded:</label>
+                  <label>{formatSize(dl.uploadTotal)}</label>
+                </div>
+              </td>
+              <td>
+                <div className="download-info-data">
+                  <label>Rate:</label>
+                  <label>{formatRate(dl.uploadRate)}</label>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
         <div className="download-info-delete-container">
           <button className={'download-delete-button' + extraButtonClass}
                   onClick={this.props.onDelete}>Delete</button>

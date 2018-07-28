@@ -304,7 +304,6 @@ class DownloadInfo extends React.Component {
   render() {
     const dl = this.props.download;
     const extraButtonClass = dl.actionPending ? ' download-info-pending' : '';
-    // TODO: show progress bar.
     return React.createElement(
       'div',
       { className: 'download-info' },
@@ -331,98 +330,130 @@ class DownloadInfo extends React.Component {
       dl.active ? React.createElement(LoadingBar, { progress: dl.completedBytes / dl.sizeBytes,
         color: downloadLoaderColor(dl) }) : null,
       React.createElement(
-        'div',
-        { className: 'download-info-row' },
+        'table',
+        { className: 'download-info-table' },
         React.createElement(
-          'div',
-          { className: 'download-info-data' },
+          'tbody',
+          null,
           React.createElement(
-            'label',
+            'tr',
             null,
-            'Size:'
+            React.createElement(
+              'td',
+              null,
+              React.createElement(
+                'div',
+                { className: 'download-info-data' },
+                React.createElement(
+                  'label',
+                  null,
+                  'Size:'
+                ),
+                React.createElement(
+                  'label',
+                  null,
+                  formatSize(dl.sizeBytes)
+                )
+              )
+            ),
+            React.createElement(
+              'td',
+              null,
+              React.createElement(
+                'div',
+                { className: 'download-info-data' },
+                React.createElement(
+                  'label',
+                  null,
+                  '% Complete:'
+                ),
+                React.createElement(
+                  'label',
+                  null,
+                  (100 * dl.completedBytes / dl.sizeBytes).toFixed(2) + '%'
+                )
+              )
+            )
           ),
           React.createElement(
-            'label',
+            'tr',
             null,
-            formatSize(dl.sizeBytes)
-          )
-        ),
-        React.createElement(
-          'div',
-          { className: 'download-info-data' },
-          React.createElement(
-            'label',
-            null,
-            '% Complete:'
+            React.createElement(
+              'td',
+              null,
+              React.createElement(
+                'div',
+                { className: 'download-info-data' },
+                React.createElement(
+                  'label',
+                  null,
+                  'Downloaded:'
+                ),
+                React.createElement(
+                  'label',
+                  null,
+                  formatSize(dl.completedBytes)
+                )
+              )
+            ),
+            React.createElement(
+              'td',
+              null,
+              React.createElement(
+                'div',
+                { className: 'download-info-data' },
+                React.createElement(
+                  'label',
+                  null,
+                  'Rate:'
+                ),
+                React.createElement(
+                  'label',
+                  null,
+                  formatRate(dl.downloadRate)
+                )
+              )
+            )
           ),
           React.createElement(
-            'label',
+            'tr',
             null,
-            (100 * dl.completedBytes / dl.sizeBytes).toFixed(2) + '%'
-          )
-        )
-      ),
-      React.createElement(
-        'div',
-        { className: 'download-info-row' },
-        React.createElement(
-          'div',
-          { className: 'download-info-data' },
-          React.createElement(
-            'label',
-            null,
-            'Downloaded:'
-          ),
-          React.createElement(
-            'label',
-            null,
-            formatSize(dl.completedBytes)
-          )
-        ),
-        React.createElement(
-          'div',
-          { className: 'download-info-data' },
-          React.createElement(
-            'label',
-            null,
-            'Rate:'
-          ),
-          React.createElement(
-            'label',
-            null,
-            formatRate(dl.downloadRate)
-          )
-        )
-      ),
-      React.createElement(
-        'div',
-        { className: 'download-info-row' },
-        React.createElement(
-          'div',
-          { className: 'download-info-data' },
-          React.createElement(
-            'label',
-            null,
-            'Uploaded:'
-          ),
-          React.createElement(
-            'label',
-            null,
-            formatSize(dl.uploadTotal)
-          )
-        ),
-        React.createElement(
-          'div',
-          { className: 'download-info-data' },
-          React.createElement(
-            'label',
-            null,
-            'Rate:'
-          ),
-          React.createElement(
-            'label',
-            null,
-            formatRate(dl.uploadRate)
+            React.createElement(
+              'td',
+              null,
+              React.createElement(
+                'div',
+                { className: 'download-info-data' },
+                React.createElement(
+                  'label',
+                  null,
+                  'Uploaded:'
+                ),
+                React.createElement(
+                  'label',
+                  null,
+                  formatSize(dl.uploadTotal)
+                )
+              )
+            ),
+            React.createElement(
+              'td',
+              null,
+              React.createElement(
+                'div',
+                { className: 'download-info-data' },
+                React.createElement(
+                  'label',
+                  null,
+                  'Rate:'
+                ),
+                React.createElement(
+                  'label',
+                  null,
+                  formatRate(dl.uploadRate)
+                )
+              )
+            )
           )
         )
       ),
