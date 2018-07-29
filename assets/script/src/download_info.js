@@ -34,44 +34,32 @@ class DownloadInfo extends React.Component {
           <tbody>
             <tr>
               <td>
-                <div className="download-info-data">
-                  <label>Size:</label>
-                  <label>{formatSize(dl.sizeBytes)}</label>
-                </div>
+                <label>Size:</label>
+                <label>{formatSize(dl.sizeBytes)}</label>
               </td>
               <td>
-                <div className="download-info-data">
-                  <label>% Complete:</label>
-                  <label>{(100*dl.completedBytes/dl.sizeBytes).toFixed(2) + '%'}</label>
-                </div>
+                <label>% Complete:</label>
+                <label>{(100*dl.completedBytes/dl.sizeBytes).toFixed(2) + '%'}</label>
               </td>
             </tr>
             <tr>
               <td>
-                <div className="download-info-data">
-                  <label>Downloaded:</label>
-                  <label>{formatSize(dl.completedBytes)}</label>
-                </div>
+                <label>Downloaded:</label>
+                <label>{formatSize(dl.completedBytes)}</label>
               </td>
               <td>
-                <div className="download-info-data">
-                  <label>Rate:</label>
-                  <label>{formatRate(dl.downloadRate)}</label>
-                </div>
+                <label>Rate:</label>
+                <label>{formatRate(dl.downloadRate)}</label>
               </td>
             </tr>
             <tr>
               <td>
-                <div className="download-info-data">
-                  <label>Uploaded:</label>
-                  <label>{formatSize(dl.uploadTotal)}</label>
-                </div>
+                <label>Uploaded:</label>
+                <label>{formatSize(dl.uploadTotal)}</label>
               </td>
               <td>
-                <div className="download-info-data">
-                  <label>Rate:</label>
-                  <label>{formatRate(dl.uploadRate)}</label>
-                </div>
+                <label>Rate:</label>
+                <label>{formatRate(dl.uploadRate)}</label>
               </td>
             </tr>
           </tbody>

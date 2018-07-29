@@ -342,36 +342,28 @@ class DownloadInfo extends React.Component {
               'td',
               null,
               React.createElement(
-                'div',
-                { className: 'download-info-data' },
-                React.createElement(
-                  'label',
-                  null,
-                  'Size:'
-                ),
-                React.createElement(
-                  'label',
-                  null,
-                  formatSize(dl.sizeBytes)
-                )
+                'label',
+                null,
+                'Size:'
+              ),
+              React.createElement(
+                'label',
+                null,
+                formatSize(dl.sizeBytes)
               )
             ),
             React.createElement(
               'td',
               null,
               React.createElement(
-                'div',
-                { className: 'download-info-data' },
-                React.createElement(
-                  'label',
-                  null,
-                  '% Complete:'
-                ),
-                React.createElement(
-                  'label',
-                  null,
-                  (100 * dl.completedBytes / dl.sizeBytes).toFixed(2) + '%'
-                )
+                'label',
+                null,
+                '% Complete:'
+              ),
+              React.createElement(
+                'label',
+                null,
+                (100 * dl.completedBytes / dl.sizeBytes).toFixed(2) + '%'
               )
             )
           ),
@@ -382,36 +374,28 @@ class DownloadInfo extends React.Component {
               'td',
               null,
               React.createElement(
-                'div',
-                { className: 'download-info-data' },
-                React.createElement(
-                  'label',
-                  null,
-                  'Downloaded:'
-                ),
-                React.createElement(
-                  'label',
-                  null,
-                  formatSize(dl.completedBytes)
-                )
+                'label',
+                null,
+                'Downloaded:'
+              ),
+              React.createElement(
+                'label',
+                null,
+                formatSize(dl.completedBytes)
               )
             ),
             React.createElement(
               'td',
               null,
               React.createElement(
-                'div',
-                { className: 'download-info-data' },
-                React.createElement(
-                  'label',
-                  null,
-                  'Rate:'
-                ),
-                React.createElement(
-                  'label',
-                  null,
-                  formatRate(dl.downloadRate)
-                )
+                'label',
+                null,
+                'Rate:'
+              ),
+              React.createElement(
+                'label',
+                null,
+                formatRate(dl.downloadRate)
               )
             )
           ),
@@ -422,36 +406,28 @@ class DownloadInfo extends React.Component {
               'td',
               null,
               React.createElement(
-                'div',
-                { className: 'download-info-data' },
-                React.createElement(
-                  'label',
-                  null,
-                  'Uploaded:'
-                ),
-                React.createElement(
-                  'label',
-                  null,
-                  formatSize(dl.uploadTotal)
-                )
+                'label',
+                null,
+                'Uploaded:'
+              ),
+              React.createElement(
+                'label',
+                null,
+                formatSize(dl.uploadTotal)
               )
             ),
             React.createElement(
               'td',
               null,
               React.createElement(
-                'div',
-                { className: 'download-info-data' },
-                React.createElement(
-                  'label',
-                  null,
-                  'Rate:'
-                ),
-                React.createElement(
-                  'label',
-                  null,
-                  formatRate(dl.uploadRate)
-                )
+                'label',
+                null,
+                'Rate:'
+              ),
+              React.createElement(
+                'label',
+                null,
+                formatRate(dl.uploadRate)
               )
             )
           )

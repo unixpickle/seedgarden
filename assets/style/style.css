@@ -487,35 +487,34 @@ button:focus {
   height: 0;
   display: block;
 }
-.download-info .download-info-table .download-info-data {
-  display: inline-block;
+.download-info .download-info-table td {
   padding-top: 20px;
 }
-.download-info .download-info-table .download-info-data::after {
+.download-info .download-info-table td::after {
   content: ' ';
   clear: both;
   height: 0;
   display: block;
 }
 @media (max-width: 500px) {
-  .download-info .download-info-table .download-info-data {
+  .download-info .download-info-table td {
     padding-left: 5px;
     padding-right: 5px;
   }
 }
 @media (min-width: 500px) {
-  .download-info .download-info-table .download-info-data {
+  .download-info .download-info-table td {
     padding-left: 30px;
     padding-right: 30px;
   }
 }
-.download-info .download-info-table .download-info-data label:first-child {
+.download-info .download-info-table td label:first-child {
   display: block;
   float: top;
   color: #65bcd4;
   margin-bottom: 5px;
 }
-.download-info .download-info-table .download-info-data label:last-child {
+.download-info .download-info-table td label:last-child {
   float: bottom;
   color: #777;
 }
