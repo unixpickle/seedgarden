@@ -8,20 +8,13 @@ import (
 	"strings"
 
 	"github.com/unixpickle/essentials"
+	"github.com/unixpickle/seedgarden/bay"
 	"github.com/yhat/scrape"
 	"golang.org/x/net/html"
 	"golang.org/x/net/html/atom"
 )
 
-type LookupResult struct {
-	Name      string
-	Seeders   int
-	Leechers  int
-	Size      string
-	MagnetURL string
-}
-
-func Lookup(id string) (result *LookupResult, err error) {
+func (p PirateBay) Lookup(id string) (result *bay.TorrentInfo, err error) {
 	defer essentials.AddCtxTo("piratebay lookup", &err)
 	lookupURL := "https://" + Domain + "/torrent/" + id
 	resp, err := http.Get(lookupURL)
@@ -32,13 +25,13 @@ func Lookup(id string) (result *LookupResult, err error) {
 	return parseLookup(resp.Body)
 }
 
-func parseLookup(body io.Reader) (*LookupResult, error) {
+func parseLookup(body io.Reader) (*bay.TorrentInfo, error) {
 	root, err := html.Parse(body)
 	if err != nil {
 		return nil, err
 	}
 
-	result := LookupResult{}
+	result := bay.TorrentInfo{}
 	title, ok := scrape.Find(root, scrape.ById("title"))
 	if !ok {
 		return nil, errors.New("no title")

@@ -12,11 +12,13 @@ import (
 	"time"
 
 	"github.com/unixpickle/essentials"
-	"github.com/unixpickle/seedgarden/piratebay"
+	"github.com/unixpickle/seedgarden/bay"
+	"github.com/unixpickle/seedgarden/bay/piratebay"
 	"github.com/unixpickle/seedgarden/rtorrent"
 )
 
 var GlobalClient *rtorrent.Client
+var GlobalBay bay.Bay
 
 func main() {
 	var addr string
@@ -33,6 +35,7 @@ func main() {
 		essentials.Die("Missing -rpcurl flag. See -help.")
 	}
 
+	GlobalBay = piratebay.PirateBay{}
 	GlobalClient = rtorrent.NewClientAuth(rpcURL, rpcUser, rpcPass)
 
 	http.Handle("/", http.FileServer(assetFS()))
@@ -100,7 +103,7 @@ func ServeAdd(w http.ResponseWriter, r *http.Request) {
 }
 
 func ServeBaySearch(w http.ResponseWriter, r *http.Request) {
-	if results, err := piratebay.Search(r.FormValue("query")); err != nil {
+	if results, err := GlobalBay.Search(r.FormValue("query")); err != nil {
 		serveObject(w, err)
 	} else {
 		serveObject(w, results)
@@ -108,7 +111,7 @@ func ServeBaySearch(w http.ResponseWriter, r *http.Request) {
 }
 
 func ServeBayLookup(w http.ResponseWriter, r *http.Request) {
-	if result, err := piratebay.Lookup(r.FormValue("id")); err != nil {
+	if result, err := GlobalBay.Lookup(r.FormValue("id")); err != nil {
 		serveObject(w, err)
 	} else {
 		serveObject(w, result)
