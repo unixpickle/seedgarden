@@ -14,6 +14,7 @@ import (
 	"github.com/unixpickle/essentials"
 	"github.com/unixpickle/seedgarden/bay"
 	"github.com/unixpickle/seedgarden/bay/piratebay"
+	"github.com/unixpickle/seedgarden/bay/rarbg"
 	"github.com/unixpickle/seedgarden/rtorrent"
 )
 
@@ -25,17 +26,23 @@ func main() {
 	var rpcURL string
 	var rpcUser string
 	var rpcPass string
+	var useRARBG bool
 	flag.StringVar(&addr, "addr", ":1337", "address to listen on")
 	flag.StringVar(&rpcURL, "rpcurl", "", "URL for RPC backend")
 	flag.StringVar(&rpcUser, "rpcuser", "", "username for RPC backend")
 	flag.StringVar(&rpcPass, "rpcpass", "", "password for RPC backend")
+	flag.BoolVar(&useRARBG, "rarbg", false, "use RARBG instead of TPB")
 	flag.Parse()
 
 	if rpcURL == "" {
 		essentials.Die("Missing -rpcurl flag. See -help.")
 	}
 
-	GlobalBay = piratebay.PirateBay{}
+	if useRARBG {
+		GlobalBay = rarbg.RARBG{}
+	} else {
+		GlobalBay = piratebay.PirateBay{}
+	}
 	GlobalClient = rtorrent.NewClientAuth(rpcURL, rpcUser, rpcPass)
 
 	http.Handle("/", http.FileServer(assetFS()))
