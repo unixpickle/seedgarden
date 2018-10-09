@@ -9,6 +9,7 @@ import (
 	"os"
 	"path/filepath"
 	"reflect"
+	"strings"
 	"time"
 
 	"github.com/unixpickle/essentials"
@@ -20,6 +21,7 @@ import (
 
 var GlobalClient *rtorrent.Client
 var GlobalBay bay.Bay
+var GlobalTitle string
 
 func main() {
 	var addr string
@@ -32,6 +34,7 @@ func main() {
 	flag.StringVar(&rpcUser, "rpcuser", "", "username for RPC backend")
 	flag.StringVar(&rpcPass, "rpcpass", "", "password for RPC backend")
 	flag.BoolVar(&useRARBG, "rarbg", false, "use RARBG instead of TPB")
+	flag.StringVar(&GlobalTitle, "title", "Seedgarden", "title for HTML pages")
 	flag.Parse()
 
 	if rpcURL == "" {
@@ -45,7 +48,7 @@ func main() {
 	}
 	GlobalClient = rtorrent.NewClientAuth(rpcURL, rpcUser, rpcPass)
 
-	http.Handle("/", http.FileServer(assetFS()))
+	http.HandleFunc("/", ServeSlash)
 	http.HandleFunc("/api/downloads", ServeDownloads)
 	http.HandleFunc("/api/start", ServeStart)
 	http.HandleFunc("/api/stop", ServeStop)
@@ -57,6 +60,18 @@ func main() {
 	http.HandleFunc("/api/download", ServeDownload)
 
 	http.ListenAndServe(addr, nil)
+}
+
+func ServeSlash(w http.ResponseWriter, r *http.Request) {
+	if r.URL.Path == "/" || r.URL.Path == "" {
+		data, err := Asset("assets/index.html")
+		essentials.Must(err)
+		homepage := strings.Replace(string(data), "PAGETITLE", GlobalTitle, -1)
+		w.Write([]byte(homepage))
+	} else {
+		server := http.FileServer(assetFS())
+		server.ServeHTTP(w, r)
+	}
 }
 
 func ServeDownloads(w http.ResponseWriter, r *http.Request) {
