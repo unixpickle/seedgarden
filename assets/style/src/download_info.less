@@ -137,15 +137,18 @@
     }
 
     a {
-      .char-wrapped();
-      display: block;
       text-decoration: none;
       color: #777;
-      padding: 5px 0;
-
       &:hover {
         color: #999;
       }
+    }
+
+    a.file-link {
+      .char-wrapped();
+      display: block;
+      
+      padding: 5px 0;
     }
   }
 }

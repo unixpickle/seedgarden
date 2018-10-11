@@ -1,7 +1,7 @@
 class DownloadInfo extends React.Component {
   constructor() {
     super();
-    this.state = {filesLoading: true, filesError: null, files: null};
+    this.state = { filesLoading: true, filesError: null, files: null };
     this.fileReq = null;
   }
 
@@ -21,14 +21,14 @@ class DownloadInfo extends React.Component {
         <div className="download-info-heading">
           {(dl.active ?
             <button className={'download-stop-button' + extraButtonClass}
-                    onClick={this.props.onStop}>Stop</button> :
+              onClick={this.props.onStop}>Stop</button> :
             <button className={'download-start-button' + extraButtonClass}
-                    onClick={this.props.onStart}>Start</button>)}
+              onClick={this.props.onStart}>Start</button>)}
           <label className="download-info-name">{dl.name}</label>
         </div>
         {(dl.active ?
           <LoadingBar progress={dl.completedBytes / dl.sizeBytes}
-                      color={downloadLoaderColor(dl)} /> :
+            color={downloadLoaderColor(dl)} /> :
           null)}
         <table className="download-info-table">
           <tbody>
@@ -39,7 +39,7 @@ class DownloadInfo extends React.Component {
               </td>
               <td>
                 <label>% Complete:</label>
-                <label>{(100*dl.completedBytes/dl.sizeBytes).toFixed(2) + '%'}</label>
+                <label>{(100 * dl.completedBytes / dl.sizeBytes).toFixed(2) + '%'}</label>
               </td>
             </tr>
             <tr>
@@ -66,7 +66,7 @@ class DownloadInfo extends React.Component {
         </table>
         <div className="download-info-delete-container">
           <button className={'download-delete-button' + extraButtonClass}
-                  onClick={this.props.onDelete}>Delete</button>
+            onClick={this.props.onDelete}>Delete</button>
         </div>
         {this.filesElement()}
       </div>
@@ -77,8 +77,11 @@ class DownloadInfo extends React.Component {
     if (this.state.files) {
       return (
         <div className="download-files">
-          <label className="heading">Files</label>
-          {this.state.files.map((x) => <a key={x.link} href={x.link}>{x.path}</a>)}
+          <label className="heading">
+            Files
+            <a href={'/api/downloadall?hash=' + this.props.download.hash}> (get all)</a>
+          </label>
+          {this.state.files.map((x) => <a className="file-link" key={x.link} href={x.link}>{x.path}</a>)}
         </div>
       );
     } else if (this.state.filesError) {
@@ -89,7 +92,7 @@ class DownloadInfo extends React.Component {
   }
 
   filesCallback(error, files) {
-    this.setState({filesLoading: false, filesError: error, files: files});
+    this.setState({ filesLoading: false, filesError: error, files: files });
   }
 }
 

@@ -455,11 +455,16 @@ class DownloadInfo extends React.Component {
         React.createElement(
           'label',
           { className: 'heading' },
-          'Files'
+          'Files',
+          React.createElement(
+            'a',
+            { href: '/api/downloadall?hash=' + this.props.download.hash },
+            ' (get all)'
+          )
         ),
         this.state.files.map(x => React.createElement(
           'a',
-          { key: x.link, href: x.link },
+          { className: 'file-link', key: x.link, href: x.link },
           x.path
         ))
       );

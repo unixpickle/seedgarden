@@ -17,6 +17,7 @@ import (
 	"github.com/unixpickle/seedgarden/bay/piratebay"
 	"github.com/unixpickle/seedgarden/bay/rarbg"
 	"github.com/unixpickle/seedgarden/rtorrent"
+	"github.com/unixpickle/seektar"
 )
 
 var GlobalClient *rtorrent.Client
@@ -58,6 +59,7 @@ func main() {
 	http.HandleFunc("/api/baylookup", ServeBayLookup)
 	http.HandleFunc("/api/files", ServeFiles)
 	http.HandleFunc("/api/download", ServeDownload)
+	http.HandleFunc("/api/downloadall", ServeDownloadAll)
 
 	http.ListenAndServe(addr, nil)
 }
@@ -183,6 +185,43 @@ func ServeDownload(w http.ResponseWriter, r *http.Request) {
 		serveObject(w, errors.New("bad signature"))
 		return
 	}
+	serveFile(w, r, path)
+}
+
+func ServeDownloadAll(w http.ResponseWriter, r *http.Request) {
+	item, err := findDownload(r.FormValue("hash"))
+	if err != nil {
+		serveObject(w, err)
+		return
+	}
+
+	if stat, err := os.Stat(item.Path()); err != nil {
+		serveObject(w, err)
+		return
+	} else if !stat.IsDir() {
+		serveFile(w, r, item.Path())
+		return
+	}
+
+	tarball, err := seektar.Tar(item.Path(), filepath.Base(item.Path()))
+	if err != nil {
+		serveObject(w, err)
+		return
+	}
+
+	filename := filepath.Base(item.Path()) + ".tar"
+
+	f, err := tarball.Open()
+	if err != nil {
+		serveObject(w, err)
+		return
+	}
+	defer f.Close()
+	w.Header().Set("Content-Disposition", dispositionHeader(filename))
+	http.ServeContent(w, r, filename, time.Time{}, f)
+}
+
+func serveFile(w http.ResponseWriter, r *http.Request, path string) {
 	f, err := os.Open(path)
 	if err != nil {
 		serveObject(w, err)

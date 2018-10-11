@@ -554,15 +554,17 @@ button:focus {
   margin-bottom: 5px;
 }
 .download-info .download-files a {
-  word-wrap: break-word;
-  word-break: break-all;
-  display: block;
   text-decoration: none;
   color: #777;
-  padding: 5px 0;
 }
 .download-info .download-files a:hover {
   color: #999;
+}
+.download-info .download-files a.file-link {
+  word-wrap: break-word;
+  word-break: break-all;
+  display: block;
+  padding: 5px 0;
 }
 .bay-info {
   background-color: white;
