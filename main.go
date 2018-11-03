@@ -43,7 +43,7 @@ func main() {
 	}
 
 	if useRARBG {
-		GlobalBay = rarbg.RARBG{}
+		GlobalBay = &rarbg.RARBG{}
 	} else {
 		GlobalBay = piratebay.PirateBay{}
 	}
