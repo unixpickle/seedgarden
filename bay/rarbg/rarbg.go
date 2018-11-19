@@ -32,6 +32,10 @@ type RARBG struct {
 	lastRequest time.Time
 }
 
+func (r *RARBG) SlangName() string {
+	return "On RARBG"
+}
+
 func (r *RARBG) makeRequest(params map[string]string, response interface{}) error {
 	r.requestLock.Lock()
 	defer r.requestLock.Unlock()

@@ -69,6 +69,7 @@ func ServeSlash(w http.ResponseWriter, r *http.Request) {
 		data, err := Asset("assets/index.html")
 		essentials.Must(err)
 		homepage := strings.Replace(string(data), "PAGETITLE", GlobalTitle, -1)
+		homepage = strings.Replace(homepage, "BAYSLANGNAME", GlobalBay.SlangName(), -1)
 		w.Write([]byte(homepage))
 	} else {
 		server := http.FileServer(assetFS())

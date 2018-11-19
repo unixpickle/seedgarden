@@ -30,7 +30,7 @@ class Search extends React.Component {
       <ol className='search-results'>
         <SearchHeading key="heading-1" text="In the client" />
         {this.downloadListing()}
-        <SearchHeading key="heading-2" text="On the bay" />
+        <SearchHeading key="heading-2" text={window.BAY_SLANG_NAME} />
         {this.bayListing()}
       </ol>
     );

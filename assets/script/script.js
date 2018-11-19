@@ -765,7 +765,7 @@ class Search extends React.Component {
       { className: 'search-results' },
       React.createElement(SearchHeading, { key: 'heading-1', text: 'In the client' }),
       this.downloadListing(),
-      React.createElement(SearchHeading, { key: 'heading-2', text: 'On the bay' }),
+      React.createElement(SearchHeading, { key: 'heading-2', text: window.BAY_SLANG_NAME }),
       this.bayListing()
     );
   }

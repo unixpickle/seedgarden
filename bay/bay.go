@@ -4,6 +4,7 @@ package bay
 type Bay interface {
 	Search(query string) ([]*SearchResult, error)
 	Lookup(id string) (*TorrentInfo, error)
+	SlangName() string
 }
 
 // TorrentInfo stores detailed information about a single
