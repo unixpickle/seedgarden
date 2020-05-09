@@ -123,7 +123,7 @@ func ServeAdd(w http.ResponseWriter, r *http.Request) {
 	if err := GlobalClient.Add(r.FormValue("url")); err != nil {
 		serveObject(w, err)
 	} else {
-		serveObject(w, nil)
+		serveObject(w, "success")
 	}
 }
 
