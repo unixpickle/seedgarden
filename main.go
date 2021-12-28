@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"errors"
 	"flag"
+	"log"
 	"net/http"
 	"net/url"
 	"os"
@@ -30,12 +31,15 @@ func main() {
 	var rpcUser string
 	var rpcPass string
 	var useRARBG bool
+	var pauseDoneInterval time.Duration
 	flag.StringVar(&addr, "addr", ":1337", "address to listen on")
 	flag.StringVar(&rpcURL, "rpcurl", "", "URL for RPC backend")
 	flag.StringVar(&rpcUser, "rpcuser", "", "username for RPC backend")
 	flag.StringVar(&rpcPass, "rpcpass", "", "password for RPC backend")
 	flag.BoolVar(&useRARBG, "rarbg", false, "use RARBG instead of TPB")
 	flag.StringVar(&GlobalTitle, "title", "Seedgarden", "title for HTML pages")
+	flag.DurationVar(&pauseDoneInterval, "pause", 0,
+		"specify frequency at which finished downloads are checked and paused")
 	flag.Parse()
 
 	if rpcURL == "" {
@@ -48,6 +52,10 @@ func main() {
 		GlobalBay = piratebay.PirateBay{}
 	}
 	GlobalClient = rtorrent.NewClientAuth(rpcURL, rpcUser, rpcPass)
+
+	if pauseDoneInterval != 0 {
+		go CheckPausedDownloadsLoop(pauseDoneInterval)
+	}
 
 	http.HandleFunc("/", ServeSlash)
 	http.HandleFunc("/api/downloads", ServeDownloads)
@@ -62,6 +70,32 @@ func main() {
 	http.HandleFunc("/api/downloadall", ServeDownloadAll)
 
 	http.ListenAndServe(addr, nil)
+}
+
+func CheckPausedDownloadsLoop(interval time.Duration) {
+	for {
+		nextTimer := time.After(interval)
+		if err := checkPausedDownloads(); err != nil {
+			log.Println("error in pause loop:", err)
+		}
+		<-nextTimer
+	}
+}
+
+func checkPausedDownloads() error {
+	downloads, err := GlobalClient.Downloads()
+	if err != nil {
+		return err
+	}
+	for _, dl := range downloads {
+		if dl.State != 0 && dl.CompletedBytes == dl.SizeBytes {
+			log.Printf("automatically pausing download %s (%s)...", dl.Hash, dl.Name)
+			if err := GlobalClient.Stop(dl.Hash); err != nil {
+				return err
+			}
+		}
+	}
+	return nil
 }
 
 func ServeSlash(w http.ResponseWriter, r *http.Request) {
