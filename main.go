@@ -32,14 +32,16 @@ func main() {
 	var rpcPass string
 	var useRARBG bool
 	var pauseDoneInterval time.Duration
+	var pauseRatio float64
 	flag.StringVar(&addr, "addr", ":1337", "address to listen on")
 	flag.StringVar(&rpcURL, "rpcurl", "", "URL for RPC backend")
 	flag.StringVar(&rpcUser, "rpcuser", "", "username for RPC backend")
 	flag.StringVar(&rpcPass, "rpcpass", "", "password for RPC backend")
 	flag.BoolVar(&useRARBG, "rarbg", false, "use RARBG instead of TPB")
 	flag.StringVar(&GlobalTitle, "title", "Seedgarden", "title for HTML pages")
-	flag.DurationVar(&pauseDoneInterval, "pause", 0,
+	flag.DurationVar(&pauseDoneInterval, "pause-interval", 0,
 		"specify frequency at which finished downloads are checked and paused")
+	flag.Float64Var(&pauseRatio, "pause-ratio", 1.0, "upload/download ratio to pause at")
 	flag.Parse()
 
 	if rpcURL == "" {
@@ -54,7 +56,7 @@ func main() {
 	GlobalClient = rtorrent.NewClientAuth(rpcURL, rpcUser, rpcPass)
 
 	if pauseDoneInterval != 0 {
-		go CheckPausedDownloadsLoop(pauseDoneInterval)
+		go CheckPausedDownloadsLoop(pauseDoneInterval, pauseRatio)
 	}
 
 	http.HandleFunc("/", ServeSlash)
@@ -72,24 +74,26 @@ func main() {
 	http.ListenAndServe(addr, nil)
 }
 
-func CheckPausedDownloadsLoop(interval time.Duration) {
+func CheckPausedDownloadsLoop(interval time.Duration, ratio float64) {
 	for {
 		nextTimer := time.After(interval)
-		if err := checkPausedDownloads(); err != nil {
+		if err := checkPausedDownloads(ratio); err != nil {
 			log.Println("error in pause loop:", err)
 		}
 		<-nextTimer
 	}
 }
 
-func checkPausedDownloads() error {
+func checkPausedDownloads(ratio float64) error {
 	downloads, err := GlobalClient.Downloads()
 	if err != nil {
 		return err
 	}
 	for _, dl := range downloads {
-		if dl.State != 0 && dl.CompletedBytes == dl.SizeBytes {
-			log.Printf("automatically pausing download %s (%s)...", dl.Hash, dl.Name)
+		curRatio := float64(dl.UploadTotal) / float64(dl.SizeBytes)
+		if dl.State != 0 && dl.CompletedBytes == dl.SizeBytes && curRatio >= ratio {
+			log.Printf("automatically pausing download %s (%s, ratio %f)...",
+				dl.Hash, dl.Name, curRatio)
 			if err := GlobalClient.Stop(dl.Hash); err != nil {
 				return err
 			}
