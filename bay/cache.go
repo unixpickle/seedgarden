@@ -91,7 +91,7 @@ func (c *cache) Store(key string, data interface{}) {
 		// soonest, even though it's not expired yet.
 		var earliestKey string
 		var earliestExpiry time.Time
-		var first bool
+		first := true
 		for key, item := range c.items {
 			if first || item.Expiry.Before(earliestExpiry) {
 				earliestExpiry = item.Expiry
