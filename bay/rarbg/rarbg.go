@@ -74,14 +74,20 @@ func (r *RARBG) makeRequest(params map[string]string, response interface{}) erro
 
 func (r *RARBG) makeRawRequest(params map[string]string) ([]byte, error) {
 	defer r.updateRequestTime()
-	queryValues := url.Values{}
+
+	// The order of arguments matters; token must come first.
+	qv1 := url.Values{}
+	qv1.Add("token", r.token)
+
+	// Non-token arguments.
+	qv2 := url.Values{}
 	for k, v := range params {
-		queryValues.Set(k, v)
+		qv2.Set(k, v)
 	}
-	queryValues.Set("app_id", AppID)
-	queryValues.Set("token", r.token)
+	qv2.Set("app_id", AppID)
+
 	r.waitRateLimit()
-	resp, err := http.Get(Endpoint + "?" + queryValues.Encode())
+	resp, err := http.Get(Endpoint + "?" + qv1.Encode() + "&" + qv2.Encode())
 	if err != nil {
 		return nil, err
 	}
