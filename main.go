@@ -31,6 +31,7 @@ func main() {
 	var rpcUser string
 	var rpcPass string
 	var useRARBG bool
+	var bayCacheTimeout time.Duration
 	var pauseDoneInterval time.Duration
 	var pauseRatio float64
 	flag.StringVar(&addr, "addr", ":1337", "address to listen on")
@@ -38,6 +39,7 @@ func main() {
 	flag.StringVar(&rpcUser, "rpcuser", "", "username for RPC backend")
 	flag.StringVar(&rpcPass, "rpcpass", "", "password for RPC backend")
 	flag.BoolVar(&useRARBG, "rarbg", false, "use RARBG instead of TPB")
+	flag.DurationVar(&bayCacheTimeout, "bay-cache-timeout", time.Minute*5, "timeout of bay cache")
 	flag.StringVar(&GlobalTitle, "title", "Seedgarden", "title for HTML pages")
 	flag.DurationVar(&pauseDoneInterval, "pause-interval", 0,
 		"specify frequency at which finished downloads are checked and paused")
@@ -53,6 +55,7 @@ func main() {
 	} else {
 		GlobalBay = piratebay.PirateBay{}
 	}
+	GlobalBay = bay.NewCachedBay(GlobalBay, bayCacheTimeout, 100)
 	GlobalClient = rtorrent.NewClientAuth(rpcURL, rpcUser, rpcPass)
 
 	if pauseDoneInterval != 0 {
