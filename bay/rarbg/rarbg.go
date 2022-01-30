@@ -75,19 +75,22 @@ func (r *RARBG) makeRequest(params map[string]string, response interface{}) erro
 func (r *RARBG) makeRawRequest(params map[string]string) ([]byte, error) {
 	defer r.updateRequestTime()
 
-	// The order of arguments matters; token must come first.
-	qv1 := url.Values{}
-	qv1.Add("token", r.token)
-
-	// Non-token arguments.
-	qv2 := url.Values{}
+	// The order of arguments matters; search must come last.
+	qv := url.Values{}
+	qv.Set("app_id", AppID)
+	qv.Set("token", r.token)
 	for k, v := range params {
-		qv2.Set(k, v)
+		if k != "search_string" {
+			qv.Set(k, v)
+		}
 	}
-	qv2.Set("app_id", AppID)
+	queryString := qv.Encode()
+	if ss, ok := params["search_string"]; ok {
+		queryString += "&search_string=" + url.QueryEscape(ss)
+	}
 
 	r.waitRateLimit()
-	resp, err := http.Get(Endpoint + "?" + qv1.Encode() + "&" + qv2.Encode())
+	resp, err := http.Get(Endpoint + "?" + queryString)
 	if err != nil {
 		return nil, err
 	}
