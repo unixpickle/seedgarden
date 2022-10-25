@@ -20,11 +20,11 @@ func (c *Client) Erase(hash string) error {
 
 // Add adds a torrent.
 func (c *Client) Add(url string) error {
-	return c.doAction("load_start", url)
+	return c.doAction("load.start", "", url)
 }
 
 // doAction performs a call with a single argument.
-func (c *Client) doAction(action, arg string) error {
-	_, err := c.Call(action, arg)
+func (c *Client) doAction(action string, arguments ...string) error {
+	_, err := c.Call(action, arguments...)
 	return err
 }

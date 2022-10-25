@@ -62,11 +62,11 @@ func objectForCall(method string, arguments []string) interface{} {
 
 type methodCall struct {
 	MethodName string         `xml:"methodName,rawxml"`
-	Arguments  []callArgument `xml:"params>param>value>array>data>value"`
+	Arguments  []callArgument `xml:"params>param"`
 }
 
 type callArgument struct {
-	Value string `xml:"string,rawxml"`
+	Value string `xml:"value>string,rawxml"`
 }
 
 type singleArgCall struct {

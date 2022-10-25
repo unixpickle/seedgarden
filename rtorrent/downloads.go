@@ -35,10 +35,10 @@ func (c *Download) Path() string {
 // Downloads lists all the downloads in the client.
 func (c *Client) Downloads() (downloads []*Download, err error) {
 	defer essentials.AddCtxTo("get downloads", &err)
-	body, err := c.Call("d.multicall", "main", "d.get_hash=", "d.get_directory=",
-		"d.get_base_path=", "d.get_base_filename=", "d.get_completed_bytes=", "d.get_size_bytes=",
-		"d.get_name=", "d.get_up_rate=", "d.get_down_rate=", "d.get_up_total=", "d.get_down_total=",
-		"d.get_state=")
+	body, err := c.Call("d.multicall2", "", "main", "d.hash=", "d.directory=",
+		"d.base_path=", "d.base_filename=", "d.completed_bytes=", "d.size_bytes=",
+		"d.name=", "d.up.rate=", "d.down.rate=", "d.up.total=", "d.down.total=",
+		"d.state=")
 	if err != nil {
 		return nil, err
 	}
