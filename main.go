@@ -4,12 +4,14 @@ import (
 	"encoding/json"
 	"errors"
 	"flag"
+	"fmt"
 	"log"
 	"net/http"
 	"net/url"
 	"os"
 	"path/filepath"
 	"reflect"
+	"strconv"
 	"strings"
 	"time"
 
@@ -24,6 +26,7 @@ import (
 var GlobalClient *rtorrent.Client
 var GlobalBay bay.Bay
 var GlobalTitle string
+var GlobalTimestampCache *KVCache[float64]
 
 func main() {
 	var addr string
@@ -57,6 +60,7 @@ func main() {
 	}
 	GlobalBay = bay.NewCachedBay(GlobalBay, bayCacheTimeout, 100)
 	GlobalClient = rtorrent.NewClientAuth(rpcURL, rpcUser, rpcPass)
+	GlobalTimestampCache = NewKVCache[float64](1000)
 
 	if pauseDoneInterval != 0 {
 		go CheckPausedDownloadsLoop(pauseDoneInterval, pauseRatio)
@@ -71,6 +75,7 @@ func main() {
 	http.HandleFunc("/api/baysearch", ServeBaySearch)
 	http.HandleFunc("/api/baylookup", ServeBayLookup)
 	http.HandleFunc("/api/files", ServeFiles)
+	http.HandleFunc("/api/settimestamp", ServeSetTimestamp)
 	http.HandleFunc("/api/download", ServeDownload)
 	http.HandleFunc("/api/downloadall", ServeDownloadAll)
 
@@ -191,7 +196,7 @@ func ServeFiles(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	var results []map[string]string
+	var results []map[string]interface{}
 	err = filepath.Walk(item.Path(),
 		func(path string, info os.FileInfo, err error) error {
 			if err != nil {
@@ -207,9 +212,13 @@ func ServeFiles(w http.ResponseWriter, r *http.Request) {
 			if rel == "." {
 				rel = filepath.Base(path)
 			}
-			results = append(results, map[string]string{
-				"Link": "/api/download?path=" + url.QueryEscape(path) + "&signature=" + Sign(path),
-				"Path": rel,
+			timestamp, ok := GlobalTimestampCache.Get(path)
+			results = append(results, map[string]interface{}{
+				"Link":         "/api/download?path=" + url.QueryEscape(path) + "&signature=" + Sign(path),
+				"Path":         rel,
+				"SetTimestamp": "/api/settimestamp?path=" + url.QueryEscape(path) + "&signature=" + Sign(path),
+				"Timestamp":    timestamp,
+				"HasTimestamp": ok,
 			})
 			return nil
 		})
@@ -218,6 +227,22 @@ func ServeFiles(w http.ResponseWriter, r *http.Request) {
 	} else {
 		serveObject(w, results)
 	}
+}
+
+func ServeSetTimestamp(w http.ResponseWriter, r *http.Request) {
+	path := r.FormValue("path")
+	signature := r.FormValue("signature")
+	if Sign(path) != signature {
+		serveObject(w, errors.New("bad signature"))
+		return
+	}
+	ts, err := strconv.ParseFloat(r.FormValue("timestamp"), 64)
+	if err != nil {
+		serveObject(w, fmt.Errorf("failed to parse timestamp: %s", err.Error()))
+		return
+	}
+	GlobalTimestampCache.Set(path, ts)
+	serveObject(w, ts)
 }
 
 func ServeDownload(w http.ResponseWriter, r *http.Request) {
