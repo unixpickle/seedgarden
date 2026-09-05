@@ -112,13 +112,13 @@ func checkPausedDownloads(ratio float64) error {
 
 func ServeSlash(w http.ResponseWriter, r *http.Request) {
 	if r.URL.Path == "/" || r.URL.Path == "" {
-		data, err := Asset("assets/index.html")
+		data, err := Assets.ReadFile("index.html")
 		essentials.Must(err)
 		homepage := strings.Replace(string(data), "PAGETITLE", GlobalTitle, -1)
 		homepage = strings.Replace(homepage, "BAYSLANGNAME", GlobalBay.SlangName(), -1)
 		w.Write([]byte(homepage))
 	} else {
-		server := http.FileServer(assetFS())
+		server := http.FileServer(http.FS(Assets))
 		server.ServeHTTP(w, r)
 	}
 }
