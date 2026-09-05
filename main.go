@@ -5,6 +5,7 @@ import (
 	"errors"
 	"flag"
 	"fmt"
+	"io/fs"
 	"log"
 	"net/http"
 	"net/url"
@@ -112,13 +113,15 @@ func checkPausedDownloads(ratio float64) error {
 
 func ServeSlash(w http.ResponseWriter, r *http.Request) {
 	if r.URL.Path == "/" || r.URL.Path == "" {
-		data, err := Assets.ReadFile("index.html")
+		data, err := Assets.ReadFile("assets/index.html")
 		essentials.Must(err)
 		homepage := strings.Replace(string(data), "PAGETITLE", GlobalTitle, -1)
 		homepage = strings.Replace(homepage, "BAYSLANGNAME", GlobalBay.SlangName(), -1)
 		w.Write([]byte(homepage))
 	} else {
-		server := http.FileServer(http.FS(Assets))
+		subDir, err := fs.Sub(Assets, "assets")
+		essentials.Must(err)
+		server := http.FileServer(http.FS(subDir))
 		server.ServeHTTP(w, r)
 	}
 }
