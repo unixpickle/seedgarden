@@ -85,10 +85,13 @@ func main() {
 	if secretPath == "" {
 		http.ListenAndServe(addr, handler)
 	} else {
-		// http.ListenAndServe(addr, http.StripPrefix("/"+secretPath, http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		// 	fmt.Println("yo", r.URL)
-		// })))
-		http.ListenAndServe(addr, http.StripPrefix("/"+secretPath, handler))
+		slashRedirect := http.NewServeMux()
+		slashRedirect.Handle(
+			"/"+secretPath,
+			http.RedirectHandler("/"+secretPath+"/", http.StatusSeeOther),
+		)
+		slashRedirect.Handle("/"+secretPath+"/", http.StripPrefix("/"+secretPath, handler))
+		http.ListenAndServe(addr, slashRedirect)
 	}
 }
 
