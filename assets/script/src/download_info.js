@@ -79,7 +79,7 @@ class DownloadInfo extends React.Component {
         <div className="download-files">
           <label className="heading">
             Files
-            <a href={'/api/downloadall?hash=' + this.props.download.hash}> (get all)</a>
+            <a href={'api/downloadall?hash=' + this.props.download.hash}> (get all)</a>
           </label>
           {this.state.files.map((x) => <a className="file-link" key={x.link} href={x.link}>{x.path}</a>)}
         </div>

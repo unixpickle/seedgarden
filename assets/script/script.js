@@ -6,7 +6,7 @@ class BaySearch {
     // while the user types out a search query.
     this._callTimeout = setTimeout(() => {
       this._callTimeout = null;
-      _callBackendAPI('/api/baysearch?query=' + encodeURIComponent(query)).then(obj => {
+      _callBackendAPI('api/baysearch?query=' + encodeURIComponent(query)).then(obj => {
         this._cb(null, obj);
       }).catch(err => {
         this._cb(err, null);
@@ -43,13 +43,13 @@ class CancelableCall {
 
 class BayLookup extends CancelableCall {
   constructor(id, cb) {
-    super('/api/baylookup?id=' + encodeURIComponent(id), cb);
+    super('api/baylookup?id=' + encodeURIComponent(id), cb);
   }
 }
 
 class ListFiles extends CancelableCall {
   constructor(hash, cb) {
-    super('/api/files?hash=' + encodeURIComponent(hash), cb);
+    super('api/files?hash=' + encodeURIComponent(hash), cb);
   }
 }
 
@@ -110,7 +110,7 @@ class BackState {
     }
     try {
       Object.assign(result, JSON.parse(decodeURIComponent(location.hash.substr(1))));
-    } catch (e) {}
+    } catch (e) { }
     return result;
   }
 
@@ -191,8 +191,10 @@ class BayInfo extends React.Component {
         ),
         React.createElement(
           'button',
-          { className: 'bay-info-add-button',
-            onClick: () => this.props.onAdd(this.state.info.magnetURL) },
+          {
+            className: 'bay-info-add-button',
+            onClick: () => this.props.onAdd(this.state.info.magnetURL)
+          },
           'Add Torrent'
         )
       );
@@ -234,7 +236,7 @@ class TorrentClient {
   }
 
   addTorrent(magnetURL) {
-    const addURL = '/api/add?url=' + encodeURIComponent(magnetURL);
+    const addURL = 'api/add?url=' + encodeURIComponent(magnetURL);
     _callBackendAPI(addURL).then(() => this._getList());
   }
 
@@ -243,7 +245,7 @@ class TorrentClient {
       return;
     }
     this._gettingList = true;
-    _callBackendAPI('/api/downloads').then(data => {
+    _callBackendAPI('api/downloads').then(data => {
       this._gettingList = false;
       if (this._actionsPending()) {
         return;
@@ -270,7 +272,7 @@ class TorrentClient {
       const dl = this._downloads[i];
       if (dl.hash == hash && !dl.actionPending) {
         dl.actionPending = true;
-        _callBackendAPI('/api/' + call + '?hash=' + encodeURIComponent(hash)).then(() => {
+        _callBackendAPI('api/' + call + '?hash=' + encodeURIComponent(hash)).then(() => {
           dl.actionPending = false;
           setTimeout(this.onChange, 0);
           this._getList();
@@ -312,13 +314,17 @@ class DownloadInfo extends React.Component {
         { className: 'download-info-heading' },
         dl.active ? React.createElement(
           'button',
-          { className: 'download-stop-button' + extraButtonClass,
-            onClick: this.props.onStop },
+          {
+            className: 'download-stop-button' + extraButtonClass,
+            onClick: this.props.onStop
+          },
           'Stop'
         ) : React.createElement(
           'button',
-          { className: 'download-start-button' + extraButtonClass,
-            onClick: this.props.onStart },
+          {
+            className: 'download-start-button' + extraButtonClass,
+            onClick: this.props.onStart
+          },
           'Start'
         ),
         React.createElement(
@@ -327,8 +333,10 @@ class DownloadInfo extends React.Component {
           dl.name
         )
       ),
-      dl.active ? React.createElement(LoadingBar, { progress: dl.completedBytes / dl.sizeBytes,
-        color: downloadLoaderColor(dl) }) : null,
+      dl.active ? React.createElement(LoadingBar, {
+        progress: dl.completedBytes / dl.sizeBytes,
+        color: downloadLoaderColor(dl)
+      }) : null,
       React.createElement(
         'table',
         { className: 'download-info-table' },
@@ -438,8 +446,10 @@ class DownloadInfo extends React.Component {
         { className: 'download-info-delete-container' },
         React.createElement(
           'button',
-          { className: 'download-delete-button' + extraButtonClass,
-            onClick: this.props.onDelete },
+          {
+            className: 'download-delete-button' + extraButtonClass,
+            onClick: this.props.onDelete
+          },
           'Delete'
         )
       ),
@@ -458,7 +468,7 @@ class DownloadInfo extends React.Component {
           'Files',
           React.createElement(
             'a',
-            { href: '/api/downloadall?hash=' + this.props.download.hash },
+            { href: 'api/downloadall?hash=' + this.props.download.hash },
             ' (get all)'
           )
         ),
@@ -520,9 +530,11 @@ function DownloadList(props) {
     );
   }
   const list = props.downloads.map(dl => {
-    return React.createElement(DownloadEntry, { download: dl,
+    return React.createElement(DownloadEntry, {
+      download: dl,
       key: dl.hash,
-      onClick: () => props.onClick(dl.hash) });
+      onClick: () => props.onClick(dl.hash)
+    });
   }).reverse();
   return React.createElement(
     'ol',
@@ -534,16 +546,22 @@ function DownloadList(props) {
 function DownloadEntry(props) {
   const dl = props.download;
 
-  let details = React.createElement(LoadingBar, { progress: dl.completedBytes / dl.sizeBytes,
-    color: downloadLoaderColor(dl) });
+  let details = React.createElement(LoadingBar, {
+    progress: dl.completedBytes / dl.sizeBytes,
+    color: downloadLoaderColor(dl)
+  });
   if (!dl.active && dl.completedBytes === dl.sizeBytes) {
-    details = React.createElement(ListInfoBox, { keys: ['Size', 'Uploaded'],
-      values: [formatSize(dl.sizeBytes), formatSize(dl.uploadTotal)] });
+    details = React.createElement(ListInfoBox, {
+      keys: ['Size', 'Uploaded'],
+      values: [formatSize(dl.sizeBytes), formatSize(dl.uploadTotal)]
+    });
   }
   return React.createElement(
     'li',
-    { className: 'download' + (props.actionPending ? ' download-frozen' : ''),
-      onClick: props.onClick },
+    {
+      className: 'download' + (props.actionPending ? ' download-frozen' : ''),
+      onClick: props.onClick
+    },
     React.createElement(
       'label',
       { className: 'download-name' },
@@ -638,10 +656,12 @@ class Root extends React.Component {
       'div',
       null,
       this.contentPane(),
-      React.createElement(TopBar, { search: this.state.currentSearch,
+      React.createElement(TopBar, {
+        search: this.state.currentSearch,
         canExit: canExit,
         onExit: () => this.handleExit(),
-        onSearchChange: s => this.handleSearchChange(s) }),
+        onSearchChange: s => this.handleSearchChange(s)
+      }),
       React.createElement(
         'button',
         { id: 'add-button', onClick: () => this.handleAddURL() },
@@ -653,20 +673,24 @@ class Root extends React.Component {
   contentPane() {
     if (!this.state.downloads) {
       return React.createElement(LoaderPane, null);
-    }if (this.state.currentSearch) {
-      return React.createElement(Search, { downloads: this.state.downloads,
+    } if (this.state.currentSearch) {
+      return React.createElement(Search, {
+        downloads: this.state.downloads,
         query: this.state.currentSearch,
         onClickDownload: hash => this.showDownload(hash),
-        onClickBay: id => this.showBay(id) });
+        onClickBay: id => this.showBay(id)
+      });
     } else if (this.state.currentDownloadHash) {
       const result = this.state.downloads.find(x => {
         return x.hash === this.state.currentDownloadHash;
       });
       if (result) {
-        return React.createElement(DownloadInfo, { download: result,
+        return React.createElement(DownloadInfo, {
+          download: result,
           onStart: () => this.client.startTorrent(result.hash),
           onStop: () => this.client.stopTorrent(result.hash),
-          onDelete: () => this.handleDeleteTorrent(result.hash) });
+          onDelete: () => this.handleDeleteTorrent(result.hash)
+        });
       } else {
         return React.createElement(
           'div',
@@ -675,11 +699,15 @@ class Root extends React.Component {
         );
       }
     } else if (this.state.currentBayID) {
-      return React.createElement(BayInfo, { id: this.state.currentBayID,
-        onAdd: u => this.handleAddFromBay(u) });
+      return React.createElement(BayInfo, {
+        id: this.state.currentBayID,
+        onAdd: u => this.handleAddFromBay(u)
+      });
     } else {
-      return React.createElement(DownloadList, { downloads: this.state.downloads,
-        onClick: hash => this.showDownload(hash) });
+      return React.createElement(DownloadList, {
+        downloads: this.state.downloads,
+        onClick: hash => this.showDownload(hash)
+      });
     }
   }
 
@@ -773,8 +801,10 @@ class Search extends React.Component {
   downloadListing() {
     const downloads = filterDownloads(this.props.downloads, this.props.query);
     const elems = downloads.map((d, i) => {
-      return React.createElement(SearchListing, { onClick: () => this.props.onClickDownload(d.hash),
-        key: 'dl-' + i, name: d.name });
+      return React.createElement(SearchListing, {
+        onClick: () => this.props.onClickDownload(d.hash),
+        key: 'dl-' + i, name: d.name
+      });
     }).reverse();
     if (elems.length == 0) {
       return React.createElement(SearchEmpty, { key: 'dl-empty' });
@@ -786,9 +816,11 @@ class Search extends React.Component {
   bayListing() {
     if (this.state.bayResults) {
       const elems = this.state.bayResults.map((r, i) => {
-        return React.createElement(SearchListing, { onClick: () => this.props.onClickBay(r.id),
+        return React.createElement(SearchListing, {
+          onClick: () => this.props.onClickBay(r.id),
           key: 'bay-' + i, name: r.name,
-          keys: ['Size'], values: [r.size] });
+          keys: ['Size'], values: [r.size]
+        });
       });
       if (elems.length === 0) {
         return React.createElement(SearchEmpty, { key: 'bay-empty' });
@@ -876,12 +908,14 @@ class TopBar extends React.Component {
         { className: 'top-bar-exit-button', onClick: this.props.onExit },
         'Go Home'
       ),
-      React.createElement('input', { className: 'top-bar-search-box',
+      React.createElement('input', {
+        className: 'top-bar-search-box',
         onFocus: () => this.setState({ searchFocused: true }),
         onBlur: () => this.setState({ searchFocused: false }),
         onChange: e => this.props.onSearchChange(e.target.value),
         value: this.props.search || '',
-        placeholder: 'Search' })
+        placeholder: 'Search'
+      })
     );
   }
 }

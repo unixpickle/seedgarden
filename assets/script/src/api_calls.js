@@ -6,7 +6,7 @@ class BaySearch {
     // while the user types out a search query.
     this._callTimeout = setTimeout(() => {
       this._callTimeout = null;
-      _callBackendAPI('/api/baysearch?query=' + encodeURIComponent(query)).then((obj) => {
+      _callBackendAPI('api/baysearch?query=' + encodeURIComponent(query)).then((obj) => {
         this._cb(null, obj);
       }).catch((err) => {
         this._cb(err, null);
@@ -43,13 +43,13 @@ class CancelableCall {
 
 class BayLookup extends CancelableCall {
   constructor(id, cb) {
-    super('/api/baylookup?id=' + encodeURIComponent(id), cb);
+    super('api/baylookup?id=' + encodeURIComponent(id), cb);
   }
 }
 
 class ListFiles extends CancelableCall {
   constructor(hash, cb) {
-    super('/api/files?hash=' + encodeURIComponent(hash), cb);
+    super('api/files?hash=' + encodeURIComponent(hash), cb);
   }
 }
 

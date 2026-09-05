@@ -38,6 +38,7 @@ func main() {
 	var bayCacheTimeout time.Duration
 	var pauseDoneInterval time.Duration
 	var pauseRatio float64
+	var secretPath string
 	flag.StringVar(&addr, "addr", ":1337", "address to listen on")
 	flag.StringVar(&rpcURL, "rpcurl", "", "URL for RPC backend")
 	flag.StringVar(&rpcUser, "rpcuser", "", "username for RPC backend")
@@ -48,6 +49,7 @@ func main() {
 	flag.DurationVar(&pauseDoneInterval, "pause-interval", 0,
 		"specify frequency at which finished downloads are checked and paused")
 	flag.Float64Var(&pauseRatio, "pause-ratio", 1.0, "upload/download ratio to pause at")
+	flag.StringVar(&secretPath, "secret-path", "", "root path for every URL")
 	flag.Parse()
 
 	if rpcURL == "" {
@@ -67,20 +69,27 @@ func main() {
 		go CheckPausedDownloadsLoop(pauseDoneInterval, pauseRatio)
 	}
 
-	http.HandleFunc("/", ServeSlash)
-	http.HandleFunc("/api/downloads", ServeDownloads)
-	http.HandleFunc("/api/start", ServeStart)
-	http.HandleFunc("/api/stop", ServeStop)
-	http.HandleFunc("/api/delete", ServeDelete)
-	http.HandleFunc("/api/add", ServeAdd)
-	http.HandleFunc("/api/baysearch", ServeBaySearch)
-	http.HandleFunc("/api/baylookup", ServeBayLookup)
-	http.HandleFunc("/api/files", ServeFiles)
-	http.HandleFunc("/api/settimestamp", ServeSetTimestamp)
-	http.HandleFunc("/api/download", ServeDownload)
-	http.HandleFunc("/api/downloadall", ServeDownloadAll)
-
-	http.ListenAndServe(addr, nil)
+	handler := http.NewServeMux()
+	handler.HandleFunc("/", ServeSlash)
+	handler.HandleFunc("/api/downloads", ServeDownloads)
+	handler.HandleFunc("/api/start", ServeStart)
+	handler.HandleFunc("/api/stop", ServeStop)
+	handler.HandleFunc("/api/delete", ServeDelete)
+	handler.HandleFunc("/api/add", ServeAdd)
+	handler.HandleFunc("/api/baysearch", ServeBaySearch)
+	handler.HandleFunc("/api/baylookup", ServeBayLookup)
+	handler.HandleFunc("/api/files", ServeFiles)
+	handler.HandleFunc("/api/settimestamp", ServeSetTimestamp)
+	handler.HandleFunc("/api/download", ServeDownload)
+	handler.HandleFunc("/api/downloadall", ServeDownloadAll)
+	if secretPath == "" {
+		http.ListenAndServe(addr, handler)
+	} else {
+		// http.ListenAndServe(addr, http.StripPrefix("/"+secretPath, http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		// 	fmt.Println("yo", r.URL)
+		// })))
+		http.ListenAndServe(addr, http.StripPrefix("/"+secretPath, handler))
+	}
 }
 
 func CheckPausedDownloadsLoop(interval time.Duration, ratio float64) {
@@ -217,9 +226,9 @@ func ServeFiles(w http.ResponseWriter, r *http.Request) {
 			}
 			timestamp, ok := GlobalTimestampCache.Get(path)
 			results = append(results, map[string]interface{}{
-				"Link":         "/api/download?path=" + url.QueryEscape(path) + "&signature=" + Sign(path),
+				"Link":         "api/download?path=" + url.QueryEscape(path) + "&signature=" + Sign(path),
 				"Path":         rel,
-				"SetTimestamp": "/api/settimestamp?path=" + url.QueryEscape(path) + "&signature=" + Sign(path),
+				"SetTimestamp": "api/settimestamp?path=" + url.QueryEscape(path) + "&signature=" + Sign(path),
 				"Timestamp":    timestamp,
 				"HasTimestamp": ok,
 			})

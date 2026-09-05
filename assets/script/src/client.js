@@ -29,7 +29,7 @@ class TorrentClient {
   }
 
   addTorrent(magnetURL) {
-    const addURL = '/api/add?url=' + encodeURIComponent(magnetURL);
+    const addURL = 'api/add?url=' + encodeURIComponent(magnetURL);
     _callBackendAPI(addURL).then(() => this._getList());
   }
 
@@ -38,7 +38,7 @@ class TorrentClient {
       return;
     }
     this._gettingList = true;
-    _callBackendAPI('/api/downloads').then((data) => {
+    _callBackendAPI('api/downloads').then((data) => {
       this._gettingList = false;
       if (this._actionsPending()) {
         return;
@@ -65,7 +65,7 @@ class TorrentClient {
       const dl = this._downloads[i];
       if (dl.hash == hash && !dl.actionPending) {
         dl.actionPending = true;
-        _callBackendAPI('/api/'+call+'?hash=' + encodeURIComponent(hash)).then(() => {
+        _callBackendAPI('api/' + call + '?hash=' + encodeURIComponent(hash)).then(() => {
           dl.actionPending = false;
           setTimeout(this.onChange, 0);
           this._getList();
