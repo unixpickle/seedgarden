@@ -17,6 +17,7 @@ import (
 	"time"
 
 	"github.com/unixpickle/essentials"
+	"github.com/unixpickle/secretprefix"
 	"github.com/unixpickle/seedgarden/bay"
 	"github.com/unixpickle/seedgarden/bay/piratebay"
 	"github.com/unixpickle/seedgarden/bay/rarbg"
@@ -49,11 +50,14 @@ func main() {
 	flag.DurationVar(&pauseDoneInterval, "pause-interval", 0,
 		"specify frequency at which finished downloads are checked and paused")
 	flag.Float64Var(&pauseRatio, "pause-ratio", 1.0, "upload/download ratio to pause at")
-	flag.StringVar(&secretPath, "secret-path", "", "root path for every URL")
+	flag.StringVar(&secretPath, "secret-path", "", "secret URL prefix (without slashes)")
 	flag.Parse()
 
 	if rpcURL == "" {
 		essentials.Die("Missing -rpcurl flag. See -help.")
+	}
+	if strings.Contains(secretPath, "/") {
+		essentials.Die("-secret-path must not contain slashes.")
 	}
 
 	if useRARBG {
@@ -85,13 +89,7 @@ func main() {
 	if secretPath == "" {
 		http.ListenAndServe(addr, handler)
 	} else {
-		slashRedirect := http.NewServeMux()
-		slashRedirect.Handle(
-			"/"+secretPath,
-			http.RedirectHandler("/"+secretPath+"/", http.StatusSeeOther),
-		)
-		slashRedirect.Handle("/"+secretPath+"/", http.StripPrefix("/"+secretPath, handler))
-		http.ListenAndServe(addr, slashRedirect)
+		http.ListenAndServe(addr, secretprefix.Wrap(secretPath, handler))
 	}
 }
 
